@@ -38,6 +38,8 @@
 
     <!-- android -->
     <platform name="android">
+        <framework src="com.voxeet.sdk:toolkit:1.0" />
+
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="VoxeetCordova" >
                 <param name="android-package" value="com.voxeet.toolkit.VoxeetCordova"/>
