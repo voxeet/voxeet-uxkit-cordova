@@ -29,24 +29,41 @@
     <issue>https://github.com/voxeet/cordova-plugin-voxeet/issues</issue>
 
     <js-module src="www/Voxeet.js" name="Voxeet">
-        <clobbers target="Voxeet" />
+        <clobbers target="navigator.Voxeet" />
     </js-module>
 
     <js-module src="www/UserInfo.js" name="UserInfo">
-        <clobbers target="UserInfo" />
+        <clobbers target="navigator.UserInfo" />
     </js-module>
 
     <!-- android -->
     <platform name="android">
-        <framework src="com.voxeet.sdk:toolkit:1.0" />
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+            <uses-permission android:name="android.permission.BLUETOOTH" />
+            <uses-permission android:name="android.permission.RECORD_AUDIO" />
+            <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
+            <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.CAMERA" />
+        </config-file>
+        <!--<framework src="com.voxeet.sdk:toolkit:1.0.2" />-->
+        <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
 
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="VoxeetCordova" >
+            <feature name="Voxeet" >
                 <param name="android-package" value="com.voxeet.toolkit.VoxeetCordova"/>
             </feature>
         </config-file>
 
+        <source-file src="src/android/com/voxeet/toolkit/VoxeetApplication.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/VoxeetCordova.java" target-dir="src/com/voxeet/toolkit" />
+
+        <hook type="after_prepare" src="add_application_name.js" />
     </platform>
 
 </plugin>

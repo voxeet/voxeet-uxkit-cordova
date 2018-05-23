@@ -1,16 +1,21 @@
 package com.voxeet.toolkit;
 
+import android.app.Activity;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.ViewGroup;
 
 import com.voxeet.android.media.Media;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,9 +28,12 @@ import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
 import sdk.voxeet.com.toolkit.main.VoxeetToolkit;
+import sdk.voxeet.com.toolkit.providers.rootview.AbstractRootViewProvider;
 import sdk.voxeet.com.toolkit.views.uitookit.sdk.overlays.OverlayState;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.events.success.ConferenceRefreshedEvent;
+import voxeet.com.sdk.events.success.SocketConnectEvent;
+import voxeet.com.sdk.events.success.SocketStateChangeEvent;
 import voxeet.com.sdk.json.UserInfo;
 
 /**
@@ -35,12 +43,24 @@ import voxeet.com.sdk.json.UserInfo;
 public class VoxeetCordova extends CordovaPlugin {
 
     private final Handler mHandler;
+    private UserInfo _current_user;
+    private CallbackContext _log_in_callback;
 
     public VoxeetCordova() {
         super();
         mHandler = new Handler(Looper.getMainLooper());
 
         Promise.setHandler(mHandler);
+    }
+
+    @Override
+    public void onResume(boolean multitasking) {
+        super.onResume(multitasking);
+    }
+
+    @Override
+    public void onPause(boolean multitasking) {
+        super.onPause(multitasking);
     }
 
     @Override
@@ -63,23 +83,28 @@ public class VoxeetCordova extends CordovaPlugin {
                     closeSession(callbackContext);
                     break;
                 case "startConference":
-                    String confId = args.getString(0);
-                    JSONArray array = args.getJSONArray(1);
+                    try {
+                        String confId = args.getString(0);
+                        JSONArray array = null;
+                        if (!args.isNull(1)) array = args.getJSONArray(1);
 
-                    List<UserInfo> participants = new ArrayList<>();
-                    if(null != array) {
-                        JSONObject object = null;
-                        int index = 0;
-                        while(index < array.length()) {
-                            object = array.getJSONObject(index);
+                        List<UserInfo> participants = new ArrayList<>();
+                        if (null != array) {
+                            JSONObject object = null;
+                            int index = 0;
+                            while (index < array.length()) {
+                                object = array.getJSONObject(index);
 
-                            participants.add(new UserInfo(object.getString("name"),
-                                    object.getString("externalId"),
-                                    object.getString("avatarUrl")));
+                                participants.add(new UserInfo(object.getString("name"),
+                                        object.getString("externalId"),
+                                        object.getString("avatarUrl")));
+                            }
                         }
-                    }
 
-                    startConference(confId, participants, callbackContext);
+                        startConference(confId, participants, callbackContext);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "stopConference":
                     stopConference(callbackContext);
@@ -106,85 +131,154 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
 
-    private void initialize(String consumerKey,
-                            String consumerSecret) {
-        Application application = (Application) this.cordova.getActivity().getApplicationContext();
+    private void initialize(final String consumerKey,
+                            final String consumerSecret) {
 
-        VoxeetSdk.initialize(application,
-                consumerKey, consumerSecret, null);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Application application = (Application) cordova.getActivity().getApplicationContext();
 
+                VoxeetSdk.initialize(application,
+                        consumerKey, consumerSecret, null);
+                VoxeetToolkit.initialize(application, EventBus.getDefault());
+
+                VoxeetToolkit.getInstance().enableOverlay(true);
+
+                VoxeetSdk.getInstance().register(application, VoxeetCordova.this);
+            }
+        });
     }
 
-    private void openSession(String userId,
-                             String participantName,
-                             String avatarUrl,
-                             CallbackContext cb) {
-        UserInfo userInfo = new UserInfo(participantName, userId, avatarUrl);
+    private void openSession(final String userId,
+                             final String participantName,
+                             final String avatarUrl,
+                             final CallbackContext cb) {
 
-        VoxeetSdk.getInstance().logUser(userInfo);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                UserInfo userInfo = new UserInfo(participantName, userId, avatarUrl);
+
+                _log_in_callback = cb;
+                if (_current_user == null) {
+                    _current_user = userInfo;
+                    logSelectedUser();
+                } else {
+                    _current_user = userInfo;
+                    //we have an user
+                    VoxeetSdk.getInstance()
+                            .logout()
+                            .then(new PromiseExec<Boolean, Object>() {
+                                @Override
+                                public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                                    logSelectedUser();
+                                }
+                            })
+                            .error(new ErrorPromise() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    logSelectedUser();
+                                }
+                            });
+                }
+            }
+        });
+    }
+
+    /**
+     * Call this method to log the current selected user
+     */
+    public void logSelectedUser() {
+        VoxeetSdk.getInstance().logUser(_current_user);
+    }
+
+    public UserInfo getCurrentUser() {
+        return _current_user;
     }
 
     private void closeSession(final CallbackContext cb) {
-        VoxeetSdk.getInstance()
-                .logout()
-                .then(new PromiseExec<Boolean, Object>() {
-                    @Override
-                    public void onCall(@Nullable Boolean aBoolean, @NonNull Solver<Object> solver) {
-                        cb.success();
-                    }
-                })
-                .error(new ErrorPromise() {
-                    @Override
-                    public void onError(@NonNull Throwable throwable) {
-                        cb.error("Error while logging out with the server");
-                    }
-                });
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                VoxeetSdk.getInstance()
+                        .logout()
+                        .then(new PromiseExec<Boolean, Object>() {
+                            @Override
+                            public void onCall(@Nullable Boolean aBoolean, @NonNull Solver<Object> solver) {
+                                cb.success();
+                            }
+                        })
+                        .error(new ErrorPromise() {
+                            @Override
+                            public void onError(@NonNull Throwable throwable) {
+                                cb.error("Error while logging out with the server");
+                            }
+                        });
+            }
+        });
     }
 
-    private void startConference(String conferenceId,
+    private void startConference(final String conferenceId,
                                  final List<UserInfo> participants,
                                  final CallbackContext cb) {
-        VoxeetSdk.getInstance()
-                .getConferenceService()
-                .join(conferenceId)
-                .then(new PromiseExec<Boolean, List<ConferenceRefreshedEvent>>() {
-                    @Override
-                    public void onCall(@Nullable Boolean aBoolean, @NonNull final Solver<List<ConferenceRefreshedEvent>> solver) {
-                        solver.resolve(VoxeetToolkit.getInstance()
-                                .getConferenceToolkit()
-                                .invite(participants));
-                    }
-                })
-                .then(new PromiseExec<List<ConferenceRefreshedEvent>, Object>() {
-                    @Override
-                    public void onCall(@Nullable List<ConferenceRefreshedEvent> conferenceRefreshedEvents, @NonNull Solver<Object> solver) {
-                        cb.success();
-                    }
-                })
-                .error(new ErrorPromise() {
-                    @Override
-                    public void onError(@NonNull Throwable throwable) {
-                        cb.error("Error whilte initializing the conference");
-                    }
-                });
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                VoxeetToolkit.getInstance()
+                        .getConferenceToolkit()
+                        .join(conferenceId)
+                        .then(new PromiseExec<Boolean, List<ConferenceRefreshedEvent>>() {
+                            @Override
+                            public void onCall(@Nullable Boolean aBoolean, @NonNull final Solver<List<ConferenceRefreshedEvent>> solver) {
+                                if (null != participants && participants.size() > 0) {
+                                    solver.resolve(VoxeetToolkit.getInstance()
+                                            .getConferenceToolkit()
+                                            .invite(participants));
+                                } else {
+                                    solver.resolve(new ArrayList<ConferenceRefreshedEvent>());
+                                }
+                            }
+                        })
+                        .then(new PromiseExec<List<ConferenceRefreshedEvent>, Object>() {
+                            @Override
+                            public void onCall(@Nullable List<ConferenceRefreshedEvent> conferenceRefreshedEvents, @NonNull Solver<Object> solver) {
+                                cb.success();
+                            }
+                        })
+                        .error(new ErrorPromise() {
+                            @Override
+                            public void onError(@NonNull Throwable throwable) {
+                                cb.error("Error whilte initializing the conference");
+                            }
+                        });
+            }
+        });
     }
 
     private void stopConference(final CallbackContext cb) {
-        VoxeetSdk.getInstance()
-                .getConferenceService()
-                .leave()
-                .then(new PromiseExec<Boolean, Object>() {
-                    @Override
-                    public void onCall(@Nullable Boolean bool, @NonNull Solver<Object> solver) {
-                        cb.success();
-                    }
-                })
-                .error(new ErrorPromise() {
-                    @Override
-                    public void onError(@NonNull Throwable throwable) {
-                        cb.error("Error while leaving");
-                    }
-                });
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                VoxeetSdk.getInstance()
+                        .getConferenceService()
+                        .leave()
+                        .then(new PromiseExec<Boolean, Object>() {
+                            @Override
+                            public void onCall(@Nullable Boolean bool, @NonNull Solver<Object> solver) {
+                                cb.success();
+                            }
+                        })
+                        .error(new ErrorPromise() {
+                            @Override
+                            public void onError(@NonNull Throwable throwable) {
+                                cb.error("Error while leaving");
+                            }
+                        });
+            }
+        });
     }
 
     private void add(/* participant */) {
@@ -216,5 +310,27 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void screenAutoLock(Boolean enabled) {
         //TODO not available in the current sdk
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(final SocketConnectEvent event) {
+        if (null != _log_in_callback) {
+            _log_in_callback.success();
+            _log_in_callback = null;
+        }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(SocketStateChangeEvent event) {
+        switch (event.message()) {
+            case "CLOSING":
+            case "CLOSED":
+                if (null != _log_in_callback) {
+                    _log_in_callback.error("Error while logging in");
+                    _log_in_callback = null;
+                }
+        }
     }
 }
