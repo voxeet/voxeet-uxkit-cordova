@@ -25,8 +25,8 @@
     <description>Cordova Voxeet Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,voxeet</keywords>
-    <repo>https://github.com/voxeet/cordova-plugin-voxeet.git</repo>
-    <issue>https://github.com/voxeet/cordova-plugin-voxeet/issues</issue>
+    <repo>https://github.com/voxeet/voxeet-cordova-conferencekit.git</repo>
+    <issue>https://github.com/voxeet/voxeet-cordova-conferencekit/issues</issue>
 
     <js-module src="www/Voxeet.js" name="Voxeet">
         <clobbers target="navigator.Voxeet" />

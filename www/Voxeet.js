@@ -40,7 +40,7 @@ class Voxeet {
         });
     }
 
-    closeSession (userId, participantName, avatarUrl) {
+    closeSession () {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'closeSession', []));
     }
 

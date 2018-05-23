@@ -2,9 +2,9 @@
 // Project: https://github.com/voxeet/cordova-plugin-voxeet
 // Definitions by: Microsoft Open Technologies Inc <http://msopentech.com>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// 
+//
 // Copyright (c) Microsoft Open Technologies Inc
-// Licensed under the MIT license. 
+// Licensed under the MIT license.
 
 interface Voxeet {
 
@@ -12,7 +12,7 @@ interface Voxeet {
 
     openSession(userId: string, participantName: string, avatarUrl: string): Promise;
 
-    closeSession(userId: string, participantName: string, avatarUrl: string): Promise;
+    closeSession(): Promise;
 
     startConference(conferenceId: string, participants: UserInfo[]): Promise;
 

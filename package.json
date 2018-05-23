@@ -11,10 +11,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/voxeet/cordova-plugin-voxeet"
+    "url": "https://github.com/voxeet/voxeet-cordova-conferencekit"
   },
   "bugs": {
-    "url": "https://github.com/voxeet/cordova-plugin-voxeet/issues"
+    "url": "https://github.com/voxeet/voxeet-cordova-conferencekit/issues"
   },
   "keywords": [
     "cordova",
