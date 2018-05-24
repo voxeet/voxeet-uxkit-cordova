@@ -8,9 +8,12 @@ description: Interact with the Voxeet ConferenceKit
 
 This plugin is bridging the Voxeet's Toolkit/ConferenceKit calls. You can interacting with the plugin after the Cordova's deviceReady event.
 
+It is mandatory that you added :
+  - the Android platform `cordova platform add android`
+
 ## Installation
 
-    cordova plugin add cordova-plugin-voxeet
+    cordova plugin add cordova-plugin-voxeet@0.0.2
 
 ## Implementation
 
