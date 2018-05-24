@@ -22,7 +22,7 @@
       version="0.0.1">
     <name>Voxeet</name>
     <description>Cordova Voxeet Plugin</description>
-    <license>Apache 2.0</license>
+    <license>GNU GPL v3</license>
     <keywords>cordova,voxeet</keywords>
     <repo>https://github.com/voxeet/voxeet-cordova-conferencekit.git</repo>
     <issue>https://github.com/voxeet/voxeet-cordova-conferencekit/issues</issue>
