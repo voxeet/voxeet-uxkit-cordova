@@ -1,5 +1,5 @@
 // Type definitions for Cordova Voxeet plugin
-// Project: https://github.com/voxeet/cordova-plugin-voxeet
+// Project: https://github.com/voxeet/voxeet-cordova-conferencekit
 // Definitions by: Microsoft Open Technologies Inc <http://msopentech.com>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 //

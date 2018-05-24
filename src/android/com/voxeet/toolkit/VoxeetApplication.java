@@ -9,7 +9,11 @@ import sdk.voxeet.com.toolkit.views.uitookit.sdk.overlays.OverlayState;
 import voxeet.com.sdk.core.VoxeetSdk;
 
 /**
- * Created by RomainBenmansour on 06,April,2016
+ * Simplest VoxeetApplication
+ * onCreate() ->
+ *  - Toolkit initialization (register lifecycles)
+ *  - enable overlay
+ *  - set default states
  */
 public class VoxeetApplication extends MultiDexApplication {
 
