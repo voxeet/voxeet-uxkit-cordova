@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.voxeet.android.media.Media;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
@@ -164,6 +163,13 @@ public class VoxeetCordova extends CordovaPlugin {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+
+                //if we are trying to connect the same user !
+                if (isConnected() && isSameUser(userInfo)) {
+                    cb.success();
+                    return;
+                }
+
                 _log_in_callback = cb;
                 if (_current_user == null) {
                     _current_user = userInfo;
@@ -194,7 +200,6 @@ public class VoxeetCordova extends CordovaPlugin {
      * Call this method to log the current selected user
      */
     public void logSelectedUser() {
-        Log.d("MainActivity", "logSelectedUser " + _current_user.toString());
         VoxeetSdk.getInstance().logUser(_current_user);
     }
 
@@ -212,12 +217,14 @@ public class VoxeetCordova extends CordovaPlugin {
                         .then(new PromiseExec<Boolean, Object>() {
                             @Override
                             public void onCall(@Nullable Boolean aBoolean, @NonNull Solver<Object> solver) {
+                                _current_user = null;
                                 cb.success();
                             }
                         })
                         .error(new ErrorPromise() {
                             @Override
                             public void onError(@NonNull Throwable throwable) {
+                                _current_user = null;
                                 cb.error("Error while logging out with the server");
                             }
                         });
@@ -329,7 +336,6 @@ public class VoxeetCordova extends CordovaPlugin {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(SocketStateChangeEvent event) {
-        Log.d("VoxeetCordova", "onEvent: " + event.message());
         switch (event.message()) {
             case "CLOSING":
             case "CLOSED":
@@ -338,5 +344,14 @@ public class VoxeetCordova extends CordovaPlugin {
                     _log_in_callback = null;
                 }
         }
+    }
+
+    private boolean isConnected() {
+        return VoxeetSdk.getInstance() != null
+                && VoxeetSdk.getInstance().isSocketOpen();
+    }
+
+    private boolean isSameUser(@NonNull UserInfo userInfo) {
+        return userInfo.getExternalId().equals(getCurrentUser());
     }
 }
