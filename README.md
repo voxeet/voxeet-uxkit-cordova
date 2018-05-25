@@ -94,9 +94,9 @@ Voxeet.closeSession()
 ## Cordova example
 
 ```
-var user0 = new UserInfo('Benoit', '0', 'https://cdn.voxeet.com/images/team-benoit-senard.png');
-var user1 = new UserInfo('Stephane', '1', 'https://cdn.voxeet.com/images/team-stephane-giraudie.png');
-var user2 = new UserInfo('Thomas', '2', 'https://cdn.voxeet.com/images/team-thomas.png');
+var user0 = new UserInfo('0', 'Benoit', 'https://cdn.voxeet.com/images/team-benoit-senard.png');
+var user1 = new UserInfo('1', 'Stephane', 'https://cdn.voxeet.com/images/team-stephane-giraudie.png');
+var user2 = new UserInfo('2', 'Thomas', 'https://cdn.voxeet.com/images/team-thomas.png');
 
 Voxeet.initialize('consumerKey', 'consumerSecret')
 .then(() => Voxeet.openSession(user0))
