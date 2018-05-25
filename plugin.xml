@@ -50,6 +50,11 @@
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
             <uses-permission android:name="android.permission.CAMERA" />
         </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity android:label="Incoming Call" android:name="com.voxeet.toolkit.notification.CordovaIncomingCallActivity"></activity>
+        </config-file>
+
         <!--<framework src="com.voxeet.sdk:toolkit:1.0.2" />-->
         <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
 
