@@ -1,6 +1,7 @@
 package com.voxeet.toolkit.notification;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import voxeet.com.sdk.json.UserInfo;
 public class CordovaIncomingBundleChecker {
 
     private final static String BUNDLE_EXTRA_BUNDLE = "BUNDLE_EXTRA_BUNDLE";
+    private Context mContext;
 
     @Nullable
     private IExtraBundleFillerListener mFillerListener;
@@ -42,16 +44,20 @@ public class CordovaIncomingBundleChecker {
         mIntent = new Intent();
     }
 
-    public CordovaIncomingBundleChecker(@NonNull Intent intent, @Nullable IExtraBundleFillerListener filler_listener) {
+    public CordovaIncomingBundleChecker(Context context, @NonNull Intent intent, @Nullable IExtraBundleFillerListener filler_listener) {
         this();
+
+        mContext = context;
         mFillerListener = filler_listener;
         mIntent = intent;
 
-        mUserName = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_NAME);
-        mExternalUserId = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID);
-        mUserId = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_ID);
-        mAvatarUrl = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_URL);
-        mConferenceId = mIntent.getStringExtra(VoxeetIntentFactory.CONF_ID);
+        if (null != mIntent) {
+            mUserName = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_NAME);
+            mExternalUserId = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID);
+            mUserId = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_ID);
+            mAvatarUrl = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_URL);
+            mConferenceId = mIntent.getStringExtra(VoxeetIntentFactory.CONF_ID);
+        }
     }
 
     /**
@@ -90,7 +96,8 @@ public class CordovaIncomingBundleChecker {
      * @return true if the intent has notification keys
      */
     final public boolean isBundleValid() {
-        return mIntent.hasExtra(VoxeetIntentFactory.INVITER_NAME)
+        return null != mIntent
+                && mIntent.hasExtra(VoxeetIntentFactory.INVITER_NAME)
                 && mIntent.hasExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID)
                 && mIntent.hasExtra(VoxeetIntentFactory.INVITER_ID)
                 && mIntent.hasExtra(VoxeetIntentFactory.INVITER_URL)
@@ -124,7 +131,7 @@ public class CordovaIncomingBundleChecker {
 
     @Nullable
     final public Bundle getExtraBundle() {
-        return mIntent.getBundleExtra(BUNDLE_EXTRA_BUNDLE);
+        return null != mIntent ? mIntent.getBundleExtra(BUNDLE_EXTRA_BUNDLE) : null;
     }
 
     final public boolean isSameConference(String conferenceId) {
@@ -135,7 +142,7 @@ public class CordovaIncomingBundleChecker {
     /**
      * Create an intent to start the activity you want after an "accept" call
      *
-     * @param caller              the non null caller
+     * @param caller the non null caller
      * @return a valid intent
      */
     @NonNull
@@ -143,7 +150,7 @@ public class CordovaIncomingBundleChecker {
         Class to_call = createClassToCall();
 
         //if call is disabled
-        if(null == to_call) return null;
+        if (null == to_call) return null;
 
         Intent intent = new Intent(caller, to_call);
 
@@ -177,11 +184,13 @@ public class CordovaIncomingBundleChecker {
      * in onResume/onPause lifecycle
      */
     public void flushIntent() {
-        mIntent.removeExtra(VoxeetIntentFactory.INVITER_ID);
-        mIntent.removeExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID);
-        mIntent.removeExtra(VoxeetIntentFactory.CONF_ID);
-        mIntent.removeExtra(VoxeetIntentFactory.INVITER_URL);
-        mIntent.removeExtra(VoxeetIntentFactory.INVITER_NAME);
+        if (null != mIntent) {
+            mIntent.removeExtra(VoxeetIntentFactory.INVITER_ID);
+            mIntent.removeExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID);
+            mIntent.removeExtra(VoxeetIntentFactory.CONF_ID);
+            mIntent.removeExtra(VoxeetIntentFactory.INVITER_URL);
+            mIntent.removeExtra(VoxeetIntentFactory.INVITER_NAME);
+        }
     }
 
     @NonNull
@@ -203,7 +212,7 @@ public class CordovaIncomingBundleChecker {
 
     private Class createClassToCall() {
         try {
-            Class klass = Class.forName("<%PACKAGE_NAME%>.MainActivity");
+            Class klass = Class.forName(mContext.getPackageName() + ".MainActivity");
             return klass;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

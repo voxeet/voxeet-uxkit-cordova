@@ -52,7 +52,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mIncomingBundleChecker = new CordovaIncomingBundleChecker(getIntent(), this);
+        mIncomingBundleChecker = new CordovaIncomingBundleChecker(this, getIntent(), this);
 
         //add few Flags to start the activity before its setContentView
         //note that if your device is using a keyguard (code or password)

@@ -19,7 +19,7 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
       id="cordova-plugin-voxeet"
-      version="0.0.2">
+      version="0.0.3">
     <name>Voxeet</name>
     <description>Cordova Voxeet Plugin</description>
     <license>GNU GPL v3</license>
@@ -66,6 +66,9 @@
 
         <source-file src="src/android/com/voxeet/toolkit/VoxeetApplication.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/VoxeetCordova.java" target-dir="src/com/voxeet/toolkit" />
+
+        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingBundleChecker.java" target-dir="src/com/voxeet/toolkit/notification" />
+        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingCallActivity.java" target-dir="src/com/voxeet/toolkit/notification" />
 
         <hook type="after_prepare" src="voxeet_application.js" />
     </platform>

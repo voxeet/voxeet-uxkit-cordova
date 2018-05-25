@@ -23,7 +23,7 @@
  */
 class UserInfo {
 
-    constructor (name, externalId, avatarUrl) {
+    constructor (externalId, name, avatarUrl) {
         this.name = name;
         this.externalId = externalId;
         this.avatarUrl = avatarUrl;

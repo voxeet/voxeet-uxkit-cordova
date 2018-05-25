@@ -1,12 +1,10 @@
 package com.voxeet.toolkit;
 
-import android.app.Activity;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.ViewGroup;
 
 import com.voxeet.android.media.Media;
 
@@ -28,7 +26,6 @@ import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
 import sdk.voxeet.com.toolkit.main.VoxeetToolkit;
-import sdk.voxeet.com.toolkit.providers.rootview.AbstractRootViewProvider;
 import sdk.voxeet.com.toolkit.views.uitookit.sdk.overlays.OverlayState;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.events.success.ConferenceRefreshedEvent;
@@ -74,10 +71,17 @@ public class VoxeetCordova extends CordovaPlugin {
                     callbackContext.success();
                     break;
                 case "openSession":
-                    openSession(args.getString(0),
-                            args.getString(1),
-                            args.getString(2),
-                            callbackContext);
+                    JSONObject userInfo = null;
+                    if (!args.isNull(0)) userInfo = args.getJSONObject(0);
+                    UserInfo user = null;
+
+                    if (null != userInfo) {
+                        user = new UserInfo(userInfo.getString("name"),
+                                userInfo.getString("externalId"),
+                                userInfo.getString("avatarUrl"));
+                    }
+
+                    openSession(user, callbackContext);
                     break;
                 case "closeSession":
                     closeSession(callbackContext);
@@ -150,16 +154,12 @@ public class VoxeetCordova extends CordovaPlugin {
         });
     }
 
-    private void openSession(final String userId,
-                             final String participantName,
-                             final String avatarUrl,
+    private void openSession(final UserInfo userInfo,
                              final CallbackContext cb) {
 
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                UserInfo userInfo = new UserInfo(participantName, userId, avatarUrl);
-
                 _log_in_callback = cb;
                 if (_current_user == null) {
                     _current_user = userInfo;

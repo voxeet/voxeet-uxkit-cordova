@@ -46,7 +46,7 @@ public class VoxeetApplication extends MultiDexApplication implements Applicatio
 
         VoxeetPreferences.setDefaultActivity(CordovaIncomingCallActivity.class.getCanonicalName());
 
-        mCordovaIncomingBundleChecker = new CordovaIncomingBundleChecker(null, null);
+        mCordovaIncomingBundleChecker = new CordovaIncomingBundleChecker(this, null, null);
         registerActivityLifecycleCallbacks(this);
     }
 
@@ -73,7 +73,7 @@ public class VoxeetApplication extends MultiDexApplication implements Applicatio
                 EventBus.getDefault().register(this); //registering this activity
             }
 
-            mCordovaIncomingBundleChecker = new CordovaIncomingBundleChecker(activity.getIntent(), null);
+            mCordovaIncomingBundleChecker = new CordovaIncomingBundleChecker(this, activity.getIntent(), null);
             if (mCordovaIncomingBundleChecker.isBundleValid()) {
                 mCordovaIncomingBundleChecker.onAccept();
             }
