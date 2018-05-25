@@ -9,6 +9,7 @@ description: Interact with the Voxeet ConferenceKit
 This plugin is bridging the Voxeet's Toolkit/ConferenceKit calls. You can interacting with the plugin after the Cordova's deviceReady event.
 
 It is mandatory that you added :
+  - the iOS platform `cordova platform add ios`
   - the Android platform `cordova platform add android`
 
 ## Installation
@@ -90,9 +91,23 @@ Voxeet.closeSession()
 });
 ```
 
+## Cordova example
+
+```
+var user0 = new UserInfo('Benoit', '0', 'https://cdn.voxeet.com/images/team-benoit-senard.png');
+var user1 = new UserInfo('Stephane', '1', 'https://cdn.voxeet.com/images/team-stephane-giraudie.png');
+var user2 = new UserInfo('Thomas', '2', 'https://cdn.voxeet.com/images/team-thomas.png');
+
+Voxeet.initialize('consumerKey', 'consumerSecret')
+.then(() => Voxeet.openSession(user0))
+.then(() => Voxeet.startConference('conferenceId', [user1, user2]))
+.then(() => alert("done"))
+.error(err => alert(err));
+```
 
 ## Supported Platforms
 
+- iOS (follow these steps to set up Xcode project https://github.com/voxeet/voxeet-ios-conferencekit#project-setup and add `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES` in build settings to true)
 - Android
 
 ## License

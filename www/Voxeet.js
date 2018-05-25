@@ -33,9 +33,9 @@ class Voxeet {
         });
     }
 
-    openSession (userId, participantName, avatarUrl) {
+    openSession (participant) {
         return new Promise((resolve, reject) => {
-            exec(resolve, reject, SERVICE, 'openSession', [userId, participantName, avatarUrl]);
+            exec(resolve, reject, SERVICE, 'openSession', [participant]);
         });
     }
 

@@ -64,5 +64,18 @@
 
         <hook type="after_prepare" src="voxeet_application.js" />
     </platform>
-
+    
+    <!-- ios -->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Voxeet">
+                <param name="ios-package" value="CDVVoxeet" />
+            </feature>
+        </config-file>
+        <header-file src="src/ios/CDVVoxeet.h" />
+        <source-file src="src/ios/CDVVoxeet.m" />
+        <framework src="src/ios/VoxeetConferenceKit.framework" custom="true" embed="true"/>
+        <framework src="src/ios/VoxeetSDK.framework" custom="true" embed="true"/>
+        <framework src="src/ios/Kingfisher.framework" custom="true" embed="true"/>
+    </platform>
 </plugin>
