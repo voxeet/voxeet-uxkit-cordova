@@ -5,8 +5,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.voxeet.android.media.Media;
+import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -28,6 +30,7 @@ import eu.codlab.simplepromise.solve.Solver;
 import sdk.voxeet.com.toolkit.main.VoxeetToolkit;
 import sdk.voxeet.com.toolkit.views.uitookit.sdk.overlays.OverlayState;
 import voxeet.com.sdk.core.VoxeetSdk;
+import voxeet.com.sdk.core.preferences.VoxeetPreferences;
 import voxeet.com.sdk.events.success.ConferenceRefreshedEvent;
 import voxeet.com.sdk.events.success.SocketConnectEvent;
 import voxeet.com.sdk.events.success.SocketStateChangeEvent;
@@ -147,6 +150,7 @@ public class VoxeetCordova extends CordovaPlugin {
                         consumerKey, consumerSecret, null);
                 VoxeetToolkit.initialize(application, EventBus.getDefault());
 
+                VoxeetPreferences.setDefaultActivity(CordovaIncomingCallActivity.class.getCanonicalName());
                 VoxeetToolkit.getInstance().enableOverlay(true);
 
                 VoxeetSdk.getInstance().register(application, VoxeetCordova.this);
@@ -190,6 +194,7 @@ public class VoxeetCordova extends CordovaPlugin {
      * Call this method to log the current selected user
      */
     public void logSelectedUser() {
+        Log.d("MainActivity", "logSelectedUser " + _current_user.toString());
         VoxeetSdk.getInstance().logUser(_current_user);
     }
 
@@ -324,6 +329,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(SocketStateChangeEvent event) {
+        Log.d("VoxeetCordova", "onEvent: " + event.message());
         switch (event.message()) {
             case "CLOSING":
             case "CLOSED":
