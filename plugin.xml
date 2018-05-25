@@ -28,11 +28,11 @@
     <issue>https://github.com/voxeet/voxeet-cordova-conferencekit/issues</issue>
 
     <js-module src="www/Voxeet.js" name="Voxeet">
-        <clobbers target="navigator.Voxeet" />
+        <clobbers target="Voxeet" />
     </js-module>
 
     <js-module src="www/UserInfo.js" name="UserInfo">
-        <clobbers target="navigator.UserInfo" />
+        <clobbers target="UserInfo" />
     </js-module>
 
     <!-- android -->

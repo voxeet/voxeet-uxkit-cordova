@@ -21,13 +21,8 @@ It is mandatory that you added :
 
 You can use the Voxeet and UserInfo classes using the following :
 
-```
-const Voxeet = navigator.Voxeet;
-const UserInfo = navigator.UserInfo;
-```
-
-- Voxeet is a singleton from which you will interact with the SDK
-- UserInfo is a class :
+- `Voxeet` is a singleton from which you will interact with the SDK
+- `UserInfo` is a class :
     - constructor : `(externalId, name, avatarUrl)`
     - json() : return the corresponding json
 
