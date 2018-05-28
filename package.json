@@ -1,5 +1,5 @@
 {
-  "name": "cordova-plugin-voxeet",
+  "name": "@voxeet/cordova-plugin-voxeet",
   "version": "1.0.0",
   "description": "Cordova Voxeet Plugin",
   "types": "./types/index.d.ts",

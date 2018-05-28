@@ -151,6 +151,7 @@ public class VoxeetCordova extends CordovaPlugin {
                 if (null == VoxeetSdk.getInstance()) {
                     VoxeetSdk.initialize(application,
                             consumerKey, consumerSecret, null);
+                    VoxeetSdk.getInstance().getConferenceService().setTimeOut(30 * 1000); //30s
                 }
 
                 VoxeetToolkit.initialize(application, EventBus.getDefault());
