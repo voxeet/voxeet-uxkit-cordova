@@ -96,7 +96,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
                         List<UserInfo> participants = new ArrayList<>();
                         if (null != array) {
-                            JSONObject object = null;
+                            JSONObject object;
                             int index = 0;
                             while (index < array.length()) {
                                 object = array.getJSONObject(index);
@@ -104,12 +104,15 @@ public class VoxeetCordova extends CordovaPlugin {
                                 participants.add(new UserInfo(object.getString("name"),
                                         object.getString("externalId"),
                                         object.getString("avatarUrl")));
+
+                                index ++;
                             }
                         }
 
                         startConference(confId, participants, callbackContext);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        callbackContext.error(e.getMessage());
                     }
                     break;
                 case "stopConference":
@@ -145,10 +148,11 @@ public class VoxeetCordova extends CordovaPlugin {
             public void run() {
                 Application application = (Application) cordova.getActivity().getApplicationContext();
 
-                if(null == VoxeetSdk.getInstance()) {
+                if (null == VoxeetSdk.getInstance()) {
                     VoxeetSdk.initialize(application,
                             consumerKey, consumerSecret, null);
                 }
+
                 VoxeetToolkit.initialize(application, EventBus.getDefault());
 
                 VoxeetPreferences.setDefaultActivity(CordovaIncomingCallActivity.class.getCanonicalName());
