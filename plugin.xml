@@ -19,7 +19,7 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
       id="cordova-plugin-voxeet"
-      version="0.0.3">
+      version="0.0.4">
     <name>Voxeet</name>
     <description>Cordova Voxeet Plugin</description>
     <license>GNU GPL v3</license>
@@ -52,7 +52,7 @@
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <activity android:label="Incoming Call" android:name="com.voxeet.toolkit.notification.CordovaIncomingCallActivity"></activity>
+            <activity android:label="Incoming Call" android:name="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
         </config-file>
 
         <!--<framework src="com.voxeet.sdk:toolkit:1.0.2" />-->
@@ -72,7 +72,7 @@
 
         <hook type="after_prepare" src="voxeet_application.js" />
     </platform>
-    
+
     <!-- ios -->
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
