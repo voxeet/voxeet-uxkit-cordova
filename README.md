@@ -1,8 +1,4 @@
----
-title: Voxeet Cordova
-description: Interact with the Voxeet ConferenceKit
----
-
+Voxeet Cordova Plugin
 
 # cordova-plugin-voxeet
 
@@ -14,11 +10,19 @@ It is mandatory that you added :
 
 ## Installation
 
-    cordova plugin add cordova-plugin-voxeet@0.0.6
+    cordova plugin add cordova-plugin-voxeet@1.0.0
+
+### iOS
+
+- after `cordova platform add ios` in the project root folder
+- follow these steps to set up the generated Xcode project https://github.com/voxeet/voxeet-ios-conferencekit#project-setup
+- set `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES` in build settings to true
 
 ### Android
 
-The build.gradle must be edited to add :
+- after `cordova platform add android` in the project root folder
+
+- edit the `platforms/android/app/build.gradle` with:
 
 ```
 android {
@@ -34,9 +38,12 @@ android {
 }
 ```
 
+- as well as the dependencies block, put in the top dependency position:
 ```
 compile 'com.android.support:multidex:1.0.1'
 ```
+
+To enable push notification, follow the steps in the app, for push notification, follow https://github.com/voxeet/android-sdk-sample
 
 ## Implementation
 
@@ -46,13 +53,13 @@ You can use the Voxeet and UserInfo classes using the following :
 
 - `Voxeet` is a singleton from which you will interact with the SDK
 - `UserInfo` is a class :
-    - constructor : `(externalId, name, avatarUrl)`
+    - constructor : `(externalId: string, name: string, avatarUrl: string)`
     - json() : return the corresponding json
 
 ### Init
 
 ```
-Voxeet.initialize(<your consumer key>, <your secret key>)
+Voxeet.initialize(<your consumer key>: string , <your secret key>: string)
 .then(() => {
   //if the initialization is ok
 })
@@ -64,7 +71,7 @@ Voxeet.initialize(<your consumer key>, <your secret key>)
 ### Session opening
 
 ```
-Voxeet.openSession(<userId>, <name>, <avatarUrl>)
+Voxeet.openSession(<userId>: string, <name>: string, <avatarUrl>: string)
 .then(() => {
   //if the session is started
 })
@@ -79,7 +86,7 @@ You can start a conference with its conferenceId. You can also invite
 others to join the current conference by using an array of UserInfo
 
 ```
-Voxeet.startConference(<conferenceId>, <optional UserInfo[]>)
+Voxeet.startConference(<conferenceId>: string, <optional participants>: UserInfo[])
 .then(() => {
   //call made and everything is ok
 })
@@ -129,7 +136,7 @@ Voxeet.initialize('consumerKey', 'consumerSecret')
 
 ## Supported Platforms
 
-- iOS (follow these steps to set up Xcode project https://github.com/voxeet/voxeet-ios-conferencekit#project-setup and add `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES` in build settings to true)
+- iOS
 - Android
 
 ## License
