@@ -145,8 +145,10 @@ public class VoxeetCordova extends CordovaPlugin {
             public void run() {
                 Application application = (Application) cordova.getActivity().getApplicationContext();
 
-                VoxeetSdk.initialize(application,
-                        consumerKey, consumerSecret, null);
+                if(null == VoxeetSdk.getInstance()) {
+                    VoxeetSdk.initialize(application,
+                            consumerKey, consumerSecret, null);
+                }
                 VoxeetToolkit.initialize(application, EventBus.getDefault());
 
                 VoxeetPreferences.setDefaultActivity(CordovaIncomingCallActivity.class.getCanonicalName());

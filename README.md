@@ -14,7 +14,29 @@ It is mandatory that you added :
 
 ## Installation
 
-    cordova plugin add cordova-plugin-voxeet@0.0.2
+    cordova plugin add cordova-plugin-voxeet@0.0.6
+
+### Android
+
+The build.gradle must be edited to add :
+
+```
+android {
+    defaultConfig {
+        // Enabling multidex support.
+        multiDexEnabled true
+    }
+    dexOptions {
+        jumboMode true
+        incremental true
+        javaMaxHeapSize "4g"
+    }
+}
+```
+
+```
+compile 'com.android.support:multidex:1.0.1'
+```
 
 ## Implementation
 
