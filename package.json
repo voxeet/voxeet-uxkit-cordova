@@ -1,12 +1,13 @@
 {
   "name": "cordova-plugin-voxeet",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Cordova Voxeet Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
-    "id": "cordova-plugin-voxeet",
+    "id": "@voxeet/cordova-plugin-voxeet",
     "platforms": [
-      "android"
+      "android",
+      "ios"
     ]
   },
   "repository": {
@@ -17,8 +18,10 @@
     "url": "https://github.com/voxeet/voxeet-cordova-conferencekit/issues"
   },
   "keywords": [
+    "ecosystem:cordova",
     "cordova",
     "voxeet",
+    "cordova-ios",
     "cordova-android"
   ],
   "scripts": {
