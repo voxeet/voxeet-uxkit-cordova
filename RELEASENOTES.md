@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.5 (Tuesday 29th, 2018)
+  - update documentation
+
 ### 1.0.2 (Monday 28th, 2018)
   - documentation and npm package updated
 

@@ -55,27 +55,45 @@ class Voxeet {
     }
 
     add (/* participant */) {
-        exec(null, null, SERVICE, 'add', [null]);
+        return new Promise((resolve, reject) => {
+          exec(null, null, SERVICE, 'add', [null]);
+          resolve();
+        });
     }
 
     update (/* participant */) {
-        exec(null, null, SERVICE, 'update', [null]);
+        return new Promise((resolve, reject) => {
+          exec(null, null, SERVICE, 'update', [null]);
+          resolve();
+        });
     }
 
     remove (/* participant */) {
-        exec(null, null, SERVICE, 'remove', [null]);
+        return new Promise((resolve, reject) => {
+          exec(null, null, SERVICE, 'remove', [null]);
+          resolve();
+        });
     }
 
     appearMaximized (enabled) {
-        exec(null, null, SERVICE, 'appearMaximized', [enabled]);
+        return new Promise((resolve, reject) => {
+          exec(null, null, SERVICE, 'appearMaximized', [enabled]);
+          resolve();
+        });
     }
 
     defaultBuiltInSpeaker (enabled) {
-        exec(null, null, SERVICE, 'defaultBuiltInSpeaker', [enabled]);
+        return new Promise((resolve, reject) => {
+          exec(null, null, SERVICE, 'defaultBuiltInSpeaker', [enabled]);
+          resolve();
+        });
     }
 
     screenAutoLock (enabled) {
-        exec(null, null, SERVICE, 'screenAutoLock', [enabled]);
+        return new Promise((resolve, reject) => {
+          exec(null, null, SERVICE, 'screenAutoLock', [enabled]);
+          resolve();
+        });
     }
 
 }
