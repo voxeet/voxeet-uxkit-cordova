@@ -9,3 +9,7 @@ Thumbs.db
 *.user
 
 node_modules
+
+src/ios/Carthage/Checkouts
+*.bcsymbolmap
+*.dSYM

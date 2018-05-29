@@ -4,7 +4,7 @@ Voxeet Cordova Plugin
 
 This plugin is bridging the Voxeet's Toolkit/ConferenceKit calls. You can interacting with the plugin after the Cordova's deviceReady event.
 
-It is mandatory that you added :
+It is mandatory that you added:
   - the iOS platform `cordova platform add ios`
   - the Android platform `cordova platform add android`
 
@@ -15,13 +15,13 @@ It is mandatory that you added :
 ### iOS
 
 - after `cordova platform add ios` in the project root folder
-- follow these steps to set up the generated Xcode project https://github.com/voxeet/voxeet-ios-conferencekit#project-setup
-- set `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES` in build settings to true
+- set `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES` in Xcode build settings to true
+
+To enable push notification, follow https://github.com/voxeet/voxeet-ios-conferencekit#project-setup
 
 ### Android
 
 - after `cordova platform add android` in the project root folder
-
 - edit the `platforms/android/app/build.gradle` with:
 
 ```
