@@ -81,10 +81,26 @@
                 <param name="ios-package" value="CDVVoxeet" />
             </feature>
         </config-file>
+        
+        <config-file platform="ios" target="*-Info.plist" parent="UIBackgroundModes">
+            <array>
+                <string>audio</string>
+                <string>voip</string>
+            </array>
+        </config-file>
+        
+        <config-file platform="ios" target="*-Info.plist" parent="NSMicrophoneUsageDescription">
+            <string>Microphone permission is needed</string>
+        </config-file>
+        <config-file platform="ios" target="*-Info.plist" parent="NSCameraUsageDescription">
+            <string>Camera permission is needed</string>
+        </config-file>
+        
         <header-file src="src/ios/CDVVoxeet.h" />
         <source-file src="src/ios/CDVVoxeet.m" />
-        <framework src="src/ios/VoxeetConferenceKit.framework" custom="true" embed="true"/>
-        <framework src="src/ios/VoxeetSDK.framework" custom="true" embed="true"/>
-        <framework src="src/ios/Kingfisher.framework" custom="true" embed="true"/>
+        
+        <framework src="src/ios/Carthage/Build/iOS/VoxeetConferenceKit.framework" custom="true" embed="true"/>
+        <framework src="src/ios/Carthage/Build/iOS/VoxeetSDK.framework" custom="true" embed="true"/>
+        <framework src="src/ios/Carthage/Build/iOS/Kingfisher.framework" custom="true" embed="true"/>
     </platform>
 </plugin>
