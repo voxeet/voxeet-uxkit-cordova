@@ -309,7 +309,7 @@ public class VoxeetCordova extends CordovaPlugin {
             public void run() {
                 VoxeetSdk.getInstance()
                         .getConferenceService()
-                        .setBroadcastMessage(message)
+                        .sendBroadcastMessage(message)
                         .then(new PromiseExec<Boolean, Object>() {
                             @Override
                             public void onCall(@Nullable Boolean aBoolean, @NonNull Solver<Object> solver) {
