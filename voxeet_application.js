@@ -7,21 +7,30 @@ module.exports = function(context) {
   var fs = context.requireCordovaModule('fs'),
       path = context.requireCordovaModule('path');
 
-  var platformRoot = path.join(context.opts.projectRoot, 'platforms/android/app/src/main/');
-  var manifestFile = path.join(platformRoot, 'AndroidManifest.xml');
+  var folders = [
+    'platforms/android/app/src/main/',
+    'platforms/android/'
+  ];
 
-  if (fs.existsSync(manifestFile)) {
-    fs.readFile(manifestFile, 'utf8', function (err, data) {
-      if (err) {
-        throw new Error('Unable to find AndroidManifest.xml: ' + err);
-      }
+  folders
+  .map(folder => path.join(context.opts.projectRoot, folder))
+  .forEach(folder => {
+    var manifestFile = path.join(folder, 'AndroidManifest.xml');
 
-      if (data.indexOf(APPLICATION_CLASS) == -1) {
-        var result = data.replace(/<application/g, '<application android:name="' + APPLICATION_CLASS + '"');
-        fs.writeFile(manifestFile, result, 'utf8', function (err) {
-          if (err) throw new Error('Unable to write into AndroidManifest.xml: ' + err);
-        })
-      }
-    });
-  }
+    if (fs.existsSync(manifestFile)) {
+      console.log("Found AndroidManifest, updating...");
+      fs.readFile(manifestFile, 'utf8', function (err, data) {
+        if (err) {
+          throw new Error('Unable to find AndroidManifest.xml: ' + err);
+        }
+
+        if (data.indexOf(APPLICATION_CLASS) == -1) {
+          var result = data.replace(/<application/g, '<application android:name="' + APPLICATION_CLASS + '"');
+          fs.writeFile(manifestFile, result, 'utf8', function (err) {
+            if (err) throw new Error('Unable to write into AndroidManifest.xml: ' + err);
+          })
+        }
+      });
+    }
+  });
 };
