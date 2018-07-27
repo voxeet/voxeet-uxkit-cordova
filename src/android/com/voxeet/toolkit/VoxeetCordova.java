@@ -130,6 +130,9 @@ public class VoxeetCordova extends CordovaPlugin {
                     screenAutoLock(args.getBoolean(0));
                     callbackContext.success();
                     break;
+                case "sendBroadcastMessage":
+                    sendBroadcastMessage(args.getString(0), callbackContext);
+                    break;
                 default:
                     return false;
             }
@@ -294,6 +297,29 @@ public class VoxeetCordova extends CordovaPlugin {
                             @Override
                             public void onError(@NonNull Throwable throwable) {
                                 cb.error("Error while leaving");
+                            }
+                        });
+            }
+        });
+    }
+
+    private void sendBroadcastMessage(final String message, final CallbackContext cb) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                VoxeetSdk.getInstance()
+                        .getConferenceService()
+                        .setBroadcastMessage(message)
+                        .then(new PromiseExec<Boolean, Object>() {
+                            @Override
+                            public void onCall(@Nullable Boolean aBoolean, @NonNull Solver<Object> solver) {
+                                cb.success();
+                            }
+                        })
+                        .error(new ErrorPromise() {
+                            @Override
+                            public void onError(@NonNull Throwable throwable) {
+                                cb.error("Error while sending the message to the server");
                             }
                         });
             }

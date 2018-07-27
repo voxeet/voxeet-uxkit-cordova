@@ -10,7 +10,7 @@ It is mandatory that you added:
 
 ## Installation
 
-    cordova plugin add @voxeet/cordova-plugin-voxeet@1.0.5
+    cordova plugin add @voxeet/cordova-plugin-voxeet@1.0.6
 
 ### iOS
 
@@ -104,6 +104,19 @@ Voxeet.stopConference()
 })
 .catch(err => {
   //in case of error
+});
+```
+
+### Broadcast a message
+
+
+```
+Voxeet.sendBroadcastMessage(your_message)
+.then(() => {
+  //message sent
+})
+.catch(err => {
+  //error while sending the message
 });
 ```
 

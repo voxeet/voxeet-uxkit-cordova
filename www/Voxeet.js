@@ -96,6 +96,13 @@ class Voxeet {
         });
     }
 
+    sendBroadcastMessage (message) {
+      return new Promise((resolve, reject) => {
+        exec(null, null, SERVICE, 'sendBroadcastMessage', [message]);
+        resolve();
+      });
+    }
+
 }
 
 module.exports = new Voxeet(); // will be available through Voxeet not voxeet -> fake 'singleton'
