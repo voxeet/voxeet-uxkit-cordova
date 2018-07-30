@@ -11,5 +11,6 @@
 - (void)appearMaximized:(CDVInvokedUrlCommand*)command;
 - (void)defaultBuiltInSpeaker:(CDVInvokedUrlCommand*)command;
 - (void)screenAutoLock:(CDVInvokedUrlCommand*)command;
-    
+- (void)sendBroadcastMessage:(CDVInvokedUrlCommand*)command;
+
 @end

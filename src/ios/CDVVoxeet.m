@@ -110,5 +110,19 @@
     VoxeetConferenceKit.shared.screenAutoLock = enabled;
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
+
+- (void)sendBroadcastMessage:(CDVInvokedUrlCommand*)command {
+    NSString *message = [command.arguments objectAtIndex:0];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [VoxeetSDK.shared.conference broadcastWithMessage:message completion:^(NSError *error) {
+            if (error == nil) {
+                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+            } else {
+                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
+            }
+        }];
+    });
+}
     
 @end
