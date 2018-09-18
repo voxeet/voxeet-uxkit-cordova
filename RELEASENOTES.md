@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.8 (September 18th, 2018)
+  - fix NPE in Android preventing FCM functionnality (1.1.8.7)
+
 ### 1.0.7 (September 18th, 2018)
   - upgrade the Android SDK version to 1.1.8.6
 
