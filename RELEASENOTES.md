@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.7 (September 18th, 2018)
+  - upgrade the Android SDK version to 1.1.8.6
+
 ### 1.0.6 (July 27th, 2018)
   - add broadcast messages support for android
 

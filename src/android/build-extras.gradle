@@ -1,5 +1,5 @@
 dependencies {
-    compile ('com.voxeet.sdk:toolkit:1.0.2') {
+    compile ('com.voxeet.sdk:toolkit:1.1.8.6') {
         transitive = true
     }
 }
