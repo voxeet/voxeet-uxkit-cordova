@@ -95,7 +95,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
             mEventBus.register(this);
 
             mUsername.setText(mIncomingBundleChecker.getUserName());
-            Picasso.with(this)
+            Picasso.get()
                     .load(mIncomingBundleChecker.getAvatarUrl())
                     .into(mAvatar);
         } else {

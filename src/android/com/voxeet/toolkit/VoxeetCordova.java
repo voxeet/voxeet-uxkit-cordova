@@ -6,7 +6,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.voxeet.android.media.Media;
+import com.voxeet.android.media.audio.AudioRoute;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
 
 import org.apache.cordova.CallbackContext;
@@ -346,8 +346,8 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void defaultBuiltInSpeaker(final boolean enabled) {
-        Media.AudioRoute route = Media.AudioRoute.ROUTE_PHONE;
-        if (enabled) route = Media.AudioRoute.ROUTE_SPEAKER;
+        AudioRoute route = AudioRoute.ROUTE_PHONE;
+        if (enabled) route = AudioRoute.ROUTE_SPEAKER;
 
         VoxeetSdk.getInstance().getConferenceService()
                 .setAudioRoute(route);
