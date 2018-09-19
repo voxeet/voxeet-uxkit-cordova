@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.9 (September 19th, 2018)
+  - upgrade Android package with fewer dependencies and fix a possible multiple conference views (with black overlays)
+
 ### 1.0.8 (September 18th, 2018)
   - fix NPE in Android preventing FCM functionnality (1.1.8.7)
 
