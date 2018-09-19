@@ -19,7 +19,7 @@
     
 - (void)openSession:(CDVInvokedUrlCommand *)command {
     NSDictionary *participant = [command.arguments objectAtIndex:0];
-    VTUser *user = [[VTUser alloc] initWithId:[participant objectForKey:@"externalId"] name:[participant objectForKey:@"name"] photoURL:[participant objectForKey:@"avatarUrl"]];
+    VTUser *user = [[VTUser alloc] initWithExternalID:[participant objectForKey:@"externalId"] name:[participant objectForKey:@"name"] avatarURL:[participant objectForKey:@"avatarUrl"]];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [VoxeetConferenceKit.shared openSessionWithUser:user completion:^(NSError *error) {
@@ -34,7 +34,7 @@
     
 - (void)updateSession:(CDVInvokedUrlCommand *)command {
     NSDictionary *participant = [command.arguments objectAtIndex:0];
-    VTUser *user = [[VTUser alloc] initWithId:[participant objectForKey:@"externalId"] name:[participant objectForKey:@"name"] photoURL:[participant objectForKey:@"avatarUrl"]];
+    VTUser *user = [[VTUser alloc] initWithExternalID:[participant objectForKey:@"externalId"] name:[participant objectForKey:@"name"] avatarURL:[participant objectForKey:@"avatarUrl"]];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [VoxeetConferenceKit.shared updateSessionWithUser:user completion:^(NSError *error) {
@@ -65,7 +65,7 @@
     NSMutableArray *users = [[NSMutableArray alloc] init];
     
     for (NSDictionary *participant in participants) {
-        VTUser *user = [[VTUser alloc] initWithId:[participant objectForKey:@"externalId"] name:[participant objectForKey:@"name"] photoURL:[participant objectForKey:@"avatarUrl"]];
+        VTUser *user = [[VTUser alloc] initWithExternalID:[participant objectForKey:@"externalId"] name:[participant objectForKey:@"name"] avatarURL:[participant objectForKey:@"avatarUrl"]];
         [users addObject:user];
     }
     
@@ -101,13 +101,6 @@
     BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
     
     VoxeetConferenceKit.shared.defaultBuiltInSpeaker = enabled;
-    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
-}
-    
-- (void)screenAutoLock:(CDVInvokedUrlCommand*)command {
-    BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
-    
-    VoxeetConferenceKit.shared.screenAutoLock = enabled;
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
 
