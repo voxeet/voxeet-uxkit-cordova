@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.10 (September 20th, 2018)
+  - fix the multiple view in Android (config.xml => `<preference name="AndroidLaunchMode" value="singleInstance" />`)
+
 ### 1.0.9 (September 19th, 2018)
   - upgrade Android package with fewer dependencies and fix a possible multiple conference views (with black overlays)
 
