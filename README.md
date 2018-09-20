@@ -10,7 +10,7 @@ It is mandatory that you added:
 
 ## Installation
 
-    cordova plugin add @voxeet/cordova-plugin-voxeet@1.0.10
+    cordova plugin add @voxeet/cordova-plugin-voxeet@1.0.11
 
 ### iOS
 
@@ -40,10 +40,25 @@ android {
 
 - as well as the dependencies block, put in the top dependency position:
 ```
-compile 'com.android.support:multidex:1.0.1'
+compile 'com.android.support:multidex:1.0.3'
 ```
 
+### Notification
+
 To enable push notification, follow the steps in the app, for push notification, follow https://github.com/voxeet/android-sdk-sample
+
+You also need to make a modification in the generated MainActivity. Using Android Studio or any other IDE :
+
+right before the call to `super.onCreate(savedInstanceState);` :
+```
+getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+);
+```
+
+This call use the following import : `import android.view.WindowManager;`
 
 ## Implementation
 

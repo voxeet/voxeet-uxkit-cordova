@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.11 (September 21th, 2018)
+  - add unlock keyguard
+
 ### 1.0.10 (September 20th, 2018)
   - fix the multiple view in Android (config.xml => `<preference name="AndroidLaunchMode" value="singleInstance" />`)
 
