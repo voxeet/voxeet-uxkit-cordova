@@ -67,10 +67,17 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
                 EventBus.getDefault().register(this); //registering this activity
             }
 
-            mCordovaIncomingBundleChecker = new CordovaIncomingBundleChecker(mApplication, activity.getIntent(), null);
+            CordovaIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
+            if(null != checker && checker.isBundleValid()) {
+                checker.onAccept();
+                CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
+            }
+            //TODO next steps, fix this call here
+            /*mCordovaIncomingBundleChecker = new CordovaIncomingBundleChecker(mApplication, activity.getIntent(), null);
+
             if (mCordovaIncomingBundleChecker.isBundleValid()) {
                 mCordovaIncomingBundleChecker.onAccept();
-            }
+            }*/
         }
     }
 

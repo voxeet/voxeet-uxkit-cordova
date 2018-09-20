@@ -38,6 +38,7 @@ import voxeet.com.sdk.events.success.DeclineConferenceResultEvent;
 public class CordovaIncomingCallActivity extends AppCompatActivity implements CordovaIncomingBundleChecker.IExtraBundleFillerListener {
 
     private final static String TAG = AbstractIncomingCallActivity.class.getSimpleName();
+    public static CordovaIncomingBundleChecker CORDOVA_ROOT_BUNDLE = null;
 
     protected TextView mUsername;
     protected TextView mStateTextView;
@@ -167,6 +168,8 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
 
     protected void onAccept() {
         if (mIncomingBundleChecker.isBundleValid()) {
+            CORDOVA_ROOT_BUNDLE = mIncomingBundleChecker;
+
             Intent intent = mIncomingBundleChecker.createActivityAccepted(this);
             //start the accepted call activity
             startActivity(intent);
