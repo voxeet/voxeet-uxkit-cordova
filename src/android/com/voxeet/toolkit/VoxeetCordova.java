@@ -28,6 +28,7 @@ import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
 import sdk.voxeet.com.toolkit.main.VoxeetToolkit;
 import sdk.voxeet.com.toolkit.views.uitookit.sdk.overlays.OverlayState;
+import voxeet.com.sdk.core.FirebaseController;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.core.preferences.VoxeetPreferences;
 import voxeet.com.sdk.events.success.ConferenceRefreshedEvent;
@@ -156,6 +157,11 @@ public class VoxeetCordova extends CordovaPlugin {
                             consumerKey, consumerSecret, null);
                     VoxeetSdk.getInstance().getConferenceService().setTimeOut(30 * 1000); //30s
                 }
+
+                //also enable the push token upload and log
+                FirebaseController.getInstance()
+                        .log(true)
+                        .enable(true);
 
                 VoxeetToolkit.initialize(application, EventBus.getDefault());
 
