@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.12 (September 28th, 2018)
+  - fix missing call to the FCM Controller to enable push/log
+
 ### 1.0.11 (September 21th, 2018)
   - add unlock keyguard
 
