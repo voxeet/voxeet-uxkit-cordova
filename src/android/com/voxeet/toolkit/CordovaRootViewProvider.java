@@ -68,9 +68,11 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
             }
 
             CordovaIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
-            if(null != checker && checker.isBundleValid()) {
-                checker.onAccept();
-                CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
+            if (null != checker && checker.isBundleValid()) {
+                if (VoxeetSdk.getInstance().isSocketOpen()) {
+                    checker.onAccept();
+                    CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
+                }
             }
             //TODO next steps, fix this call here
             /*mCordovaIncomingBundleChecker = new CordovaIncomingBundleChecker(mApplication, activity.getIntent(), null);

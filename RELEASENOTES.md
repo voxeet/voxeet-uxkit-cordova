@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.13 (October 1th, 2018)
+  - add methods and logic to automatically manage the anti native workflow
+
 ### 1.0.12 (September 28th, 2018)
   - fix missing call to the FCM Controller to enable push/log
 
