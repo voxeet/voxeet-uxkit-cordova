@@ -43,6 +43,14 @@ class Voxeet {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'closeSession', []));
     }
 
+    isUserLoggedIn() {
+        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'isUserLoggedIn', []));
+    }
+
+    checkForAwaitingConference() {
+        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []));
+    }
+
     startConference (conferenceId, participants) {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
