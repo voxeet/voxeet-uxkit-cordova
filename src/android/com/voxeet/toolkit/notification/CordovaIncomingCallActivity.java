@@ -90,10 +90,12 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     protected void onResume() {
         super.onResume();
 
-        mEventBus = VoxeetSdk.getInstance().getEventBus();
 
-        if (mIncomingBundleChecker.isBundleValid() && mEventBus != null) {
-            mEventBus.register(this);
+        if (mIncomingBundleChecker.isBundleValid()) {
+            if(null != VoxeetSdk.getInstance()) {
+                mEventBus = VoxeetSdk.getInstance().getEventBus();
+                if(null != mEventBus) mEventBus.register(this);
+            }
 
             mUsername.setText(mIncomingBundleChecker.getUserName());
             Picasso.get()
