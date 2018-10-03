@@ -1,6 +1,9 @@
 # Release Notes
 
-### 1.0.13 (October 1th, 2018)
+### 1.0.14 (October 3rd, 2018)
+  - add notification channel management into SDK
+
+### 1.0.13 (October 1st, 2018)
   - add methods and logic to automatically manage the anti native workflow
 
 ### 1.0.12 (September 28th, 2018)
