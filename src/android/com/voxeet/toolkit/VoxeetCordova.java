@@ -172,7 +172,8 @@ public class VoxeetCordova extends CordovaPlugin {
                 //also enable the push token upload and log
                 FirebaseController.getInstance()
                         .log(true)
-                        .enable(true);
+                        .enable(true)
+                        .createNotificationChannel(application);
 
                 //reset the incoming call activity, in case the SDK was no initialized, it would have
                 //erased this method call
