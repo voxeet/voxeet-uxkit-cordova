@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.15 (October 3rd, 2018)
+  - add auto close incoming close incoming call (default 40s)
+
 ### 1.0.14 (October 3rd, 2018)
   - add notification channel management into SDK
 

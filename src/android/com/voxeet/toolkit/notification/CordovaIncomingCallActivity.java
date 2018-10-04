@@ -1,10 +1,15 @@
 package com.voxeet.toolkit.notification;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -13,7 +18,6 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.voxeet.toolkit.R;
 
-import org.apache.cordova.CordovaActivity;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -22,8 +26,6 @@ import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
 import sdk.voxeet.com.toolkit.activities.notification.AbstractIncomingCallActivity;
-import sdk.voxeet.com.toolkit.activities.notification.IncomingBundleChecker;
-import sdk.voxeet.com.toolkit.activities.workflow.VoxeetAppCompatActivity;
 import sdk.voxeet.com.toolkit.views.android.RoundedImageView;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.events.success.ConferenceDestroyedPushEvent;
@@ -38,6 +40,8 @@ import voxeet.com.sdk.events.success.DeclineConferenceResultEvent;
 public class CordovaIncomingCallActivity extends AppCompatActivity implements CordovaIncomingBundleChecker.IExtraBundleFillerListener {
 
     private final static String TAG = AbstractIncomingCallActivity.class.getSimpleName();
+    private static final String DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY = "voxeet_incoming_call_duration";
+    private static final int DEFAULT_VOXEET_INCOMING_CALL_DURATION_VALUE = 40 * 1000;
     public static CordovaIncomingBundleChecker CORDOVA_ROOT_BUNDLE = null;
 
     protected TextView mUsername;
@@ -48,6 +52,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     protected EventBus mEventBus;
 
     private CordovaIncomingBundleChecker mIncomingBundleChecker;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +89,20 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
                 onAccept();
             }
         });
+
+        mHandler = new Handler();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (null != mHandler)
+                        finish();
+                } catch (Exception e) {
+
+                }
+            }
+        }, readMetadataInt(this, DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY,
+                DEFAULT_VOXEET_INCOMING_CALL_DURATION_VALUE));
     }
 
     @Override
@@ -92,9 +111,9 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
 
 
         if (mIncomingBundleChecker.isBundleValid()) {
-            if(null != VoxeetSdk.getInstance()) {
+            if (null != VoxeetSdk.getInstance()) {
                 mEventBus = VoxeetSdk.getInstance().getEventBus();
-                if(null != mEventBus) mEventBus.register(this);
+                if (null != mEventBus) mEventBus.register(this);
             }
 
             mUsername.setText(mIncomingBundleChecker.getUserName());
@@ -151,7 +170,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     }
 
     protected void onDecline() {
-        if (getConferenceId() != null) {
+        if (getConferenceId() != null && null != VoxeetSdk.getInstance()) {
             VoxeetSdk.getInstance().getConferenceService().decline(getConferenceId())
                     .then(new PromiseExec<DeclineConferenceResultEvent, Object>() {
                         @Override
@@ -162,9 +181,11 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
                     .error(new ErrorPromise() {
                         @Override
                         public void onError(Throwable error) {
-
+                            finish();
                         }
                     });
+        } else {
+            finish();
         }
     }
 
@@ -210,5 +231,31 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+
+    //TODO refactor with SDK
+    private static int readMetadataInt(@NonNull Context context, @NonNull String key, int argb) {
+        try {
+            String metaData = readMetadata(context, key, null);
+            if (!TextUtils.isEmpty(metaData)) return Integer.parseInt(metaData);
+        } catch (Exception e) {
+
+        }
+        return argb;
+    }
+
+    //TODO refactor with SDK
+    private static String readMetadata(@NonNull Context context, @NonNull String key, @NonNull String def) {
+        ApplicationInfo appInfo = null;
+        try {
+            appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(),
+                    PackageManager.GET_META_DATA);
+            Bundle bundle = appInfo.metaData;
+            String value = bundle.getString(key);
+            if (!TextUtils.isEmpty(value)) return value;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return def;
     }
 }
