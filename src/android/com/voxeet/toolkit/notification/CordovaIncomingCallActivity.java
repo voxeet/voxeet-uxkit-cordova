@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.voxeet.toolkit.R;
+import com.voxeet.toolkit.activities.notification.DefaultIncomingCallActivity;
+import com.voxeet.toolkit.views.internal.rounded.RoundedImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,8 +27,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
-import sdk.voxeet.com.toolkit.activities.notification.AbstractIncomingCallActivity;
-import sdk.voxeet.com.toolkit.views.android.RoundedImageView;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.events.success.ConferenceDestroyedPushEvent;
 import voxeet.com.sdk.events.success.ConferenceEndedEvent;
@@ -39,7 +39,7 @@ import voxeet.com.sdk.events.success.DeclineConferenceResultEvent;
 
 public class CordovaIncomingCallActivity extends AppCompatActivity implements CordovaIncomingBundleChecker.IExtraBundleFillerListener {
 
-    private final static String TAG = AbstractIncomingCallActivity.class.getSimpleName();
+    private final static String TAG = CordovaIncomingCallActivity.class.getSimpleName();
     private static final String DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY = "voxeet_incoming_call_duration";
     private static final int DEFAULT_VOXEET_INCOMING_CALL_DURATION_VALUE = 40 * 1000;
     public static CordovaIncomingBundleChecker CORDOVA_ROOT_BUNDLE = null;

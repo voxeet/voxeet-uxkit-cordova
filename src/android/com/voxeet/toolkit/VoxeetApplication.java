@@ -3,12 +3,12 @@ package com.voxeet.toolkit;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
+import com.voxeet.toolkit.controllers.VoxeetToolkit;
+import com.voxeet.toolkit.implementation.overlays.OverlayState;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
-import sdk.voxeet.com.toolkit.main.VoxeetToolkit;
-import sdk.voxeet.com.toolkit.views.uitookit.sdk.overlays.OverlayState;
 import voxeet.com.sdk.core.preferences.VoxeetPreferences;
 
 /**

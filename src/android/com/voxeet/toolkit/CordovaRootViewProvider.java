@@ -5,15 +5,15 @@ import android.app.Application;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
+import com.voxeet.toolkit.providers.rootview.DefaultRootViewProvider;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import sdk.voxeet.com.toolkit.main.VoxeetToolkit;
-import sdk.voxeet.com.toolkit.providers.rootview.DefaultRootViewProvider;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.events.error.ConferenceJoinedError;
 import voxeet.com.sdk.events.success.ConferenceDestroyedPushEvent;
