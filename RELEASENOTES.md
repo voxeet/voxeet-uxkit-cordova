@@ -1,5 +1,12 @@
 # Release Notes
 
+### 1.0.17 (October 23th, 2018)
+  - add ring sound in incoming call activity (Android)
+
+### 1.0.16 (October 23th, 2018)
+  - use upgraded SDK (Android)
+  - better look and feel for Android, now same look&feel accross OS (Android)
+
 ### 1.0.15 (October 3rd, 2018)
   - add auto close incoming close incoming call (default 40s)
 

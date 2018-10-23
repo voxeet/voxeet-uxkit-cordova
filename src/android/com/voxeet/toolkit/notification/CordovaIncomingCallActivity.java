@@ -32,6 +32,7 @@ import voxeet.com.sdk.events.success.ConferenceDestroyedPushEvent;
 import voxeet.com.sdk.events.success.ConferenceEndedEvent;
 import voxeet.com.sdk.events.success.ConferencePreJoinedEvent;
 import voxeet.com.sdk.events.success.DeclineConferenceResultEvent;
+import voxeet.com.sdk.utils.AudioType;
 
 /**
  * Created by kevinleperf on 25/05/2018.
@@ -109,6 +110,11 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     protected void onResume() {
         super.onResume();
 
+        VoxeetSdk.getInstance().getAudioService()
+                .setInVoiceCallSoundType();
+
+        VoxeetSdk.getInstance().getAudioService()
+                .playSoundType(AudioType.RING);
 
         if (mIncomingBundleChecker.isBundleValid()) {
             if (null != VoxeetSdk.getInstance()) {
@@ -128,6 +134,13 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
 
     @Override
     protected void onPause() {
+
+        VoxeetSdk.getInstance().getAudioService()
+                .resetDefaultSoundType();
+
+        VoxeetSdk.getInstance().getAudioService()
+                .stopSoundType(AudioType.RING);
+
         if (mEventBus != null) {
             mEventBus.unregister(this);
         }
