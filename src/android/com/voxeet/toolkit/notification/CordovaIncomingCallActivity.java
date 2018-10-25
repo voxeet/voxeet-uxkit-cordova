@@ -110,11 +110,13 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     protected void onResume() {
         super.onResume();
 
-        VoxeetSdk.getInstance().getAudioService()
-                .setInVoiceCallSoundType();
+        if (null != VoxeetSdk.getInstance()) {
+          VoxeetSdk.getInstance().getAudioService()
+                  .setInVoiceCallSoundType();
 
-        VoxeetSdk.getInstance().getAudioService()
-                .playSoundType(AudioType.RING);
+          VoxeetSdk.getInstance().getAudioService()
+                  .playSoundType(AudioType.RING);
+        }
 
         if (mIncomingBundleChecker.isBundleValid()) {
             if (null != VoxeetSdk.getInstance()) {
@@ -135,11 +137,13 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     @Override
     protected void onPause() {
 
-        VoxeetSdk.getInstance().getAudioService()
-                .resetDefaultSoundType();
+        if (null != VoxeetSdk.getInstance()) {
+          VoxeetSdk.getInstance().getAudioService()
+                  .resetDefaultSoundType();
 
-        VoxeetSdk.getInstance().getAudioService()
-                .stopSoundType(AudioType.RING);
+          VoxeetSdk.getInstance().getAudioService()
+                  .stopSoundType(AudioType.RING);
+        }
 
         if (mEventBus != null) {
             mEventBus.unregister(this);

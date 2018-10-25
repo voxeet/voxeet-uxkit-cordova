@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.19 (October 25th, 2018)
+  - upgrade media to match the VU Meter
+
 ### 1.0.18 (October 25th, 2018)
   - fix crash on sound type
 
