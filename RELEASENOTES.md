@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.18 (October 25th, 2018)
+  - fix crash on sound type
+
 ### 1.0.17 (October 23th, 2018)
   - add ring sound in incoming call activity (Android)
 
