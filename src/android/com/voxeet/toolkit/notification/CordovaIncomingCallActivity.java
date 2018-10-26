@@ -27,11 +27,14 @@ import org.greenrobot.eventbus.ThreadMode;
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
+import voxeet.com.sdk.audio.SoundManager;
 import voxeet.com.sdk.core.VoxeetSdk;
+import voxeet.com.sdk.core.services.AudioService;
 import voxeet.com.sdk.events.success.ConferenceDestroyedPushEvent;
 import voxeet.com.sdk.events.success.ConferenceEndedEvent;
 import voxeet.com.sdk.events.success.ConferencePreJoinedEvent;
 import voxeet.com.sdk.events.success.DeclineConferenceResultEvent;
+import voxeet.com.sdk.utils.AndroidManifest;
 import voxeet.com.sdk.utils.AudioType;
 
 /**
@@ -54,10 +57,15 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
 
     private CordovaIncomingBundleChecker mIncomingBundleChecker;
     private Handler mHandler;
+    private boolean isResumed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isResumed = false;
+
+        //we preInit the AudioService,
+        AudioService.preInitSounds(getApplicationContext());
 
         mIncomingBundleChecker = new CordovaIncomingBundleChecker(this, getIntent(), this);
 
@@ -102,20 +110,18 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
 
                 }
             }
-        }, readMetadataInt(this, DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY,
+        }, AndroidManifest.readMetadataInt(this, DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY,
                 DEFAULT_VOXEET_INCOMING_CALL_DURATION_VALUE));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        isResumed = true;
 
-        if (null != VoxeetSdk.getInstance()) {
-          VoxeetSdk.getInstance().getAudioService()
-                  .setInVoiceCallSoundType();
-
-          VoxeetSdk.getInstance().getAudioService()
-                  .playSoundType(AudioType.RING);
+        SoundManager soundManager = AudioService.getSoundManager();
+        if (null != soundManager) {
+            soundManager.setInVoiceCallSoundType().playSoundType(AudioType.RING);
         }
 
         if (mIncomingBundleChecker.isBundleValid()) {
@@ -136,14 +142,13 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
 
     @Override
     protected void onPause() {
+        isResumed = false;
 
-        if (null != VoxeetSdk.getInstance()) {
-          VoxeetSdk.getInstance().getAudioService()
-                  .resetDefaultSoundType();
-
-          VoxeetSdk.getInstance().getAudioService()
-                  .stopSoundType(AudioType.RING);
+        SoundManager soundManager = AudioService.getSoundManager();
+        if (null != soundManager) {
+            soundManager.resetDefaultSoundType().stopSoundType(AudioType.RING);
         }
+
 
         if (mEventBus != null) {
             mEventBus.unregister(this);
@@ -248,31 +253,5 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
-    }
-
-    //TODO refactor with SDK
-    private static int readMetadataInt(@NonNull Context context, @NonNull String key, int argb) {
-        try {
-            String metaData = readMetadata(context, key, null);
-            if (!TextUtils.isEmpty(metaData)) return Integer.parseInt(metaData);
-        } catch (Exception e) {
-
-        }
-        return argb;
-    }
-
-    //TODO refactor with SDK
-    private static String readMetadata(@NonNull Context context, @NonNull String key, @NonNull String def) {
-        ApplicationInfo appInfo = null;
-        try {
-            appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(),
-                    PackageManager.GET_META_DATA);
-            Bundle bundle = appInfo.metaData;
-            String value = bundle.getString(key);
-            if (!TextUtils.isEmpty(value)) return value;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return def;
     }
 }

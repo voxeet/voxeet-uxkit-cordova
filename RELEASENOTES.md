@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.20 (October 27th, 2018)
+  - upgrade the Android SDK (better connectivity support, better ui/ux)
+
 ### 1.0.19 (October 25th, 2018)
   - upgrade media to match the VU Meter
 

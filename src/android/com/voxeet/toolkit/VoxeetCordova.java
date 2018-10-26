@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.voxeet.android.media.audio.AudioRoute;
+import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.implementation.overlays.OverlayState;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
@@ -29,7 +30,6 @@ import eu.codlab.simplepromise.Promise;
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
-import sdk.voxeet.com.toolkit.main.VoxeetToolkit;
 import voxeet.com.sdk.core.FirebaseController;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.core.preferences.VoxeetPreferences;
@@ -408,8 +408,7 @@ public class VoxeetCordova extends CordovaPlugin {
         AudioRoute route = AudioRoute.ROUTE_PHONE;
         if (enabled) route = AudioRoute.ROUTE_SPEAKER;
 
-        VoxeetSdk.getInstance().getConferenceService()
-                .setAudioRoute(route);
+        VoxeetSdk.getInstance().getAudioService().setAudioRoute(route);
     }
 
     private void screenAutoLock(Boolean enabled) {

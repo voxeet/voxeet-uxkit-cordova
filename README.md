@@ -10,7 +10,7 @@ It is mandatory that you added:
 
 ## Installation
 
-    cordova plugin add @voxeet/cordova-plugin-voxeet@1.0.19
+    cordova plugin add @voxeet/cordova-plugin-voxeet@1.0.20
 
 ### iOS
 

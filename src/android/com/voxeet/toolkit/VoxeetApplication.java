@@ -33,6 +33,7 @@ public class VoxeetApplication extends MultiDexApplication {
         //force a default voxeet preferences manager
         //in sdk mode, no issues
         VoxeetPreferences.init(this);
+        //deprecated but we can only use it using the cordova plugin - for now
         VoxeetPreferences.setDefaultActivity(CordovaIncomingCallActivity.class.getCanonicalName());
 
         //change the overlay used by default
