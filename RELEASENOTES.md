@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.21 (November 5th, 2018)
+  - add new methods (create, join, invite, leave, defaultVideo)
+
 ### 1.0.20 (October 27th, 2018)
   - upgrade the Android SDK (better connectivity support, better ui/ux)
 

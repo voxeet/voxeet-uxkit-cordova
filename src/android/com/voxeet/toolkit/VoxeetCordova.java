@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import eu.codlab.simplepromise.Promise;
@@ -37,6 +38,9 @@ import voxeet.com.sdk.events.success.ConferenceRefreshedEvent;
 import voxeet.com.sdk.events.success.SocketConnectEvent;
 import voxeet.com.sdk.events.success.SocketStateChangeEvent;
 import voxeet.com.sdk.json.UserInfo;
+import voxeet.com.sdk.json.internal.MetadataHolder;
+import voxeet.com.sdk.json.internal.ParamsHolder;
+import voxeet.com.sdk.models.ConferenceResponse;
 
 /**
  * Voxeet implementation for Cordova
@@ -50,6 +54,7 @@ public class VoxeetCordova extends CordovaPlugin {
     private final Handler mHandler;
     private UserInfo _current_user;
     private CallbackContext _log_in_callback;
+    private boolean startVideoOnJoin = false;
 
     public VoxeetCordova() {
         super();
@@ -78,6 +83,7 @@ public class VoxeetCordova extends CordovaPlugin {
                             args.getString(1));
                     callbackContext.success();
                     break;
+                case "connect":
                 case "openSession":
                     JSONObject userInfo = null;
                     if (!args.isNull(0)) userInfo = args.getJSONObject(0);
@@ -91,6 +97,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
                     openSession(user, callbackContext);
                     break;
+                case "disconnect":
                 case "closeSession":
                     closeSession(callbackContext);
                     break;
@@ -100,6 +107,75 @@ public class VoxeetCordova extends CordovaPlugin {
                 case "checkForAwaitingConference":
                     checkForAwaitingConference(callbackContext);
                     break;
+                case "create":
+                    try {
+                        JSONObject parameters = args.getJSONObject(0);
+
+
+                        String confAlias = parameters.getString("conferenceAlias");
+                        JSONObject object = null;
+                        if (!parameters.isNull("metadata")) {
+                            object = parameters.getJSONObject("metadata");
+                        }
+
+                        MetadataHolder holder = new MetadataHolder();
+                        if (null != object) {
+                            Iterator<String> keys = object.keys();
+                            while (keys.hasNext()) {
+                                String key = keys.next();
+                                holder.putValue(key, object.get(key));
+                            }
+                        }
+
+                        ParamsHolder pholder = new ParamsHolder();
+                        if (null != object) {
+                            Iterator<String> keys = object.keys();
+                            while (keys.hasNext()) {
+                                String key = keys.next();
+                                pholder.putValue(key, object.get(key));
+                            }
+                        }
+
+                        create(confAlias, holder, pholder, callbackContext);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        callbackContext.error(e.getMessage());
+                    }
+                    break;
+                case "join":
+                    try {
+                        String confId = args.getString(0);
+                        join(confId, callbackContext);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        callbackContext.error(e.getMessage());
+                    }
+                    break;
+                case "invite":
+                    try {
+                        JSONArray array = null;
+                        if (!args.isNull(0)) array = args.getJSONArray(0);
+
+                        List<UserInfo> participants = new ArrayList<>();
+                        if (null != array) {
+                            JSONObject object;
+                            int index = 0;
+                            while (index < array.length()) {
+                                object = array.getJSONObject(index);
+
+                                participants.add(new UserInfo(object.getString("name"),
+                                        object.getString("externalId"),
+                                        object.getString("avatarUrl")));
+
+                                index++;
+                            }
+                        }
+
+                        invite(participants, callbackContext);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        callbackContext.error(e.getMessage());
+                    }
                 case "startConference":
                     try {
                         String confId = args.getString(0);
@@ -127,14 +203,21 @@ public class VoxeetCordova extends CordovaPlugin {
                         callbackContext.error(e.getMessage());
                     }
                     break;
+                case "leave":
                 case "stopConference":
                     stopConference(callbackContext);
                     break;
+                //create -> objet key -> value (value->key->value)
+                //join
+                //leave
                 case "appearMaximized":
                     appearMaximized(args.getBoolean(0));
                     callbackContext.success();
                     break;
-                case "defaultBuildInSpeaker":
+                case "defaultVideo":
+                    defaultVideo(args.getBoolean(0));
+                    callbackContext.success();
+                case "defaultBuiltInSpeaker":
                     defaultBuiltInSpeaker(args.getBoolean(0));
                     callbackContext.success();
                     break;
@@ -152,6 +235,10 @@ public class VoxeetCordova extends CordovaPlugin {
             return true; //default return false - so true is ok
         }
         return false;
+    }
+
+    private void defaultVideo(boolean startVideo) {
+        startVideoOnJoin = startVideo;
     }
 
 
@@ -301,7 +388,7 @@ public class VoxeetCordova extends CordovaPlugin {
         });
     }
 
-    private void startConference(final String conferenceId,
+    private void startConference(final String conferenceAlias,
                                  final List<UserInfo> participants,
                                  final CallbackContext cb) {
 
@@ -310,7 +397,7 @@ public class VoxeetCordova extends CordovaPlugin {
             public void run() {
                 VoxeetToolkit.getInstance()
                         .getConferenceToolkit()
-                        .join(conferenceId)
+                        .join(conferenceAlias)
                         .then(new PromiseExec<Boolean, List<ConferenceRefreshedEvent>>() {
                             @Override
                             public void onCall(@Nullable Boolean aBoolean, @NonNull final Solver<List<ConferenceRefreshedEvent>> solver) {
@@ -320,6 +407,10 @@ public class VoxeetCordova extends CordovaPlugin {
                                             .invite(participants));
                                 } else {
                                     solver.resolve(new ArrayList<ConferenceRefreshedEvent>());
+
+                                    if (startVideoOnJoin) {
+                                        startVideo(null);
+                                    }
                                 }
                             }
                         })
@@ -332,11 +423,90 @@ public class VoxeetCordova extends CordovaPlugin {
                         .error(new ErrorPromise() {
                             @Override
                             public void onError(@NonNull Throwable throwable) {
-                                cb.error("Error whilte initializing the conference");
+                                cb.error("Error while initializing the conference");
                             }
                         });
             }
         });
+    }
+
+    private void invite(final List<UserInfo> participants,
+                        final CallbackContext cb) {
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                VoxeetToolkit.getInstance()
+                        .getConferenceToolkit()
+                        .invite(participants)
+                        .then(new PromiseExec<List<ConferenceRefreshedEvent>, Object>() {
+                            @Override
+                            public void onCall(@Nullable List<ConferenceRefreshedEvent> conferenceRefreshedEvents, @NonNull Solver<Object> solver) {
+                                cb.success();
+                            }
+                        })
+                        .error(new ErrorPromise() {
+                            @Override
+                            public void onError(@NonNull Throwable throwable) {
+                                cb.error("Error while initializing the conference");
+                            }
+                        });
+            }
+        });
+    }
+
+    private void create(String conferenceAlias,
+                        MetadataHolder holder,
+                        ParamsHolder pholder, final CallbackContext cb) {
+        VoxeetSdk.getInstance().getConferenceService().create(conferenceAlias, holder, pholder)
+                .then(new PromiseExec<ConferenceResponse, Object>() {
+                    @Override
+                    public void onCall(@Nullable ConferenceResponse result, @NonNull Solver<Object> solver) {
+                        cb.success();
+                    }
+                })
+                .error(new ErrorPromise() {
+                    @Override
+                    public void onError(@NonNull Throwable error) {
+                        cb.error("Error while creating the conference " + conferenceAlias);
+                    }
+                });
+    }
+
+    private void join(String conferenceId, final CallbackContext cb) {
+        VoxeetSdk.getInstance().getConferenceService().join(conferenceId)
+                .then(new PromiseExec<Boolean, Object>() {
+                    @Override
+                    public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                        cb.success();
+                    }
+                })
+                .error(new ErrorPromise() {
+                    @Override
+                    public void onError(@NonNull Throwable error) {
+                        cb.error("Error while joining the conference " + conferenceId);
+                    }
+                });
+    }
+
+    private void startVideo(final CallbackContext cb) {
+        VoxeetSdk.getInstance().getConferenceService().startVideo()
+                .then(new PromiseExec<Boolean, Object>() {
+                    @Override
+                    public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                        if (null != cb) {
+                            cb.success();
+                        }
+                    }
+                })
+                .error(new ErrorPromise() {
+                    @Override
+                    public void onError(@NonNull Throwable error) {
+                        if (null != cb) {
+                            cb.error("Error while starting video");
+                        }
+                    }
+                });
     }
 
     private void stopConference(final CallbackContext cb) {
