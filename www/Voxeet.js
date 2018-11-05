@@ -51,6 +51,31 @@ class Voxeet {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []));
     }
 
+    create(parameters) {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'create', [parameters]);
+        });
+    }
+
+    join(conferenceId) {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'join', [conferenceId]);
+        });
+    }
+
+    leave() {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'leave', [conferenceId]);
+        });
+    }
+
+    invite(participants) {
+        const array = participants ? participants.map(e => e.json()) : null;
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'invite', [array]);
+        });
+    }
+
     startConference (conferenceId, participants) {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
@@ -60,27 +85,6 @@ class Voxeet {
 
     stopConference () {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'stopConference', []));
-    }
-
-    add (/* participant */) {
-        return new Promise((resolve, reject) => {
-          exec(null, null, SERVICE, 'add', [null]);
-          resolve();
-        });
-    }
-
-    update (/* participant */) {
-        return new Promise((resolve, reject) => {
-          exec(null, null, SERVICE, 'update', [null]);
-          resolve();
-        });
-    }
-
-    remove (/* participant */) {
-        return new Promise((resolve, reject) => {
-          exec(null, null, SERVICE, 'remove', [null]);
-          resolve();
-        });
     }
 
     appearMaximized (enabled) {
@@ -93,6 +97,13 @@ class Voxeet {
     defaultBuiltInSpeaker (enabled) {
         return new Promise((resolve, reject) => {
           exec(null, null, SERVICE, 'defaultBuiltInSpeaker', [enabled]);
+          resolve();
+        });
+    }
+
+    defaultVideo (enabled) {
+        return new Promise((resolve, reject) => {
+          exec(null, null, SERVICE, 'defaultVideo', [enabled]);
           resolve();
         });
     }
