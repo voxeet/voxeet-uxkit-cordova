@@ -496,6 +496,7 @@ public class VoxeetCordova extends CordovaPlugin {
                         try {
                             object.put("conferenceId", result.getConfId());
                             object.put("conferenceAlias", result.getConfAlias());
+                            object.put("isNew", result.isNew());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
