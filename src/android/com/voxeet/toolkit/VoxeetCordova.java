@@ -1,5 +1,6 @@
 package com.voxeet.toolkit;
 
+import android.Manifest;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,6 +16,7 @@ import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PermissionHelper;
 import org.apache.cordova.PluginResult;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,6 +36,7 @@ import eu.codlab.simplepromise.solve.Solver;
 import voxeet.com.sdk.core.FirebaseController;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.core.preferences.VoxeetPreferences;
+import voxeet.com.sdk.events.error.PermissionRefusedEvent;
 import voxeet.com.sdk.events.success.ConferenceRefreshedEvent;
 import voxeet.com.sdk.events.success.SocketConnectEvent;
 import voxeet.com.sdk.events.success.SocketStateChangeEvent;
@@ -71,6 +74,33 @@ public class VoxeetCordova extends CordovaPlugin {
     @Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
+    }
+
+    @Override
+    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
+        super.onRequestPermissionResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case PermissionRefusedEvent.RESULT_CAMERA: {
+                if (null != VoxeetSdk.getInstance() && VoxeetSdk.getInstance().getConferenceService().isLive()) {
+                    VoxeetSdk.getInstance().getConferenceService().startVideo()
+                            .then(new PromiseExec<Boolean, Object>() {
+                                @Override
+                                public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+
+                                }
+                            })
+                            .error(new ErrorPromise() {
+                                @Override
+                                public void onError(@NonNull Throwable error) {
+                                    error.printStackTrace();
+                                }
+                            });
+                }
+                return;
+            }
+            default:
+        }
     }
 
     @Override
@@ -407,10 +437,9 @@ public class VoxeetCordova extends CordovaPlugin {
                                             .invite(participants));
                                 } else {
                                     solver.resolve(new ArrayList<ConferenceRefreshedEvent>());
-
-                                    if (startVideoOnJoin) {
-                                        startVideo(null);
-                                    }
+                                }
+                                if (startVideoOnJoin) {
+                                    startVideo(null);
                                 }
                             }
                         })
@@ -462,7 +491,15 @@ public class VoxeetCordova extends CordovaPlugin {
                 .then(new PromiseExec<ConferenceResponse, Object>() {
                     @Override
                     public void onCall(@Nullable ConferenceResponse result, @NonNull Solver<Object> solver) {
-                        cb.success();
+                        //TODO add isNew
+                        JSONObject object = new JSONObject();
+                        try {
+                            object.put("conferenceId", result.getConfId());
+                            object.put("conferenceAlias", result.getConfAlias());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        cb.success(object);
                     }
                 })
                 .error(new ErrorPromise() {
@@ -494,9 +531,7 @@ public class VoxeetCordova extends CordovaPlugin {
                 .then(new PromiseExec<Boolean, Object>() {
                     @Override
                     public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
-                        if (null != cb) {
-                            cb.success();
-                        }
+                        if (null != cb) cb.success();
                     }
                 })
                 .error(new ErrorPromise() {
@@ -608,6 +643,25 @@ public class VoxeetCordova extends CordovaPlugin {
 
                     cancelIncomingConference();
                 }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(PermissionRefusedEvent event) {
+        if (null != event.getPermission()) {
+            switch (event.getPermission()) {
+                case CAMERA:
+                    //Validate.requestMandatoryPermissions(VoxeetToolkit.getInstance().getCurrentActivity(),
+                    //        new String[]{Manifest.permission.CAMERA},
+                    //        PermissionRefusedEvent.RESULT_CAMERA);
+
+                    PermissionHelper.requestPermissions(
+                            this,
+                            PermissionRefusedEvent.RESULT_CAMERA,
+                            new String[]{Manifest.permission.CAMERA}
+                    );
+                    break;
+            }
         }
     }
 
