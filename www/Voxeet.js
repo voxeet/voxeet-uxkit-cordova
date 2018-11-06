@@ -1,3 +1,4 @@
+cordova.define("cordova-plugin-voxeet.Voxeet", function(require, exports, module) {
 /*
  *
  * Voxeet ConferenceKit Cordova
@@ -27,28 +28,22 @@ const SERVICE = 'Voxeet';
 
 class Voxeet {
 
-    initialize (consumerKey, consumerSecret) {
+    initialize(consumerKey, consumerSecret) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'initialize', [consumerKey, consumerSecret]);
         });
     }
 
-    openSession (userInfo) {
+    connect(userInfo) {
         return new Promise((resolve, reject) => {
-            exec(resolve, reject, SERVICE, 'openSession', [userInfo.json()]);
+            exec(resolve, reject, SERVICE, 'connect', [userInfo.json()]);
         });
     }
 
-    closeSession () {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'closeSession', []));
-    }
-
-    isUserLoggedIn() {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'isUserLoggedIn', []));
-    }
-
-    checkForAwaitingConference() {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []));
+    disconnect() {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'disconnect', []);
+        });
     }
 
     create(parameters) {
@@ -69,59 +64,86 @@ class Voxeet {
         });
     }
 
-    invite(participants) {
+    invite(conferenceId, participants) {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
-            exec(resolve, reject, SERVICE, 'invite', [array]);
+            exec(resolve, reject, SERVICE, 'invite', [conferenceId, array]);
         });
     }
 
-    startConference (conferenceId, participants) {
+    sendBroadcastMessage(message) {
+        return new Promise((resolve, reject) => {
+            exec(null, null, SERVICE, 'sendBroadcastMessage', [message]);
+            resolve();
+        });
+    }
+
+    appearMaximized(enabled) {
+        return new Promise((resolve, reject) => {
+            exec(null, null, SERVICE, 'appearMaximized', [enabled]);
+            resolve();
+        });
+    }
+
+    defaultBuiltInSpeaker(enabled) {
+        return new Promise((resolve, reject) => {
+            exec(null, null, SERVICE, 'defaultBuiltInSpeaker', [enabled]);
+            resolve();
+        });
+    }
+
+    defaultVideo(enabled) {
+        return new Promise((resolve, reject) => {
+            exec(null, null, SERVICE, 'defaultVideo', [enabled]);
+            resolve();
+        });
+    }
+
+    /*
+     *  Android methods
+     */
+               
+    screenAutoLock(enabled) {
+        return new Promise((resolve, reject) => {
+            exec(null, null, SERVICE, 'screenAutoLock', [enabled]);
+            resolve();
+        });
+    }
+
+    isUserLoggedIn() {
+        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'isUserLoggedIn', []));
+    }
+
+    checkForAwaitingConference() {
+        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []));
+    }
+
+    /*
+     *  Deprecated methods
+     */
+
+    startConference(conferenceId, participants) {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'startConference', [conferenceId, array]);
         });
     }
 
-    stopConference () {
+    stopConference() {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'stopConference', []));
     }
 
-    appearMaximized (enabled) {
+    openSession(userInfo) {
         return new Promise((resolve, reject) => {
-          exec(null, null, SERVICE, 'appearMaximized', [enabled]);
-          resolve();
+            exec(resolve, reject, SERVICE, 'openSession', [userInfo.json()]);
         });
     }
 
-    defaultBuiltInSpeaker (enabled) {
-        return new Promise((resolve, reject) => {
-          exec(null, null, SERVICE, 'defaultBuiltInSpeaker', [enabled]);
-          resolve();
-        });
+    closeSession() {
+        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'closeSession', []));
     }
-
-    defaultVideo (enabled) {
-        return new Promise((resolve, reject) => {
-          exec(null, null, SERVICE, 'defaultVideo', [enabled]);
-          resolve();
-        });
-    }
-
-    screenAutoLock (enabled) {
-        return new Promise((resolve, reject) => {
-          exec(null, null, SERVICE, 'screenAutoLock', [enabled]);
-          resolve();
-        });
-    }
-
-    sendBroadcastMessage (message) {
-      return new Promise((resolve, reject) => {
-        exec(null, null, SERVICE, 'sendBroadcastMessage', [message]);
-        resolve();
-      });
-    }
-
 }
 
 module.exports = new Voxeet(); // will be available through Voxeet not voxeet -> fake 'singleton'
+
+});
