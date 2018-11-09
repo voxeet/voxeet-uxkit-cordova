@@ -1,4 +1,3 @@
-cordova.define("cordova-plugin-voxeet.Voxeet", function(require, exports, module) {
 /*
  *
  * Voxeet ConferenceKit Cordova
@@ -145,5 +144,3 @@ class Voxeet {
 }
 
 module.exports = new Voxeet(); // will be available through Voxeet not voxeet -> fake 'singleton'
-
-});
