@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.voxeet.android.media.audio.AudioRoute;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
@@ -33,6 +34,7 @@ import eu.codlab.simplepromise.Promise;
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
+import retrofit2.HttpException;
 import voxeet.com.sdk.core.FirebaseController;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.core.preferences.VoxeetPreferences;
@@ -110,8 +112,8 @@ public class VoxeetCordova extends CordovaPlugin {
             switch (action) {
                 case "initialize":
                     initialize(args.getString(0),
-                            args.getString(1));
-                    callbackContext.success();
+                            args.getString(1),
+                            callbackContext);
                     break;
                 case "connect":
                 case "openSession":
@@ -157,6 +159,9 @@ public class VoxeetCordova extends CordovaPlugin {
                             }
                         }
 
+                        if (!parameters.isNull("params")) {
+                            object = parameters.getJSONObject("params");
+                        }
                         ParamsHolder pholder = new ParamsHolder();
                         if (null != object) {
                             Iterator<String> keys = object.keys();
@@ -183,8 +188,10 @@ public class VoxeetCordova extends CordovaPlugin {
                     break;
                 case "invite":
                     try {
+                        String conferenceId = null;
+                        if(!args.isNull(0)) conferenceId = args.getString(0);
                         JSONArray array = null;
-                        if (!args.isNull(0)) array = args.getJSONArray(0);
+                        if (!args.isNull(1)) array = args.getJSONArray(1);
 
                         List<UserInfo> participants = new ArrayList<>();
                         if (null != array) {
@@ -273,7 +280,8 @@ public class VoxeetCordova extends CordovaPlugin {
 
 
     private void initialize(final String consumerKey,
-                            final String consumerSecret) {
+                            final String consumerSecret,
+                            final CallbackContext callbackContext) {
 
         mHandler.post(new Runnable() {
             @Override
@@ -289,7 +297,8 @@ public class VoxeetCordova extends CordovaPlugin {
                 //also enable the push token upload and log
                 FirebaseController.getInstance()
                         .log(true)
-                        .enable(true)
+                        .enable(true);
+                FirebaseController
                         .createNotificationChannel(application);
 
                 //reset the incoming call activity, in case the SDK was no initialized, it would have
@@ -301,6 +310,8 @@ public class VoxeetCordova extends CordovaPlugin {
                         .enableOverlay(true);
 
                 VoxeetSdk.getInstance().register(application, VoxeetCordova.this);
+
+                callbackContext.success();
             }
         });
     }
@@ -425,6 +436,7 @@ public class VoxeetCordova extends CordovaPlugin {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+
                 VoxeetToolkit.getInstance()
                         .getConferenceToolkit()
                         .join(conferenceAlias)
@@ -452,6 +464,7 @@ public class VoxeetCordova extends CordovaPlugin {
                         .error(new ErrorPromise() {
                             @Override
                             public void onError(@NonNull Throwable throwable) {
+                                throwable.printStackTrace();
                                 cb.error("Error while initializing the conference");
                             }
                         });
@@ -591,18 +604,6 @@ public class VoxeetCordova extends CordovaPlugin {
         });
     }
 
-    private void add(/* participant */) {
-        //TODO not available in the current SDK
-    }
-
-    private void update(/* participant */) {
-        //TODO not available in the current SDK
-    }
-
-    private void remove(/* participant */) {
-        //TODO not available in the current SDK
-    }
-
     private void appearMaximized(final Boolean enabled) {
         VoxeetToolkit.getInstance()
                 .getConferenceToolkit()
@@ -614,7 +615,11 @@ public class VoxeetCordova extends CordovaPlugin {
         AudioRoute route = AudioRoute.ROUTE_PHONE;
         if (enabled) route = AudioRoute.ROUTE_SPEAKER;
 
-        VoxeetSdk.getInstance().getAudioService().setAudioRoute(route);
+        if(null != VoxeetSdk.getInstance()) {
+            VoxeetSdk.getInstance().getAudioService().setAudioRoute(route);
+        } else {
+            Log.e("VoxeetCordova", "defaultBuiltInSpeaker: initialize the sdk first");
+        }
     }
 
     private void screenAutoLock(Boolean enabled) {
