@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
@@ -19,6 +20,7 @@ import voxeet.com.sdk.json.UserInfo;
 public class CordovaIncomingBundleChecker {
 
     private final static String BUNDLE_EXTRA_BUNDLE = "BUNDLE_EXTRA_BUNDLE";
+    private static final String TAG = CordovaIncomingBundleChecker.class.getSimpleName();
     private Context mContext;
 
     @Nullable
@@ -193,7 +195,7 @@ public class CordovaIncomingBundleChecker {
         if (null != mIntent) {
             mIntent.removeExtra(VoxeetIntentFactory.INVITER_ID);
             mIntent.removeExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID);
-            mIntent.removeExtra(VoxeetIntentFactory.CONF_ID);
+            //mIntent.removeExtra(VoxeetIntentFactory.CONF_ID);
             mIntent.removeExtra(VoxeetIntentFactory.INVITER_URL);
             mIntent.removeExtra(VoxeetIntentFactory.INVITER_NAME);
         }
@@ -208,6 +210,25 @@ public class CordovaIncomingBundleChecker {
 
         if (null == extra) extra = new Bundle();
         return extra;
+    }
+
+    public void dumpIntent() {
+        Log.d(TAG, "dumpIntent: "
+                + keyString(VoxeetIntentFactory.INVITER_ID)
+                + keyString(VoxeetIntentFactory.INVITER_EXTERNAL_ID)
+                + keyString(VoxeetIntentFactory.CONF_ID)
+                + keyString(VoxeetIntentFactory.INVITER_URL)
+                + keyString(VoxeetIntentFactory.INVITER_NAME));
+    }
+
+    private String keyString(String name) {
+        String value = null;
+        try {
+            if (mIntent.hasExtra(name)) value = mIntent.getStringExtra(name);
+        } catch (Exception e) {
+
+        }
+        return name + ":=" + value + " / ";
     }
 
     public static interface IExtraBundleFillerListener {

@@ -1,23 +1,17 @@
 package com.voxeet.toolkit.notification;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.voxeet.toolkit.R;
-import com.voxeet.toolkit.activities.notification.DefaultIncomingCallActivity;
 import com.voxeet.toolkit.views.internal.rounded.RoundedImageView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -135,7 +129,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
                     .load(mIncomingBundleChecker.getAvatarUrl())
                     .into(mAvatar);
         } else {
-            Toast.makeText(this, getString(R.string.invalid_bundle), Toast.LENGTH_SHORT).show();
+            mIncomingBundleChecker.dumpIntent();
             finish();
         }
     }
@@ -148,7 +142,6 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
         if (null != soundManager) {
             soundManager.resetDefaultSoundType().stopSoundType(AudioType.RING);
         }
-
 
         if (mEventBus != null) {
             mEventBus.unregister(this);
