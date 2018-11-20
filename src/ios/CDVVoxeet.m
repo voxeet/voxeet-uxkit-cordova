@@ -119,22 +119,28 @@
 - (void)appearMaximized:(CDVInvokedUrlCommand *)command {
     BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
     
-    VoxeetConferenceKit.shared.appearMaximized = enabled;
-    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        VoxeetConferenceKit.shared.appearMaximized = enabled;
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    });
 }
 
 - (void)defaultBuiltInSpeaker:(CDVInvokedUrlCommand *)command {
     BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
     
-    VoxeetSDK.shared.conference.defaultBuiltInSpeaker = enabled;
-    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        VoxeetSDK.shared.conference.defaultBuiltInSpeaker = enabled;
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    });
 }
 
 - (void)defaultVideo:(CDVInvokedUrlCommand *)command {
     BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
     
-    VoxeetSDK.shared.conference.defaultVideo = enabled;
-    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        VoxeetSDK.shared.conference.defaultVideo = enabled;
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    });
 }
 
 /*
@@ -145,7 +151,7 @@
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
 
-- (void)isUserLogIn:(CDVInvokedUrlCommand *)command { /* Android compatibility */
+- (void)isUserLoggedIn:(CDVInvokedUrlCommand *)command { /* Android compatibility */
     BOOL isLogIn = (VoxeetSDK.shared.session.state == VTSessionStateConnected);
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isLogIn] callbackId:command.callbackId];
 }
