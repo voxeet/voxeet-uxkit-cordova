@@ -14,7 +14,7 @@
 - (void)defaultBuiltInSpeaker:(CDVInvokedUrlCommand *)command;
 - (void)defaultVideo:(CDVInvokedUrlCommand *)command;
 - (void)screenAutoLock:(CDVInvokedUrlCommand *)command;
-- (void)isUserLogIn:(CDVInvokedUrlCommand *)command;
+- (void)isUserLoggedIn:(CDVInvokedUrlCommand *)command;
 - (void)checkForAwaitingConference:(CDVInvokedUrlCommand *)command;
 - (void)startConference:(CDVInvokedUrlCommand *)command;
 - (void)stopConference:(CDVInvokedUrlCommand *)command;
