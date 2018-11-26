@@ -41,6 +41,9 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     private static final String DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY = "voxeet_incoming_call_duration";
     private static final int DEFAULT_VOXEET_INCOMING_CALL_DURATION_VALUE = 40 * 1000;
     public static CordovaIncomingBundleChecker CORDOVA_ROOT_BUNDLE = null;
+    public static RNBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT = null;
+    public static RNBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = null;
+    public static RNBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT = null;
 
     protected TextView mUsername;
     protected TextView mStateTextView;
@@ -200,7 +203,16 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
                         }
                     });
         } else {
+            CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = new RNBundleChecker(getIntent(), null);
+
+            //finish();
+            Intent intent = CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE.createActivityDeclined(this);
+            //start the accepted call activity
+            startActivity(intent);
+
+            //and finishing this one - before the prejoined event
             finish();
+            overridePendingTransition(0, 0);
         }
     }
 

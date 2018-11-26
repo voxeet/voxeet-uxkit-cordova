@@ -1,7 +1,9 @@
 package com.voxeet.toolkit;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -13,6 +15,7 @@ import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.implementation.overlays.OverlayState;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
+import com.voxeet.toolkit.notification.RNBundleChecker;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -29,12 +32,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import eu.codlab.simplepromise.Promise;
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
-import retrofit2.HttpException;
 import voxeet.com.sdk.core.FirebaseController;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.core.preferences.VoxeetPreferences;
@@ -42,6 +45,7 @@ import voxeet.com.sdk.events.error.PermissionRefusedEvent;
 import voxeet.com.sdk.events.success.ConferenceRefreshedEvent;
 import voxeet.com.sdk.events.success.SocketConnectEvent;
 import voxeet.com.sdk.events.success.SocketStateChangeEvent;
+import voxeet.com.sdk.factories.VoxeetIntentFactory;
 import voxeet.com.sdk.json.UserInfo;
 import voxeet.com.sdk.json.internal.MetadataHolder;
 import voxeet.com.sdk.json.internal.ParamsHolder;
@@ -60,6 +64,7 @@ public class VoxeetCordova extends CordovaPlugin {
     private UserInfo _current_user;
     private CallbackContext _log_in_callback;
     private boolean startVideoOnJoin = false;
+    private ReentrantLock lock = new ReentrantLock();
 
     public VoxeetCordova() {
         super();
@@ -71,11 +76,18 @@ public class VoxeetCordova extends CordovaPlugin {
     @Override
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
+
+        checkForAwaitingConference(null);
     }
 
     @Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     @Override
@@ -189,7 +201,7 @@ public class VoxeetCordova extends CordovaPlugin {
                 case "invite":
                     try {
                         String conferenceId = null;
-                        if(!args.isNull(0)) conferenceId = args.getString(0);
+                        if (!args.isNull(0)) conferenceId = args.getString(0);
                         JSONArray array = null;
                         if (!args.isNull(1)) array = args.getJSONArray(1);
 
@@ -405,26 +417,46 @@ public class VoxeetCordova extends CordovaPlugin {
         });
     }
 
-    private void checkForAwaitingConference(final CallbackContext cb) {
+    private void checkForAwaitingConference(@Nullable final CallbackContext cb) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                lock();
                 if (null == VoxeetSdk.getInstance()) {
-                    cb.error(ERROR_SDK_NOT_INITIALIZED);
+                    if (null != cb) cb.error(ERROR_SDK_NOT_INITIALIZED);
                 } else {
                     CordovaIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
-                    if (null != checker && checker.isBundleValid()) {
+
+                    if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT) {
+                        RNBundleChecker bundle = CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT;
+                        Activity activity = cordova.getActivity();
+                        if (null != activity) {
+                            Intent intent = VoxeetIntentFactory.buildFrom(activity, VoxeetPreferences.getDefaultActivity(), bundle.createExtraBundle());
+                            if (intent != null)
+                                activity.startActivity(intent);
+                        }
+                    } else if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT) {
+                        CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT.onAccept();
+                    } else if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE) {
+                        CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE.onDecline();
+                    } else if (null != checker && checker.isBundleValid()) {
                         if (VoxeetSdk.getInstance().isSocketOpen()) {
                             checker.onAccept();
                             CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
-                            cb.success();
+                            if (null != cb) cb.success();
                         } else {
-                            cb.error(ERROR_SDK_NOT_LOGGED_IN);
+                            if (null != cb) cb.error(ERROR_SDK_NOT_LOGGED_IN);
                         }
                     } else {
-                        cb.success();
+                        if (null != cb) cb.success();
                     }
+
+                    //and finally clear them
+                    CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT = null;
+                    CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = null;
+                    CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT = null;
                 }
+                unlock();
             }
         });
     }
@@ -605,21 +637,31 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void appearMaximized(final Boolean enabled) {
-        VoxeetToolkit.getInstance()
-                .getConferenceToolkit()
-                .setDefaultOverlayState(enabled ? OverlayState.EXPANDED
-                        : OverlayState.MINIMIZED);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                VoxeetToolkit.getInstance()
+                        .getConferenceToolkit()
+                        .setDefaultOverlayState(enabled ? OverlayState.EXPANDED
+                                : OverlayState.MINIMIZED);
+            }
+        });
     }
 
     private void defaultBuiltInSpeaker(final boolean enabled) {
-        AudioRoute route = AudioRoute.ROUTE_PHONE;
-        if (enabled) route = AudioRoute.ROUTE_SPEAKER;
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                AudioRoute route = AudioRoute.ROUTE_PHONE;
+                if (enabled) route = AudioRoute.ROUTE_SPEAKER;
 
-        if(null != VoxeetSdk.getInstance()) {
-            VoxeetSdk.getInstance().getAudioService().setAudioRoute(route);
-        } else {
-            Log.e("VoxeetCordova", "defaultBuiltInSpeaker: initialize the sdk first");
-        }
+                if (null != VoxeetSdk.getInstance()) {
+                    VoxeetSdk.getInstance().getAudioService().setAudioRoute(route);
+                } else {
+                    Log.e("VoxeetCordova", "defaultBuiltInSpeaker: initialize the sdk first");
+                }
+            }
+        });
     }
 
     private void screenAutoLock(Boolean enabled) {
@@ -696,5 +738,22 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void cancelIncomingConference() {
         CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
+    }
+
+    private void lock() {
+        try {
+            lock.lock();
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void unlock() {
+        try {
+            if (lock.isLocked())
+                lock.unlock();
+        } catch (Exception e) {
+
+        }
     }
 }

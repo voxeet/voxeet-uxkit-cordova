@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.WindowManager;
 
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 
@@ -19,7 +18,6 @@ import voxeet.com.sdk.json.UserInfo;
 
 public class CordovaIncomingBundleChecker {
 
-    private final static String BUNDLE_EXTRA_BUNDLE = "BUNDLE_EXTRA_BUNDLE";
     private static final String TAG = CordovaIncomingBundleChecker.class.getSimpleName();
     private Context mContext;
 
@@ -135,7 +133,7 @@ public class CordovaIncomingBundleChecker {
 
     @Nullable
     final public Bundle getExtraBundle() {
-        return null != mIntent ? mIntent.getBundleExtra(BUNDLE_EXTRA_BUNDLE) : null;
+        return null != mIntent ? mIntent.getBundleExtra(CallUtils.BUNDLE_EXTRA_BUNDLE) : null;
     }
 
     final public boolean isSameConference(String conferenceId) {
@@ -151,39 +149,14 @@ public class CordovaIncomingBundleChecker {
      */
     @NonNull
     final public Intent createActivityAccepted(@NonNull Activity caller) {
-        Class to_call = createClassToCall();
-
-        //if call is disabled
-        if (null == to_call) return null;
-
-        Intent intent = new Intent(caller, to_call);
-
-        //inject the extras from the current "loaded" activity
-        Bundle extras = null;//here was the extras provider call
-        if (null != extras) {
-            intent.putExtras(extras);
-        }
-
-        intent.putExtra(BUNDLE_EXTRA_BUNDLE, createExtraBundle());
-
-        intent.putExtra(VoxeetIntentFactory.CONF_ID, getConferenceId())
-                .putExtra(VoxeetIntentFactory.INVITER_NAME, getUserName())
-                .putExtra(VoxeetIntentFactory.INVITER_ID, getExternalUserId())
-                .putExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID, getExternalUserId())
-                .putExtra(VoxeetIntentFactory.INVITER_URL, getAvatarUrl());
-
-        //deprecated
-        intent.putExtra("join", true);
-        intent.putExtra("callMode", 0x0001);
-
-        //TODO check usefullness
-        intent.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-        );
-
-        return intent;
+        return CallUtils.createActivityCallAnswer(caller,
+                getConferenceId(),
+                getUserName(),
+                getUserId(),
+                getExternalUserId(),
+                getAvatarUrl(),
+                createExtraBundle(),
+                true);
     }
 
     /**
@@ -235,15 +208,5 @@ public class CordovaIncomingBundleChecker {
 
         @Nullable
         Bundle createExtraBundle();
-    }
-
-    private Class createClassToCall() {
-        try {
-            Class klass = Class.forName(mContext.getPackageName() + ".MainActivity");
-            return klass;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }
