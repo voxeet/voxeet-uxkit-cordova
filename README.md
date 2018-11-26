@@ -60,6 +60,11 @@ getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
 
 This call use the following import : `import android.view.WindowManager;`
 
+- in order to implement properly the push notification, you also need to register the default accepted view **if you changed its name**. Edit the _AndroidManifest.xml_ file and put this xml node in the _<application></application>_ :
+```
+<meta-data android:name="rn_voxeet_incoming_call_accepted_or_declined" android:value="fully.qualified.package.name.to.the.default.cordova.activity" />
+```
+
 ## Implementation
 
 ### Import
