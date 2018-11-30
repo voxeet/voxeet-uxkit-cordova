@@ -29,9 +29,12 @@ public class CallUtils {
                 klass = Class.forName(obtained);
                 return klass;
             }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
+        try {
             klass = Class.forName(context.getPackageName() + ".MainActivity");
-            return klass;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
