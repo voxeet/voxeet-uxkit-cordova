@@ -47,7 +47,9 @@ compile 'com.android.support:multidex:1.0.3'
 
 To enable push notification, follow the steps in the app, for push notification, follow https://github.com/voxeet/android-sdk-sample
 
-You also need to make a modification in the generated MainActivity. Using Android Studio or any other IDE :
+- **Verify that the Voxeet Push Notification services's tags are before the other services registered in the AndroidManifest with the proper priority to prevent Cordova's FCM issues**
+
+- You also need to make a modification in the generated MainActivity. Using Android Studio or any other IDE :
 
 right before the call to `super.onCreate(savedInstanceState);` :
 ```
