@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.22 (November 30th, 2018)
+  - new incoming call management
+
 ### 1.0.21 (November 5th, 2018)
   - add new methods (create, join, invite, leave, defaultVideo)
 
