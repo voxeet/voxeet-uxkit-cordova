@@ -10,7 +10,7 @@ It is mandatory that you added:
 
 ## Installation
 
-    cordova plugin add @voxeet/cordova-plugin-voxeet@1.0.21
+    cordova plugin add https://github.com/voxeet/voxeet-cordova-conferencekit
 
 ### iOS
 
