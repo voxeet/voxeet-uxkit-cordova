@@ -10,6 +10,6 @@ Thumbs.db
 
 node_modules
 
-src/ios/Carthage/Checkouts
+src/ios/Carthage
 *.bcsymbolmap
 *.dSYM
