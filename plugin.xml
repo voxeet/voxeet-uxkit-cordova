@@ -70,6 +70,8 @@
 
         <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingBundleChecker.java" target-dir="src/com/voxeet/toolkit/notification" />
         <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingCallActivity.java" target-dir="src/com/voxeet/toolkit/notification" />
+        <source-file src="src/android/com/voxeet/toolkit/notification/RNBundleChecker.java" target-dir="src/com/voxeet/toolkit/notification" />
+        <source-file src="src/android/com/voxeet/toolkit/notification/CallUtils.java" target-dir="src/com/voxeet/toolkit/notification" />
 
         <hook type="after_prepare" src="voxeet_application.js" />
     </platform>
