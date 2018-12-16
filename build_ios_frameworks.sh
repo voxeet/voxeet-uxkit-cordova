@@ -5,5 +5,5 @@ if [ "$VOXEET_SKIP_IOS_BUILD" = "true" ]; then
     exit
 else
     cd ./src/ios
-    carthage update --platform ios
+    carthage update --platform ios --verbose 
 fi
