@@ -78,8 +78,7 @@
 
     <!-- ios -->
     <platform name="ios">
-        <hook type="before_add" src="build_ios_frameworks.sh"/>
-        <hook type="before_platform" src="build_ios_frameworks.sh"/>
+        <hook type="before_plugin_install" src="build_ios_frameworks.sh"/>
         <config-file target="config.xml" parent="/*">
             <feature name="Voxeet">
                 <param name="ios-package" value="CDVVoxeet" />
