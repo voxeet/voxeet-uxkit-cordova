@@ -27,13 +27,15 @@ const SERVICE = 'Voxeet';
 
 class Voxeet {
 
-    refreshAccessTokenCallback = () => {
-      this.refreshToken()
-      .then(accessToken => this.onAccessTokenOk(accessToken))
-      .catch(err => {
-        console.log(err);
-        this.onAccessTokenKo("Error while refreshing token");
-      });
+    constructor() {
+        this.refreshAccessTokenCallback = () => {
+            this.refreshToken()
+            .then(accessToken => this.onAccessTokenOk(accessToken))
+            .catch(err => {
+                console.log(err);
+                this.onAccessTokenKo("Error while refreshing token");
+            });
+        }
     }
 
     initialize(consumerKey, consumerSecret) {
@@ -42,7 +44,7 @@ class Voxeet {
         });
     }
 
-    initializeWithRefresh (accessToken, refreshToken) {
+    initializeWithRefresh(accessToken, refreshToken) {
         return new Promise((resolve, reject) => {
             this.refreshToken = refreshToken;
             exec(this.refreshAccessTokenCallback, SERVICE, 'refreshAccessTokenCallback', []);
