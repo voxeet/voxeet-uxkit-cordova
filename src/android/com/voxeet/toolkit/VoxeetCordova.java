@@ -41,6 +41,8 @@ import eu.codlab.simplepromise.solve.Solver;
 import voxeet.com.sdk.core.FirebaseController;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.core.preferences.VoxeetPreferences;
+import voxeet.com.sdk.core.services.authenticate.token.RefreshTokenCallback;
+import voxeet.com.sdk.core.services.authenticate.token.TokenCallback;
 import voxeet.com.sdk.events.error.PermissionRefusedEvent;
 import voxeet.com.sdk.events.success.ConferenceRefreshedEvent;
 import voxeet.com.sdk.events.success.SocketConnectEvent;
@@ -65,10 +67,14 @@ public class VoxeetCordova extends CordovaPlugin {
     private CallbackContext _log_in_callback;
     private boolean startVideoOnJoin = false;
     private ReentrantLock lock = new ReentrantLock();
+    private ReentrantLock lockAwaitingToken = new ReentrantLock();
+    private List<TokenCallback> mAwaitingTokenCallback;
+    private CallbackContext refreshAccessTokenCallbackInstance;
 
     public VoxeetCordova() {
         super();
         mHandler = new Handler(Looper.getMainLooper());
+        mAwaitingTokenCallback = new ArrayList<>();
 
         Promise.setHandler(mHandler);
     }
@@ -120,13 +126,25 @@ public class VoxeetCordova extends CordovaPlugin {
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
 
+        Log.d("VoxeetCordova", "execute: request " + action);
         if (action != null) {
             switch (action) {
+                case "onAccessTokenOk":
+                    onAccessTokenOk(args.getString(0), callbackContext);
+                    break;
+                case "onAccessTokenKo":
+                    onAccessTokenKo(args.getString(0), callbackContext);
+                    break;
+                case "initializeWithRefresh":
+                    initialize(args.getString(0), callbackContext);
+                    break;
                 case "initialize":
                     initialize(args.getString(0),
                             args.getString(1),
                             callbackContext);
                     break;
+                case "refreshAccessTokenCallback":
+                    refreshAccessTokenCallback(callbackContext);
                 case "connect":
                 case "openSession":
                     JSONObject userInfo = null;
@@ -291,10 +309,37 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
 
+    private void initialize(final String accessToken,
+                            final CallbackContext callbackContext) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Application application = (Application) cordova.getActivity().getApplicationContext();
+
+                if (null == VoxeetSdk.getInstance()) {
+                    VoxeetSdk.initialize(application,
+                            accessToken,
+                            new RefreshTokenCallback() {
+                                @Override
+                                public void onRequired(TokenCallback callback) {
+                                    lock(lockAwaitingToken);
+                                    if (!mAwaitingTokenCallback.contains(callback)) {
+                                        mAwaitingTokenCallback.add(callback);
+                                    }
+                                    unlock(lockAwaitingToken);
+                                    postRefreshAccessToken();
+                                }
+                            }, null /* no user info */);
+                }
+
+                internalInitialize(callbackContext);
+            }
+        });
+    }
+
     private void initialize(final String consumerKey,
                             final String consumerSecret,
                             final CallbackContext callbackContext) {
-
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -303,29 +348,36 @@ public class VoxeetCordova extends CordovaPlugin {
                 if (null == VoxeetSdk.getInstance()) {
                     VoxeetSdk.initialize(application,
                             consumerKey, consumerSecret, null);
-                    VoxeetSdk.getInstance().getConferenceService().setTimeOut(30 * 1000); //30s
                 }
 
-                //also enable the push token upload and log
-                FirebaseController.getInstance()
-                        .log(true)
-                        .enable(true);
-                FirebaseController
-                        .createNotificationChannel(application);
-
-                //reset the incoming call activity, in case the SDK was no initialized, it would have
-                //erased this method call
-                VoxeetPreferences.setDefaultActivity(CordovaIncomingCallActivity.class.getCanonicalName());
-
-                VoxeetToolkit
-                        .initialize(application, EventBus.getDefault())
-                        .enableOverlay(true);
-
-                VoxeetSdk.getInstance().register(application, VoxeetCordova.this);
-
-                callbackContext.success();
+                internalInitialize(callbackContext);
             }
         });
+    }
+
+    private void internalInitialize(final CallbackContext callbackContext) {
+        VoxeetSdk.getInstance().getConferenceService().setTimeOut(30 * 1000); //30s
+
+        Application application = (Application) cordova.getActivity().getApplicationContext();
+
+        //also enable the push token upload and log
+        FirebaseController.getInstance()
+                .log(true)
+                .enable(true);
+        FirebaseController
+                .createNotificationChannel(application);
+
+        //reset the incoming call activity, in case the SDK was no initialized, it would have
+        //erased this method call
+        VoxeetPreferences.setDefaultActivity(CordovaIncomingCallActivity.class.getCanonicalName());
+
+        VoxeetToolkit
+                .initialize(application, EventBus.getDefault())
+                .enableOverlay(true);
+
+        VoxeetSdk.getInstance().register(application, VoxeetCordova.this);
+
+        callbackContext.success();
     }
 
     private void openSession(final UserInfo userInfo,
@@ -668,6 +720,51 @@ public class VoxeetCordova extends CordovaPlugin {
         //TODO not available in the current sdk
     }
 
+    private void postRefreshAccessToken() {
+        Log.d("VoxeetCordova", "postRefreshAccessToken: sending call to javascript to refresh token");
+        if(null != refreshAccessTokenCallbackInstance) {
+            PluginResult pluginResult = new  PluginResult(PluginResult.Status.NO_RESULT);
+            pluginResult.setKeepCallback(true);
+            refreshAccessTokenCallbackInstance.sendPluginResult(pluginResult);
+        }
+    }
+
+    private void onAccessTokenOk(final String accessToken,
+                                 final CallbackContext callbackContext) {
+        lock(lockAwaitingToken);
+        for (TokenCallback callback : mAwaitingTokenCallback) {
+            try {
+                callback.ok(accessToken);
+            } catch (Exception ee) {
+                ee.printStackTrace();
+            }
+        }
+        unlock(lockAwaitingToken);
+        callbackContext.success();
+    }
+
+    private void onAccessTokenKo(final String reason,
+                                 final CallbackContext callbackContext) {
+        try {
+            throw new Exception("refreshToken failed with reason := " + reason);
+        } catch (Exception e) {
+            lock(lockAwaitingToken);
+            for (TokenCallback callback : mAwaitingTokenCallback) {
+                try {
+                    callback.error(e);
+                } catch (Exception ee) {
+                    ee.printStackTrace();
+                }
+            }
+            unlock(lockAwaitingToken);
+        }
+        callbackContext.success();
+    }
+
+    private void refreshAccessTokenCallback(final CallbackContext callbackContext) {
+        refreshAccessTokenCallbackInstance = callbackContext;
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(final SocketConnectEvent event) {
@@ -740,7 +837,7 @@ public class VoxeetCordova extends CordovaPlugin {
         CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
     }
 
-    private void lock() {
+    private void lock(ReentrantLock lock) {
         try {
             lock.lock();
         } catch (Exception e) {
@@ -748,12 +845,20 @@ public class VoxeetCordova extends CordovaPlugin {
         }
     }
 
-    private void unlock() {
+    private void unlock(ReentrantLock lock) {
         try {
             if (lock.isLocked())
                 lock.unlock();
         } catch (Exception e) {
 
         }
+    }
+
+    private void lock() {
+        lock(lock);
+    }
+
+    private void unlock() {
+        unlock(lock);
     }
 }

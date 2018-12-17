@@ -27,9 +27,26 @@ const SERVICE = 'Voxeet';
 
 class Voxeet {
 
+    refreshAccessTokenCallback = () => {
+      this.refreshToken()
+      .then(accessToken => this.onAccessTokenOk(accessToken))
+      .catch(err => {
+        console.log(err);
+        this.onAccessTokenKo("Error while refreshing token");
+      });
+    }
+
     initialize(consumerKey, consumerSecret) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'initialize', [consumerKey, consumerSecret]);
+        });
+    }
+
+    initializeWithRefresh (accessToken, refreshToken) {
+        return new Promise((resolve, reject) => {
+            this.refreshToken = refreshToken;
+            exec(this.refreshAccessTokenCallback, SERVICE, 'refreshAccessTokenCallback', []);
+            exec(resolve, reject, SERVICE, 'initializeWithRefresh', [accessToken]);
         });
     }
 
@@ -101,7 +118,7 @@ class Voxeet {
     /*
      *  Android methods
      */
-               
+
     screenAutoLock(enabled) {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'screenAutoLock', [enabled]);
@@ -140,6 +157,19 @@ class Voxeet {
 
     closeSession() {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'closeSession', []));
+    }
+
+    //method to refresh tokens, used internally
+    onAccessTokenOk (accessToken) {
+      return new Promise((resolve, reject) => {
+        exec(resolve, reject, SERVICE, 'onAccessTokenOk', [accessToken]);
+      });
+    }
+
+    onAccessTokenKo (errorMessage) {
+      return new Promise((resolve, reject) => {
+        exec(resolve, reject, SERVICE, 'onAccessTokenKo', [errorMessage]);
+      });
     }
 }
 
