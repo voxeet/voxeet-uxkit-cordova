@@ -1,5 +1,5 @@
 #!/bin/bash
+CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
-cd ./src/ios
-
-carthage update --platform ios
+echo "starting carthage in $CURR_DIR"
+carthage update --platform ios --verbose --project-directory $CURR_DIR/src/ios
