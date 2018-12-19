@@ -125,7 +125,6 @@ public class VoxeetCordova extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
-
         Log.d("VoxeetCordova", "execute: request " + action);
         if (action != null) {
             switch (action) {
@@ -145,6 +144,7 @@ public class VoxeetCordova extends CordovaPlugin {
                     break;
                 case "refreshAccessTokenCallback":
                     refreshAccessTokenCallback(callbackContext);
+                    break;
                 case "connect":
                 case "openSession":
                     JSONObject userInfo = null;
@@ -722,8 +722,8 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void postRefreshAccessToken() {
         Log.d("VoxeetCordova", "postRefreshAccessToken: sending call to javascript to refresh token");
-        if(null != refreshAccessTokenCallbackInstance) {
-            PluginResult pluginResult = new  PluginResult(PluginResult.Status.NO_RESULT);
+        if (null != refreshAccessTokenCallbackInstance) {
+            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK);
             pluginResult.setKeepCallback(true);
             refreshAccessTokenCallbackInstance.sendPluginResult(pluginResult);
         }
