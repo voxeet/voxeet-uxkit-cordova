@@ -3,6 +3,13 @@
 #import <VoxeetSDK/VoxeetSDK.h>
 #import <VoxeetConferenceKit/VoxeetConferenceKit.h>
 
+@interface CDVVoxeet()
+
+@property (nonatomic, copy) NSString *refreshAccessTokenID;
+@property (nonatomic, copy) void (^refreshAccessTokenClosure)(NSString *);
+
+@end
+
 @implementation CDVVoxeet
 
 - (void)initialize:(CDVInvokedUrlCommand *)command {
@@ -16,6 +23,40 @@
         [VoxeetConferenceKit.shared initialize];
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
+}
+
+- (void)initializeWithRefresh:(CDVInvokedUrlCommand *)command {
+    NSString *accessToken = [command.arguments objectAtIndex:0];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        VoxeetSDK.shared.callKit = YES;
+        
+        [VoxeetSDK.shared initializeWithAccessToken:accessToken userInfo:nil refreshTokenClosure:^(void (^closure)(NSString *)) {
+            self.refreshAccessTokenClosure = closure;
+            
+            CDVPluginResult *callBackRefresh = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+            [callBackRefresh setKeepCallbackAsBool:YES];
+            [self.commandDelegate sendPluginResult:callBackRefresh callbackId:self.refreshAccessTokenID];
+        }];
+        [VoxeetConferenceKit.shared initialize];
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    });
+}
+
+- (void)refreshAccessTokenCallback:(CDVInvokedUrlCommand *)command {
+    self.refreshAccessTokenID = command.callbackId;
+    /* No need to be resolved because it's gonna be resolved in `initializeWithRefresh` */
+}
+
+- (void)onAccessTokenOk:(CDVInvokedUrlCommand *)command {
+    NSString *accessToken = [command.arguments objectAtIndex:0];
+    self.refreshAccessTokenClosure(accessToken);
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+}
+
+- (void)onAccessTokenKo:(CDVInvokedUrlCommand *)command {
+    self.refreshAccessTokenClosure(nil);
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
 
 - (void)connect:(CDVInvokedUrlCommand *)command {

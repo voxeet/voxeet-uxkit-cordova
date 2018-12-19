@@ -3,6 +3,10 @@
 @interface CDVVoxeet: CDVPlugin
 
 - (void)initialize:(CDVInvokedUrlCommand *)command;
+- (void)initializeWithRefresh:(CDVInvokedUrlCommand *)command;
+- (void)refreshAccessTokenCallback:(CDVInvokedUrlCommand *)command;
+- (void)onAccessTokenOk:(CDVInvokedUrlCommand *)command;
+- (void)onAccessTokenKo:(CDVInvokedUrlCommand *)command;
 - (void)connect:(CDVInvokedUrlCommand *)command;
 - (void)disconnect:(CDVInvokedUrlCommand *)command;
 - (void)create:(CDVInvokedUrlCommand *)command;
