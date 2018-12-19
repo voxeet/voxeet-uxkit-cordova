@@ -47,7 +47,7 @@ class Voxeet {
     initializeWithRefresh(accessToken, refreshToken) {
         return new Promise((resolve, reject) => {
             this.refreshToken = refreshToken;
-            exec(this.refreshAccessTokenCallback, SERVICE, 'refreshAccessTokenCallback', []);
+            exec(this.refreshAccessTokenCallback, (err) => {}, SERVICE, 'refreshAccessTokenCallback', []);
             exec(resolve, reject, SERVICE, 'initializeWithRefresh', [accessToken]);
         });
     }
