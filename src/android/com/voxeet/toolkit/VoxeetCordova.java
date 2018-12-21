@@ -134,7 +134,7 @@ public class VoxeetCordova extends CordovaPlugin {
                 case "onAccessTokenKo":
                     onAccessTokenKo(args.getString(0), callbackContext);
                     break;
-                case "initializeWithRefresh":
+                case "initializeToken":
                     initialize(args.getString(0), callbackContext);
                     break;
                 case "initialize":

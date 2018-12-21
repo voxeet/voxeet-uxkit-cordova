@@ -25,7 +25,7 @@
     });
 }
 
-- (void)initializeWithRefresh:(CDVInvokedUrlCommand *)command {
+- (void)initializeToken:(CDVInvokedUrlCommand *)command {
     NSString *accessToken = [command.arguments objectAtIndex:0];
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -41,22 +41,6 @@
         [VoxeetConferenceKit.shared initialize];
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
-}
-
-- (void)refreshAccessTokenCallback:(CDVInvokedUrlCommand *)command {
-    self.refreshAccessTokenID = command.callbackId;
-    /* No need to be resolved because it's gonna be resolved in `initializeWithRefresh` */
-}
-
-- (void)onAccessTokenOk:(CDVInvokedUrlCommand *)command {
-    NSString *accessToken = [command.arguments objectAtIndex:0];
-    self.refreshAccessTokenClosure(accessToken);
-    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
-}
-
-- (void)onAccessTokenKo:(CDVInvokedUrlCommand *)command {
-    self.refreshAccessTokenClosure(nil);
-    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
 
 - (void)connect:(CDVInvokedUrlCommand *)command {
@@ -185,7 +169,27 @@
 }
 
 /*
- *  MARK: - Android compatibility methods
+ *  MARK: Oauth2 helpers
+ */
+
+- (void)refreshAccessTokenCallback:(CDVInvokedUrlCommand *)command {
+    self.refreshAccessTokenID = command.callbackId;
+    // No need to be resolved because it's gonna be resolved in `initializeToken`
+}
+
+- (void)onAccessTokenOk:(CDVInvokedUrlCommand *)command {
+    NSString *accessToken = [command.arguments objectAtIndex:0];
+    self.refreshAccessTokenClosure(accessToken);
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+}
+
+- (void)onAccessTokenKo:(CDVInvokedUrlCommand *)command {
+    self.refreshAccessTokenClosure(nil);
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+}
+
+/*
+ *  MARK: Android compatibility methods
  */
 
 - (void)screenAutoLock:(CDVInvokedUrlCommand *)command { /* Android compatibility */
@@ -202,7 +206,7 @@
 }
 
 /*
- *  MARK: - Deprecated methods
+ *  MARK: Deprecated methods
  */
 
 - (void)startConference:(CDVInvokedUrlCommand *)command { /* Deprecated */
