@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.24 (January 16th, 2019)
+  - use Android sdk update with better support of connectivity
+
 ### 1.0.23 (December 13th, 2018)
   - use new Android SDK with improved sockets, flow and fix for Android 4.+
 

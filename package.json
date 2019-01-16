@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-voxeet",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "Cordova Voxeet Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
@@ -30,7 +30,7 @@
     "postinstall": "bash build_ios_frameworks_only.sh"
   },
   "author": "Voxeet",
-  "license": "GPL-3.0",
+  "license": "Apache-2.0",
   "engines": { "cordova": ">=7.0.0"},
   "devDependencies": {
     "eslint": "^3.19.0",
