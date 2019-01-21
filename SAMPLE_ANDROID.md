@@ -109,11 +109,16 @@ Voxeet.initialize("YourKeys", "YourSecret")
 In the file `www/js/index.js` in the onDeviceReady mathod add:
 
 ```
+//set the current user metadata
 const id = "5554";
 const name = "Sender";
+const avatarUrl = "https://cdn.voxeet.com/images/team-stephane-giraudie.png";
+
+//init -> login -> create -> join
 Voxeet.initialize("YourKeys", "YourSecret")
-.then(result => Voxeet.openSession(new UserInfo(id, name, "https://cdn.voxeet.com/images/team-stephane-giraudie.png")))
-.then(result => Voxeet.startConference("conference_name", [ new UserInfo("4444","Receiver","") ] ) )
+.then(result => Voxeet.openSession(new UserInfo(id, name, avatarURL)))
+.then(() => Voxeet.create({ conferenceAlias: "conferenceAlias" }))
+.then(result => Voxeet.join(result.conferenceId))
 .then(result => console.log("conference started"))
 .catch(err => alert(err) );
 ```

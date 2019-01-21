@@ -1,5 +1,9 @@
 # Release Notes
 
+### 1.0.25 (January 21th, 2019)
+  - use Android sdk (1.4) with AEC and NS by default
+  - toolkit now use the overlay properly everytime
+
 ### 1.0.24 (January 16th, 2019)
   - use Android sdk update with better support of connectivity
 

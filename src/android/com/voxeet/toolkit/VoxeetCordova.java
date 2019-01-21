@@ -375,6 +375,8 @@ public class VoxeetCordova extends CordovaPlugin {
                 .initialize(application, EventBus.getDefault())
                 .enableOverlay(true);
 
+        VoxeetToolkit.getInstance().getConferenceToolkit().enable(true);
+
         VoxeetSdk.getInstance().register(application, VoxeetCordova.this);
 
         callbackContext.success();

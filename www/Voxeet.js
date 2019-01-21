@@ -29,12 +29,12 @@ class Voxeet {
 
     constructor() {
         this.refreshAccessTokenCallback = () => {
-        this.refreshToken()
-        .then(accessToken => this.onAccessTokenOk(accessToken))
-        .catch(err => {
-               console.log(err);
-               this.onAccessTokenKo("Error while refreshing token");
-               });
+            this.refreshToken()
+            .then(accessToken => this.onAccessTokenOk(accessToken))
+            .catch(err => {
+                console.log(err);
+                this.onAccessTokenKo("Error while refreshing token");
+           });
         }
     }
 
