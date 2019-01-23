@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.26 (January 23th, 2019)
+  - add possible USE_PUSH_NOTIFICATION system variable to enable Firebase in the Android compilation
+
 ### 1.0.25 (January 21th, 2019)
   - use Android sdk (1.4) with AEC and NS by default
   - toolkit now use the overlay properly everytime

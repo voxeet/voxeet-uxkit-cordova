@@ -19,7 +19,7 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
       id="cordova-plugin-voxeet"
-      version="1.0.24">
+      version="1.0.26">
     <name>Voxeet</name>
     <description>Cordova Voxeet Plugin</description>
     <license>GNU GPL v3</license>

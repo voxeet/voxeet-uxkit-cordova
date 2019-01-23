@@ -16,3 +16,12 @@ dependencies {
         transitive = true
     }
 }
+
+// check for the environment variable to apply the push notification
+// to enable push notification in builds : export USE_PUSH_NOTIFICATION=true
+def push = System.getenv("USE_PUSH_NOTIFICATION")
+if ("true".equals(push)) {
+  cdvPluginPostBuildExtras.add({
+    apply plugin: 'com.google.gms.google-services'
+  })
+}
