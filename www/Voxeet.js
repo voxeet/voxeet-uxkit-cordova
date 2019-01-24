@@ -78,7 +78,7 @@ class Voxeet {
 
     leave() {
         return new Promise((resolve, reject) => {
-            exec(resolve, reject, SERVICE, 'leave', [conferenceId]);
+            exec(resolve, reject, SERVICE, 'leave', []);
         });
     }
 
