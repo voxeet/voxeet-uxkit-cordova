@@ -1,8 +1,8 @@
 package com.voxeet.toolkit;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,7 +19,9 @@ import com.voxeet.toolkit.notification.RNBundleChecker;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
+import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PermissionHelper;
 import org.apache.cordova.PluginResult;
 import org.greenrobot.eventbus.EventBus;
@@ -52,6 +54,7 @@ import voxeet.com.sdk.json.UserInfo;
 import voxeet.com.sdk.json.internal.MetadataHolder;
 import voxeet.com.sdk.json.internal.ParamsHolder;
 import voxeet.com.sdk.models.ConferenceResponse;
+import voxeet.com.sdk.utils.Validate;
 
 /**
  * Voxeet implementation for Cordova
@@ -70,6 +73,8 @@ public class VoxeetCordova extends CordovaPlugin {
     private ReentrantLock lockAwaitingToken = new ReentrantLock();
     private List<TokenCallback> mAwaitingTokenCallback;
     private CallbackContext refreshAccessTokenCallbackInstance;
+    private MicrophonePermissionWait waitMicrophonePermission;
+    private CordovaWebView mWebView;
 
     public VoxeetCordova() {
         super();
@@ -80,8 +85,26 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     @Override
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        super.initialize(cordova, webView);
+
+        mWebView = webView;
+    }
+
+    @Override
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
+
+        //check for permission result
+        //actually not testing it in the permission callback to prevent issue with flow
+        MicrophonePermissionWait current = waitMicrophonePermission;
+        if (null != current) {
+            if (Validate.hasMicrophonePermissions(mWebView.getContext())) {
+                join(current.getConfId(), current.getCb());
+            } else if (null != current) {
+                current.getCb().error("microphone permission rejected");
+            }
+        }
 
         checkForAwaitingConference(null);
     }
@@ -101,6 +124,22 @@ public class VoxeetCordova extends CordovaPlugin {
         super.onRequestPermissionResult(requestCode, permissions, grantResults);
 
         switch (requestCode) {
+            case PermissionRefusedEvent.RESULT_MICROPHONE: {
+                /*MicrophonePermissionWait current = waitMicrophonePermission;
+                int index = index(permissions, PermissionRefusedEvent.Permission.MICROPHONE.getPermissions()[0]);
+
+                //remove the current instance
+                waitMicrophonePermission = null;
+                if (index >= 0
+                        && index < grantResults.length
+                        && grantResults[index] == PackageManager.PERMISSION_GRANTED
+                        && null != VoxeetSdk.getInstance() && null != current) {
+                    join(current.getConfId(), current.getCb());
+                } else if (null != current) {
+                    current.getCb().error("microphone permission rejected");
+                }*/
+                break;
+            }
             case PermissionRefusedEvent.RESULT_CAMERA: {
                 if (null != VoxeetSdk.getInstance() && VoxeetSdk.getInstance().getConferenceService().isLive()) {
                     VoxeetSdk.getInstance().getConferenceService().startVideo()
@@ -121,6 +160,15 @@ public class VoxeetCordova extends CordovaPlugin {
             }
             default:
         }
+    }
+
+    private int index(@NonNull String[] permissions, @NonNull String permission) {
+        int i = 0;
+        for (String perm : permissions) {
+            if (permission.equalsIgnoreCase(perm)) return i;
+            i++;
+        }
+        return -1;
     }
 
     @Override
@@ -356,7 +404,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void internalInitialize(final CallbackContext callbackContext) {
-        VoxeetSdk.getInstance().getConferenceService().setTimeOut(30 * 1000); //30s
+        VoxeetSdk.getInstance().getConferenceService().setTimeOut(-1); //no timeout by default in the cordova impl
 
         Application application = (Application) cordova.getActivity().getApplicationContext();
 
@@ -610,20 +658,31 @@ public class VoxeetCordova extends CordovaPlugin {
                 });
     }
 
-    private void join(String conferenceId, final CallbackContext cb) {
-        VoxeetSdk.getInstance().getConferenceService().join(conferenceId)
-                .then(new PromiseExec<Boolean, Object>() {
-                    @Override
-                    public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
-                        cb.success();
-                    }
-                })
-                .error(new ErrorPromise() {
-                    @Override
-                    public void onError(@NonNull Throwable error) {
-                        cb.error("Error while joining the conference " + conferenceId);
-                    }
-                });
+    private void join(@NonNull String conferenceId, @NonNull final CallbackContext cb) {
+        Context context = mWebView.getContext();
+        if (null != context && Validate.hasMicrophonePermissions(mWebView.getContext())) {
+            VoxeetSdk.getInstance().getConferenceService().join(conferenceId)
+                    .then(new PromiseExec<Boolean, Object>() {
+                        @Override
+                        public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+
+                            if (startVideoOnJoin) {
+                                startVideo(null);
+                            }
+
+                            cb.success();
+                        }
+                    })
+                    .error(new ErrorPromise() {
+                        @Override
+                        public void onError(@NonNull Throwable error) {
+                            cb.error("Error while joining the conference " + conferenceId);
+                        }
+                    });
+        } else {
+            waitMicrophonePermission = new MicrophonePermissionWait(conferenceId, cb);
+            requestMicrophonePermission();
+        }
     }
 
     private void startVideo(final CallbackContext cb) {
@@ -805,11 +864,19 @@ public class VoxeetCordova extends CordovaPlugin {
                     PermissionHelper.requestPermissions(
                             this,
                             PermissionRefusedEvent.RESULT_CAMERA,
-                            new String[]{Manifest.permission.CAMERA}
+                            PermissionRefusedEvent.Permission.CAMERA.getPermissions()
                     );
                     break;
             }
         }
+    }
+
+    private void requestMicrophonePermission() {
+        PermissionHelper.requestPermissions(
+                this,
+                PermissionRefusedEvent.RESULT_MICROPHONE,
+                PermissionRefusedEvent.Permission.MICROPHONE.getPermissions()
+        );
     }
 
     private boolean isConnected() {
@@ -853,6 +920,7 @@ public class VoxeetCordova extends CordovaPlugin {
                 lock.unlock();
         } catch (Exception e) {
 
+
         }
     }
 
@@ -862,5 +930,28 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void unlock() {
         unlock(lock);
+    }
+
+    private class MicrophonePermissionWait {
+        private String confId;
+        private CallbackContext cb;
+
+        private MicrophonePermissionWait() {
+
+        }
+
+        public MicrophonePermissionWait(@NonNull String confId, @NonNull CallbackContext cb) {
+            this();
+            this.confId = confId;
+            this.cb = cb;
+        }
+
+        public String getConfId() {
+            return confId;
+        }
+
+        public CallbackContext getCb() {
+            return cb;
+        }
     }
 }
