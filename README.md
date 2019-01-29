@@ -19,14 +19,9 @@ It is mandatory that you added:
 - after `cordova platform add ios` in the project root folder
 - set `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES` in Xcode build settings to true
 
-To enable push notification, follow https://github.com/voxeet/voxeet-ios-conferencekit#project-setup
-
+To enable VoIP notification, follow https://github.com/voxeet/voxeet-ios-conferencekit#project-setup
 
 ### Android
-
-No steps are required
-
-### Notification
 
 To enable push notification, follow the steps in the app, for push notification, follow https://github.com/voxeet/android-sdk-sample
 
@@ -61,10 +56,10 @@ You can use the Voxeet and UserInfo classes using the following :
     - constructor : `(externalId: string, name: string, avatarUrl: string)`
     - json() : return the corresponding json
 
-### initialize without OAuth2
+### Initialize
 
 ```
-Voxeet.initialize(<your consumer key>: string , <your secret key>: string)
+Voxeet.initialize(<consumer_key>: string , <secret_key>: string)
 .then(() => {
   //if the initialization is ok
 })
@@ -73,21 +68,27 @@ Voxeet.initialize(<your consumer key>: string , <your secret key>: string)
 });
 ```
 
-### initialize with OAuth2
+### Initialize with OAuth2
 
 ```
-//Voxeet.initializeWithRefresh(accessToken: string , refreshToken: () => Promise<boolean>)
+Voxeet.initializeWithRefresh(accessToken: string , refreshToken: () => Promise<boolean>)
 
-//the callback to be used
+//the refresh token callback to be used
 const refreshToken = () => {
-  return new Promise((resolve, reject) => {
-    //here do your network call to get a new accessToken
-    //and do resolve(theAccessTokenValue);
+    return new Promise((resolve, reject) => {
+    cordovaHTTP.get("https://YOUR_REFRESH_TOKEN_URL", null, {}, function(response) {
+      var json = undefined;
+      try { json = JSON.parse(response.data); } catch(e) { json = response; };
+      resolve(json.access_token) //return your access token
+    }, function(response) {
+      alert('error ' + response.error);
+    });
   });
 }
 
 //the actual call to the SDK initialization
-Voxeet.initializeWithRefresh("someValidAccessToken" , refreshToken)
+refreshToken()
+.then(result => Voxeet.initializeToken(result, refreshToken))
 .then(() => {
   //if the initialization is ok
 })
@@ -96,37 +97,65 @@ Voxeet.initializeWithRefresh("someValidAccessToken" , refreshToken)
 });
 ```
 
-### Session opening
+### Connect/disconnect a session
 
 ```
-Voxeet.openSession(<userId>: string, <name>: string, <avatarUrl>: string)
+var user = new UserInfo(<externalId>: string, <name>: string, <avatarUrl>: string);
+
+Voxeet.connect(user)
 .then(() => {
-  //if the session is started
+  //if the session is connected
 })
 .catch(err => {
   //in case of error
 });
 ```
 
-### Start/Stop a conference
-
-You can start a conference with its conferenceId. You can also invite
-others to join the current conference by using an array of UserInfo
-
 ```
-Voxeet.startConference(<conferenceId>: string, <optional participants>: UserInfo[])
+Voxeet.disconnect()
 .then(() => {
-  //call made and everything is ok
+  //if the session is disconnected
 })
 .catch(err => {
   //in case of error
 });
 ```
 
-You can also stop a given conference using the following method which will close the conference.
+### Create/join/invite/leave a conference
+
+You can create a conference with a custom alias (optional). You can also invite others to join the current conference by using the `invite` method.
 
 ```
-Voxeet.stopConference()
+var user1 = new UserInfo(<externalId>: string, <name>: string, <avatarUrl>: string);
+var user2 = new UserInfo(<externalId>: string, <name>: string, <avatarUrl>: string);
+var user3 = new UserInfo(<externalId>: string, <name>: string, <avatarUrl>: string);
+
+Voxeet.create({conferenceAlias: 'YOUR_CONFERENCE_ALIAS'})
+.then(result => Promise.all([
+  Voxeet.join(result.conferenceId),
+  result.isNew ? Voxeet.invite(result.conferenceId, [user1, user2, user3]) : null
+]))
+.catch(err => {
+  //in case of error
+});
+```
+
+An other example if you don't want to invite anyone and a conference alias isn't needed.
+
+```
+Voxeet.create({})
+.then(result => Promise.all([
+  Voxeet.join(result.conferenceId),
+]))
+.catch(err => {
+  //in case of error
+});
+```
+
+You can also stop a given conference using the following method which will leave the conference.
+
+```
+Voxeet.leave()
 .then(() => {
   //call made and everything is ok
 })
@@ -137,9 +166,8 @@ Voxeet.stopConference()
 
 ### Broadcast a message
 
-
 ```
-Voxeet.sendBroadcastMessage(your_message)
+Voxeet.sendBroadcastMessage('YOUR_MESSAGE')
 .then(() => {
   //message sent
 })
@@ -148,29 +176,46 @@ Voxeet.sendBroadcastMessage(your_message)
 });
 ```
 
-### Stop the session
+### Useful methods
 
+By default, conference appears maximized. If false, the conference will appear minimized.
 
 ```
-Voxeet.closeSession()
-.then(() => {
-  //if the session is closed
-})
-.catch(err => {
-  //in case of error
-});
+Voxeet.appearMaximized(true)
+```
+
+By default, conference starts on the built in receiver. If true, it will start on the built in speaker.
+
+```
+Voxeet.defaultBuiltInSpeaker(true)
+```
+
+By default, conference starts without video. If true, it will enable the video at conference start.
+
+```
+Voxeet.defaultVideo(true)
 ```
 
 ## Cordova example
 
 ```
-var user0 = new UserInfo('0', 'Benoit', 'https://cdn.voxeet.com/images/team-benoit-senard.png');
-var user1 = new UserInfo('1', 'Stephane', 'https://cdn.voxeet.com/images/team-stephane-giraudie.png');
-var user2 = new UserInfo('2', 'Thomas', 'https://cdn.voxeet.com/images/team-thomas.png');
+var user1 = new UserInfo('0', 'Benoit', 'https://cdn.voxeet.com/images/team-benoit-senard.png');
+var user2 = new UserInfo('1', 'Stephane', 'https://cdn.voxeet.com/images/team-stephane-giraudie.png');
+var user3 = new UserInfo('2', 'Thomas', 'https://cdn.voxeet.com/images/team-thomas.png');
 
-Voxeet.initialize('consumerKey', 'consumerSecret')
-.then(() => Voxeet.openSession(user0))
-.then(() => Voxeet.startConference('conferenceId', [user1, user2]))
+Voxeet.initialize('YOUR_CONSUMER_KEY', 'YOUR_CONSUMER_SECRET')
+.then(() => Voxeet.appearMaximized(true))
+.then(() => Voxeet.defaultBuiltInSpeaker(true))
+.then(() => Voxeet.defaultVideo(true))
+.then(() => Voxeet.connect(user1))
+.then(() => Voxeet.create({conferenceAlias: 'YOUR_CONFERENCE_ALIAS', params: {videoCodec: 'H264'}}))
+.then(result => Promise.all([
+  Voxeet.join(result.conferenceId),
+  result.isNew ? Voxeet.invite(result.conferenceId, [user2, user3]) : null
+]))
+.then(() => Voxeet.sendBroadcastMessage('Hello world'))
+.then(() => Voxeet.leave())
+.then(() => Voxeet.disconnect())
 .then(() => alert("done"))
 .error(err => alert(err));
 ```
