@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.0.28 (January 30th, 2019)
+  - Android, wider range of devices with proper phone/media audio management
+
 ### 1.0.27 (January 29th, 2019)
   - (Android :)
   - fix volume implementation

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -43,10 +44,16 @@ import eu.codlab.simplepromise.solve.Solver;
 import voxeet.com.sdk.core.FirebaseController;
 import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.core.preferences.VoxeetPreferences;
+import voxeet.com.sdk.core.services.AudioService;
 import voxeet.com.sdk.core.services.authenticate.token.RefreshTokenCallback;
 import voxeet.com.sdk.core.services.authenticate.token.TokenCallback;
+import voxeet.com.sdk.events.error.ConferenceLeftError;
 import voxeet.com.sdk.events.error.PermissionRefusedEvent;
+import voxeet.com.sdk.events.success.ConferenceDestroyedPushEvent;
+import voxeet.com.sdk.events.success.ConferenceJoinedSuccessEvent;
+import voxeet.com.sdk.events.success.ConferenceLeftSuccessEvent;
 import voxeet.com.sdk.events.success.ConferenceRefreshedEvent;
+import voxeet.com.sdk.events.success.ConferenceUserJoinedEvent;
 import voxeet.com.sdk.events.success.SocketConnectEvent;
 import voxeet.com.sdk.events.success.SocketStateChangeEvent;
 import voxeet.com.sdk.factories.VoxeetIntentFactory;
@@ -106,12 +113,19 @@ public class VoxeetCordova extends CordovaPlugin {
             }
         }
 
+        setVolumeVoiceCall();
         checkForAwaitingConference(null);
     }
 
     @Override
     public void onPause(boolean multitasking) {
+        setVolumeVoiceCall();
+
         super.onPause(multitasking);
+
+        if (null != AudioService.getSoundManager()) {
+            AudioService.getSoundManager().requestAudioFocus();
+        }
     }
 
     @Override
@@ -952,6 +966,45 @@ public class VoxeetCordova extends CordovaPlugin {
 
         public CallbackContext getCb() {
             return cb;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ConferenceUserJoinedEvent event) {
+        setVolumeVoiceCall();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ConferenceJoinedSuccessEvent event) {
+        setVolumeVoiceCall();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ConferenceLeftSuccessEvent event) {
+        setVolumeStream();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ConferenceLeftError event) {
+        setVolumeStream();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ConferenceDestroyedPushEvent event) {
+        setVolumeStream();
+    }
+
+    private void setVolumeVoiceCall() {
+        cordova.getActivity().setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
+        if (null != AudioService.getSoundManager()) {
+            AudioService.getSoundManager().requestAudioFocus();
+        }
+    }
+
+    private void setVolumeStream() {
+        cordova.getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        if (null != AudioService.getSoundManager()) {
+            AudioService.getSoundManager().abandonAudioFocusRequest();
         }
     }
 }
