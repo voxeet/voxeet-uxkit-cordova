@@ -74,6 +74,7 @@ public class CordovaIncomingBundleChecker {
                     getExternalUserId(),
                     getAvatarUrl());
 
+            Log.d(TAG, "onAccept: joining conference from CordovaIncomingBundleChecker");
             VoxeetToolkit.getInstance()
                     .getConferenceToolkit()
                     .joinUsingConferenceId(mConferenceId, info)

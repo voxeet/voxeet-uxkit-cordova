@@ -71,6 +71,8 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private static final String ERROR_SDK_NOT_INITIALIZED = "ERROR_SDK_NOT_INITIALIZED";
     private static final String ERROR_SDK_NOT_LOGGED_IN = "ERROR_SDK_NOT_LOGGED_IN";
+    private static final String SDK_ALREADY_CONFIGURED_ERROR = "The SDK is already configured";
+    private static final String TAG = VoxeetCordova.class.getSimpleName();
 
     private final Handler mHandler;
     private UserInfo _current_user;
@@ -392,9 +394,11 @@ public class VoxeetCordova extends CordovaPlugin {
                                     postRefreshAccessToken();
                                 }
                             }, null /* no user info */);
-                }
 
-                internalInitialize(callbackContext);
+                    internalInitialize(callbackContext);
+                } else {
+                    callbackContext.error(SDK_ALREADY_CONFIGURED_ERROR);
+                }
             }
         });
     }
@@ -410,9 +414,11 @@ public class VoxeetCordova extends CordovaPlugin {
                 if (null == VoxeetSdk.getInstance()) {
                     VoxeetSdk.initialize(application,
                             consumerKey, consumerSecret, null);
-                }
 
-                internalInitialize(callbackContext);
+                    internalInitialize(callbackContext);
+                } else {
+                    callbackContext.error(SDK_ALREADY_CONFIGURED_ERROR);
+                }
             }
         });
     }
@@ -568,6 +574,7 @@ public class VoxeetCordova extends CordovaPlugin {
                     }
 
                     //and finally clear them
+                    CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                     CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT = null;
                     CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = null;
                     CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT = null;
@@ -674,11 +681,18 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void join(@NonNull String conferenceId, @NonNull final CallbackContext cb) {
         Context context = mWebView.getContext();
+        Log.d(TAG, "join: joining conference");
         if (null != context && Validate.hasMicrophonePermissions(mWebView.getContext())) {
             VoxeetSdk.getInstance().getConferenceService().join(conferenceId)
                     .then(new PromiseExec<Boolean, Object>() {
                         @Override
                         public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+
+                            //and finally clear them
+                            CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
+                            CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT = null;
+                            CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = null;
+                            CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT = null;
 
                             if (startVideoOnJoin) {
                                 startVideo(null);
@@ -977,6 +991,13 @@ public class VoxeetCordova extends CordovaPlugin {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(ConferenceJoinedSuccessEvent event) {
         setVolumeVoiceCall();
+
+        Log.d(TAG, "onEvent: ConferenceJoinedSuccessEvent :: removing the various bundles");
+        //and finally clear them
+        CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
+        CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT = null;
+        CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = null;
+        CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT = null;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
