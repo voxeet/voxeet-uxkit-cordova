@@ -12,10 +12,16 @@ android {
 
 dependencies {
     compile 'com.android.support:multidex:1.0.3'
-    compile ('com.voxeet.sdk:toolkit:1.4.6') {
+    compile ('com.voxeet.sdk:toolkit:1.4.8') {
         transitive = true
     }
 }
+
+//Voxeet does need the 28 version
+//in case of incompatibility, please open up an issue
+//or consider upgrading if possible
+ext.cdvCompileSdkVersion = 28
+ext.cdvBuildToolsVersion = "28.0.3"
 
 // check for the environment variable to apply the push notification
 // to enable push notification in builds : export USE_PUSH_NOTIFICATION=true
