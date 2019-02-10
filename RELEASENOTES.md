@@ -1,5 +1,9 @@
 # Release Notes
 
+### 1.0.29 (February 10th, 2019)
+  - Android, used upgraded SDK version with preferences saved accross (prevent miss configuration)
+  - if set by default, start video for accepted calls
+
 ### 1.0.28 (January 30th, 2019)
   - Android, wider range of devices with proper phone/media audio management
 

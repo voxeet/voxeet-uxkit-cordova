@@ -8,11 +8,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.voxeet.toolkit.VoxeetCordova;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
+import voxeet.com.sdk.core.VoxeetSdk;
 import voxeet.com.sdk.factories.VoxeetIntentFactory;
 import voxeet.com.sdk.json.UserInfo;
 
@@ -74,7 +76,7 @@ public class CordovaIncomingBundleChecker {
                     getExternalUserId(),
                     getAvatarUrl());
 
-            Log.d(TAG, "onAccept: joining conference from CordovaIncomingBundleChecker");
+            Log.d(TAG, "onAccept: joining conference from ConrdovaIncomingBundleChecker");
             VoxeetToolkit.getInstance()
                     .getConferenceToolkit()
                     .joinUsingConferenceId(mConferenceId, info)
@@ -82,6 +84,22 @@ public class CordovaIncomingBundleChecker {
                         @Override
                         public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
                             //possible callback to set ?
+                            if (VoxeetCordova.startVideoOnJoin && null != VoxeetSdk.getInstance()) {
+                                VoxeetSdk.getInstance().getConferenceService()
+                                        .startVideo()
+                                        .then(new PromiseExec<Boolean, Object>() {
+                                            @Override
+                                            public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                                                //video started ?
+                                            }
+                                        })
+                                        .error(new ErrorPromise() {
+                                            @Override
+                                            public void onError(@NonNull Throwable error) {
+                                                error.printStackTrace();
+                                            }
+                                        });
+                            }
                         }
                     })
                     .error(new ErrorPromise() {
