@@ -3,7 +3,7 @@ name: Report an issue
 about: Use this template to report an issue to Voxeet.
 title: ''
 labels: bug
-assignees: codlab, VTCoco
+assignees: ''
 
 ---
 
