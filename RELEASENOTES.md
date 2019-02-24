@@ -1,5 +1,10 @@
 # Release Notes
 
+### 1.0.31 (February 24th, 2019)
+  - Android, use 1.4.11 SDK with enhanced BLUETOOTH route
+  - Fix issue on Android where calls were being trigerred on resume/pause states
+  - Being on a call will prevent screen fadding away on Android
+
 ### 1.0.30 (February 18th, 2019)
   - Android, hardened SDK calls with check for initialization call before hand
 

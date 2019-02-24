@@ -112,6 +112,7 @@ public class VoxeetCordova extends CordovaPlugin {
         //actually not testing it in the permission callback to prevent issue with flow
         MicrophonePermissionWait current = waitMicrophonePermission;
         if (null != current) {
+            waitMicrophonePermission = null;
             if (Validate.hasMicrophonePermissions(mWebView.getContext())) {
                 join(current.getConfId(), current.getCb());
             } else if (null != current) {
