@@ -1,5 +1,15 @@
 # Release Notes
 
+### 1.0.32 (March, 3rd, 2019)
+  - Android, use 1.4.14 SDK with enhanced management
+  - fix audio routes -> 'in call' to 'in communication'
+  - fix grasp on routes
+  - improved overlay actions
+  - action on users in the overlay can only be done if they are on air
+  - auto detect notch
+  - prevent usernames to impact the UI
+  - remove keyboard when the overlay appears
+
 ### 1.0.31 (February 24th, 2019)
   - Android, use 1.4.11 SDK with enhanced BLUETOOTH route
   - Fix issue on Android where calls were being trigerred on resume/pause states
