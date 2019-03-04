@@ -9,6 +9,7 @@ import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
+import voxeet.com.sdk.core.VoxeetEnvironmentHolder;
 import voxeet.com.sdk.core.preferences.VoxeetPreferences;
 
 /**
@@ -32,7 +33,7 @@ public class VoxeetApplication extends MultiDexApplication {
 
         //force a default voxeet preferences manager
         //in sdk mode, no issues
-        VoxeetPreferences.init(this);
+        VoxeetPreferences.init(this, new VoxeetEnvironmentHolder(this));
         //deprecated but we can only use it using the cordova plugin - for now
         VoxeetPreferences.setDefaultActivity(CordovaIncomingCallActivity.class.getCanonicalName());
 
