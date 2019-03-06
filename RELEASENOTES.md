@@ -1,6 +1,10 @@
 # Release Notes
 
-### 1.0.32 (March, 3rd, 2019)
+### 1.0.33 (March 6th, 2019)
+  - use Android toolkit with proper avatar/usernames UX
+  - Bluetooth devices do not trigger and force BT route
+
+### 1.0.32 (March 3rd, 2019)
   - Android, use 1.4.14 SDK with enhanced management
   - fix audio routes -> 'in call' to 'in communication'
   - fix grasp on routes
