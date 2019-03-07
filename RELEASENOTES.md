@@ -1,5 +1,9 @@
 # Release Notes
 
+### 1.0.34 (March 7th, 2019)
+  - keyboard hides on expand
+  - use internal create/join improvements
+
 ### 1.0.33 (March 6th, 2019)
   - use Android toolkit with proper avatar/usernames UX
   - Bluetooth devices do not trigger and force BT route
