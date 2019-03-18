@@ -1,5 +1,9 @@
 # Release Notes
 
+### 1.0.35 (March 18th, 2019)
+  - Android add pre-listener version
+  - Android upgrade to the 1.4.18.1 sdk version
+
 ### 1.0.34 (March 7th, 2019)
   - keyboard hides on expand
   - use internal create/join improvements

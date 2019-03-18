@@ -76,6 +76,12 @@ class Voxeet {
         });
     }
 
+    listen(conferenceId) {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'listen', [conferenceId]);
+        });
+    }
+
     leave() {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'leave', []);

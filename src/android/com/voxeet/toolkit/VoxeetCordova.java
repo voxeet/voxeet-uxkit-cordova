@@ -285,6 +285,15 @@ public class VoxeetCordova extends CordovaPlugin {
                         callbackContext.error(e.getMessage());
                     }
                     break;
+                case "listen":
+                    try {
+                        String confId = args.getString(0);
+                        listen(confId, callbackContext);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        callbackContext.error(e.getMessage());
+                    }
+                    break;
                 case "invite":
                     try {
                         String conferenceId = null;
@@ -467,7 +476,7 @@ public class VoxeetCordova extends CordovaPlugin {
             @Override
             public void run() {
 
-                if(null == VoxeetSdk.getInstance()) {
+                if (null == VoxeetSdk.getInstance()) {
                     cb.error(ERROR_SDK_NOT_INITIALIZED);
                     return;
                 }
@@ -508,7 +517,7 @@ public class VoxeetCordova extends CordovaPlugin {
      * Call this method to log the current selected user
      */
     public void logSelectedUser() {
-        if(null != VoxeetSdk.getInstance()) {
+        if (null != VoxeetSdk.getInstance()) {
             VoxeetSdk.getInstance().logUser(_current_user);
         }
     }
@@ -518,7 +527,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void closeSession(final CallbackContext cb) {
-        if(null == VoxeetSdk.getInstance()) {
+        if (null == VoxeetSdk.getInstance()) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
         }
@@ -604,7 +613,7 @@ public class VoxeetCordova extends CordovaPlugin {
     private void startConference(final String conferenceAlias,
                                  final List<UserInfo> participants,
                                  final CallbackContext cb) {
-        if(null == VoxeetToolkit.getInstance()) {
+        if (null == VoxeetToolkit.getInstance()) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
         }
@@ -649,7 +658,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void invite(final List<UserInfo> participants,
                         final CallbackContext cb) {
-        if(null == VoxeetToolkit.getInstance()) {
+        if (null == VoxeetToolkit.getInstance()) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
         }
@@ -679,7 +688,7 @@ public class VoxeetCordova extends CordovaPlugin {
     private void create(String conferenceAlias,
                         MetadataHolder holder,
                         ParamsHolder pholder, final CallbackContext cb) {
-        if(null == VoxeetSdk.getInstance()) {
+        if (null == VoxeetSdk.getInstance()) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
         }
@@ -712,7 +721,7 @@ public class VoxeetCordova extends CordovaPlugin {
         Context context = mWebView.getContext();
         Log.d(TAG, "join: joining conference");
 
-        if(null == VoxeetSdk.getInstance()) {
+        if (null == VoxeetSdk.getInstance()) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
         }
@@ -744,8 +753,38 @@ public class VoxeetCordova extends CordovaPlugin {
         }
     }
 
+    private void listen(@NonNull String conferenceId, @NonNull final CallbackContext cb) {
+        Context context = mWebView.getContext();
+        Log.d(TAG, "join: joining conference");
+
+        if (null == VoxeetSdk.getInstance()) {
+            cb.error(ERROR_SDK_NOT_INITIALIZED);
+            return;
+        }
+
+        if (null != context && Validate.hasMicrophonePermissions(mWebView.getContext())) {
+            VoxeetSdk.getInstance().getConferenceService().listenConference(conferenceId)
+                    .then(new PromiseExec<Boolean, Object>() {
+                        @Override
+                        public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                            cleanBundles();
+
+                            cb.success();
+                        }
+                    })
+                    .error(new ErrorPromise() {
+                        @Override
+                        public void onError(@NonNull Throwable error) {
+                            cb.error("Error while joining the conference " + conferenceId);
+                        }
+                    });
+        } else {
+            cb.error("Impossible to join, no mic permission // temporary fallback");
+        }
+    }
+
     private void startVideo(final CallbackContext cb) {
-        if(null == VoxeetSdk.getInstance()) {
+        if (null == VoxeetSdk.getInstance()) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
         }
@@ -768,7 +807,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void stopConference(final CallbackContext cb) {
-        if(null == VoxeetSdk.getInstance()) {
+        if (null == VoxeetSdk.getInstance()) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
         }
@@ -796,7 +835,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void sendBroadcastMessage(final String message, final CallbackContext cb) {
-        if(null == VoxeetSdk.getInstance()) {
+        if (null == VoxeetSdk.getInstance()) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
         }
@@ -824,7 +863,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void appearMaximized(final Boolean enabled) {
-        if(null == VoxeetToolkit.getInstance()) {
+        if (null == VoxeetToolkit.getInstance()) {
             return;
         }
 
@@ -840,7 +879,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void defaultBuiltInSpeaker(final boolean enabled) {
-        if(null == VoxeetSdk.getInstance()) {
+        if (null == VoxeetSdk.getInstance()) {
             return;
         }
 
