@@ -1,3 +1,5 @@
+import UserInfo from "./UserInfo";
+
 /*
  *
  * Voxeet ConferenceKit Cordova
@@ -22,14 +24,79 @@
  * This class enable interaction with Voxeet ConferenceKit
  * @constructor
  */
-const exec = require('cordova/exec');
-const SERVICE = 'Voxeet';
+const exec:any = require('cordova/exec');
+const SERVICE:string = 'Voxeet';
+
+enum RTCPMode {
+    WORST = "worst",
+    BEST = "best"
+}
+
+enum Mode {
+    STANDARD = "standard",
+    PUSH = "push"
+}
+
+enum Codec {
+    VP8 = "VP8",
+    H264 = "H264"
+}
+
+interface CreateParameters {
+    ttl?: number;
+    rtcpMode?: RTCPMode; //best / worst, default => worst
+    mode?: Mode; // push / standard, default => standard
+    videoCodec?: Codec; //default VP8
+    liveRecording?: boolean; //default false
+}
+
+interface CreateOptions {
+    alias?: string;
+    params?: CreateParameters;
+}
+
+interface CreateParameters {
+    ttl?: number;
+    rtcpMode?: RTCPMode; //best / worst, default => worst
+    mode?: Mode; // push / standard, default => standard
+    videoCodec?: Codec; //default VP8
+    liveRecording?: boolean; //default false
+}
+
+interface CreateOptions {
+    alias?: string;
+    params?: CreateParameters;
+}
+
+enum UserType {
+    USER = "user",
+    LISTENER = "listener"
+}
+
+interface JoinUserInfo {
+    type?:  UserType;
+}
+
+interface JoinOptions {
+    user?: JoinUserInfo;
+}
+
+interface RefreshCallback {
+    (): void;
+};
+
+interface TokenRefreshCallback {
+    (): Promise<string>
+};
 
 class Voxeet {
 
+    refreshAccessTokenCallback: RefreshCallback|null = null;
+    refreshToken: TokenRefreshCallback|undefined; 
+
     constructor() {
         this.refreshAccessTokenCallback = () => {
-            this.refreshToken()
+            this.refreshToken && this.refreshToken()
             .then(accessToken => this.onAccessTokenOk(accessToken))
             .catch(err => {
                 console.log(err);
@@ -38,13 +105,13 @@ class Voxeet {
         }
     }
 
-    initialize(consumerKey, consumerSecret) {
+    initialize(consumerKey: string, consumerSecret: string): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'initialize', [consumerKey, consumerSecret]);
         });
     }
 
-    initializeToken(accessToken, refreshToken) {
+    initializeToken(accessToken: string|undefined, refreshToken: TokenRefreshCallback) {
         return new Promise((resolve, reject) => {
             this.refreshToken = refreshToken;
             exec(this.refreshAccessTokenCallback, (err) => {}, SERVICE, 'refreshAccessTokenCallback', []);
@@ -52,71 +119,65 @@ class Voxeet {
         });
     }
 
-    connect(userInfo) {
+    connect(userInfo: UserInfo): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'connect', [userInfo.json()]);
         });
     }
 
-    disconnect() {
+    disconnect(): Promise<any>  {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'disconnect', []);
         });
     }
 
-    create(parameters) {
+    create(options: CreateOptions): Promise<any> {
         return new Promise((resolve, reject) => {
-            exec(resolve, reject, SERVICE, 'create', [parameters]);
+            exec(resolve, reject, SERVICE, 'create', [options]);
         });
     }
 
-    join(conferenceId) {
+    join(conferenceId: string, options: JoinOptions = {}): Promise<any>  {
         return new Promise((resolve, reject) => {
-            exec(resolve, reject, SERVICE, 'join', [conferenceId]);
+            exec(resolve, reject, SERVICE, 'join', [conferenceId, options]);
         });
     }
 
-    listen(conferenceId) {
-        return new Promise((resolve, reject) => {
-            exec(resolve, reject, SERVICE, 'listen', [conferenceId]);
-        });
-    }
-
-    leave() {
+    leave(): Promise<any>  {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'leave', []);
         });
     }
 
-    invite(conferenceId, participants) {
+    invite(conferenceId: string, participants: UserInfo[]): Promise<any> {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'invite', [conferenceId, array]);
         });
     }
 
-    sendBroadcastMessage(message) {
+    sendBroadcastMessage(message: string): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'sendBroadcastMessage', [message]);
             resolve();
         });
     }
 
-    appearMaximized(enabled) {
+    appearMaximized(enabled: boolean): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'appearMaximized', [enabled]);
             resolve();
         });
     }
 
-    defaultBuiltInSpeaker(enabled) {
+    defaultBuiltInSpeaker(enabled: boolean): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'defaultBuiltInSpeaker', [enabled]);
             resolve();
         });
     }
 
-    defaultVideo(enabled) {
+    defaultVideo(enabled: boolean): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'defaultVideo', [enabled]);
             resolve();
@@ -127,18 +188,18 @@ class Voxeet {
      *  Android methods
      */
 
-    screenAutoLock(enabled) {
+    screenAutoLock(enabled: boolean): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'screenAutoLock', [enabled]);
             resolve();
         });
     }
 
-    isUserLoggedIn() {
+    isUserLoggedIn(): Promise<boolean> {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'isUserLoggedIn', []));
     }
 
-    checkForAwaitingConference() {
+    checkForAwaitingConference(): Promise<any> {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []));
     }
 
@@ -146,39 +207,40 @@ class Voxeet {
      *  Deprecated methods
      */
 
-    startConference(conferenceId, participants) {
+    startConference(conferenceId: string, participants: Array<UserInfo>): Promise<any> {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'startConference', [conferenceId, array]);
         });
     }
 
-    stopConference() {
+    stopConference(): Promise<any> {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'stopConference', []));
     }
 
-    openSession(userInfo) {
+    openSession(userInfo: UserInfo): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'openSession', [userInfo.json()]);
         });
     }
 
-    closeSession() {
+    closeSession(): Promise<any> {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'closeSession', []));
     }
 
     //method to refresh tokens, used internally
-    onAccessTokenOk (accessToken) {
+    onAccessTokenOk (accessToken: string) {
       return new Promise((resolve, reject) => {
         exec(resolve, reject, SERVICE, 'onAccessTokenOk', [accessToken]);
       });
     }
 
-    onAccessTokenKo (errorMessage) {
+    onAccessTokenKo (errorMessage: string) {
       return new Promise((resolve, reject) => {
         exec(resolve, reject, SERVICE, 'onAccessTokenKo', [errorMessage]);
       });
     }
 }
 
-module.exports = new Voxeet(); // will be available through Voxeet not voxeet -> fake 'singleton'
+export = new Voxeet();
+//export default new Voxeet(); // will be available through Voxeet not voxeet -> fake 'singleton'

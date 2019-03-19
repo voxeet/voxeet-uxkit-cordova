@@ -278,17 +278,28 @@ public class VoxeetCordova extends CordovaPlugin {
                     break;
                 case "join":
                     try {
+                        boolean listener = false;
                         String confId = args.getString(0);
-                        join(confId, callbackContext);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        callbackContext.error(e.getMessage());
-                    }
-                    break;
-                case "listen":
-                    try {
-                        String confId = args.getString(0);
-                        listen(confId, callbackContext);
+                        if (!args.isNull(1)) {
+                            try {
+                                JSONObject object = args.optJSONObject(1);
+                                if (null != object) {
+                                    JSONObject params_user = object.optJSONObject("user");
+                                    if (null != params_user) {
+                                        String userType = params_user.optString("type");
+                                        listener = "listener".equals(userType);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        Log.d(TAG, "execute: listener := " + listener);
+                        if (listener) {
+                            listen(confId, callbackContext);
+                        } else {
+                            join(confId, callbackContext);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                         callbackContext.error(e.getMessage());
@@ -755,32 +766,28 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void listen(@NonNull String conferenceId, @NonNull final CallbackContext cb) {
         Context context = mWebView.getContext();
-        Log.d(TAG, "join: joining conference");
+        Log.d(TAG, "listen: joining conference");
 
         if (null == VoxeetSdk.getInstance()) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
         }
 
-        if (null != context && Validate.hasMicrophonePermissions(mWebView.getContext())) {
-            VoxeetSdk.getInstance().getConferenceService().listenConference(conferenceId)
-                    .then(new PromiseExec<Boolean, Object>() {
-                        @Override
-                        public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
-                            cleanBundles();
+        VoxeetSdk.getInstance().getConferenceService().listenConference(conferenceId)
+                .then(new PromiseExec<Boolean, Object>() {
+                    @Override
+                    public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                        cleanBundles();
 
-                            cb.success();
-                        }
-                    })
-                    .error(new ErrorPromise() {
-                        @Override
-                        public void onError(@NonNull Throwable error) {
-                            cb.error("Error while joining the conference " + conferenceId);
-                        }
-                    });
-        } else {
-            cb.error("Impossible to join, no mic permission // temporary fallback");
-        }
+                        cb.success();
+                    }
+                })
+                .error(new ErrorPromise() {
+                    @Override
+                    public void onError(@NonNull Throwable error) {
+                        cb.error("Error while joining the conference " + conferenceId);
+                    }
+                });
     }
 
     private void startVideo(final CallbackContext cb) {

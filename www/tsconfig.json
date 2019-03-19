@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es6",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "outDir": "../build/dist/www",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "lib": ["dom", "es2015", "es2016"],
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "noEmitHelpers": false,
+    "importHelpers": false,
+    "strict": true,
+    "jsx": "preserve",
+    "noImplicitReturns": true,
+    "skipLibCheck": true
+  },
+  "include": [ "*", "**/*" ],
+  "exclude": [
+    "build",
+    "dist",
+    "node_modules"
+  ]
+}

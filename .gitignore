@@ -13,3 +13,5 @@ node_modules
 src/ios/Carthage
 *.bcsymbolmap
 *.dSYM
+
+build

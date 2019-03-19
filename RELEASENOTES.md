@@ -1,5 +1,10 @@
 # Release Notes
 
+### 1.0.36 (March 19th, 2019)
+  - Android, use upgraded SDK with WebRTC 72 support
+  - repo architecture now supports typescript
+  - push version into the repositories of npmjs
+
 ### 1.0.35 (March 18th, 2019)
   - Android add pre-listener version
   - Android upgrade to the 1.4.18.1 sdk version

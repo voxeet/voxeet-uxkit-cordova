@@ -23,7 +23,11 @@
  */
 class UserInfo {
 
-    constructor (externalId, name, avatarUrl) {
+    name: string;
+    externalId: string;
+    avatarUrl: string|undefined;
+
+    constructor (externalId: string, name: string, avatarUrl: string|undefined) {
         this.name = name;
         this.externalId = externalId;
         this.avatarUrl = avatarUrl;
@@ -38,4 +42,4 @@ class UserInfo {
     }
 }
 
-module.exports = UserInfo;
+export = UserInfo;

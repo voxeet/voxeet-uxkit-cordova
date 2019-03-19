@@ -10,9 +10,7 @@ It is mandatory that you added:
 
 ## Installation
 
-    cordova plugin add https://github.com/voxeet/voxeet-cordova-conferencekit
-
-    By default the postinstall options will try to build the ios package. To skip the postinstall you can set env variable `VOXEET_SKIP_IOS_BUILD` to true. `export VOXEET_SKIP_IOS_BUILD=true`
+    `cordova plugin add cordova-plugin-voxeet`
 
 ### iOS
 
