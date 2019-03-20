@@ -71,10 +71,27 @@
 }
 
 - (void)create:(CDVInvokedUrlCommand *)command {
-    NSDictionary<NSString *,id> *parameters = [command.arguments objectAtIndex:0];
+    NSDictionary<NSString *,id> *options = [command.arguments objectAtIndex:0];
+    
+    NSMutableDictionary *nativeOptions = [[NSMutableDictionary alloc] init];
+    [nativeOptions setValue:[options valueForKey:@"alias"] forKey:@"conferenceAlias"];
+    
+    NSDictionary *params = [options valueForKey:@"params"];
+    if (params) {
+        NSMutableDictionary *nativeOptionsParams = [[NSMutableDictionary alloc] init];
+        [nativeOptionsParams setValue:[params valueForKey:@"ttl"] forKey:@"ttl"];
+        [nativeOptionsParams setValue:[params valueForKey:@"rtcpMode"] forKey:@"rtcpMode"];
+        [nativeOptionsParams setValue:[params valueForKey:@"mode"] forKey:@"mode"];
+        [nativeOptionsParams setValue:[params valueForKey:@"videoCodec"] forKey:@"videoCodec"];
+        [nativeOptions setValue:nativeOptionsParams forKey:@"params"];
+        
+        if ([params valueForKey:@"liveRecording"]) {
+            [nativeOptions setValue:@{@"liveRecording": [params valueForKey:@"liveRecording"]} forKey:@"metadata"];
+        }
+    }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.conference createWithParameters:parameters success:^(NSDictionary<NSString *,id> *response) {
+        [VoxeetSDK.shared.conference createWithParameters:nativeOptions success:^(NSDictionary<NSString *,id> *response) {
             [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:response] callbackId:command.callbackId];
         } fail:^(NSError *error) {
             [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
@@ -84,10 +101,19 @@
 
 - (void)join:(CDVInvokedUrlCommand *)command {
     NSString *conferenceID = [command.arguments objectAtIndex:0];
+    NSDictionary<NSString *,id> *options = [command.arguments objectAtIndex:1]
+    
+    NSMutableDictionary *nativeOptions = [[NSMutableDictionary alloc] init];
+    [nativeOptions setValue:[options valueForKey:@"alias"] forKey:@"conferenceAlias"];
+    
+    NSDictionary *user = [options valueForKey:@"user"];
+    if (user) {
+        [nativeOptions setValue:[user valueForKey:@"type"] forKey:@"participantType"];
+    }
     
     dispatch_async(dispatch_get_main_queue(), ^{
         BOOL video = VoxeetSDK.shared.conference.defaultVideo;
-        [VoxeetSDK.shared.conference joinWithConferenceID:conferenceID video:video userInfo:nil success:^(NSDictionary<NSString *,id> *response) {
+        [VoxeetSDK.shared.conference joinWithConferenceID:conferenceID video:video userInfo:nativeOptions success:^(NSDictionary<NSString *,id> *response) {
             [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:response] callbackId:command.callbackId];
         } fail:^(NSError *error) {
             [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
