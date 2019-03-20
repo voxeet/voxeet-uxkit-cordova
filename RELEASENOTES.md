@@ -1,5 +1,11 @@
 # Release Notes
 
+### 1.1 (March 20th, 2019)
+  - Android, fix conferenceAlias -> alias
+  - iOS implementation of listener mode
+  - reset ability to use directly the repository
+  - breaking change in the importation : [README](./README.md)
+
 ### 1.0.36 (March 19th, 2019)
   - Android, use upgraded SDK with WebRTC 72 support
   - repo architecture now supports typescript
