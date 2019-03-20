@@ -27,22 +27,22 @@ import UserInfo from "./UserInfo";
 const exec:any = require('cordova/exec');
 const SERVICE:string = 'Voxeet';
 
-enum RTCPMode {
+export enum RTCPMode {
     WORST = "worst",
     BEST = "best"
 }
 
-enum Mode {
+export enum Mode {
     STANDARD = "standard",
     PUSH = "push"
 }
 
-enum Codec {
+export enum Codec {
     VP8 = "VP8",
     H264 = "H264"
 }
 
-interface CreateParameters {
+export interface CreateParameters {
     ttl?: number;
     rtcpMode?: RTCPMode; //best / worst, default => worst
     mode?: Mode; // push / standard, default => standard
@@ -50,12 +50,12 @@ interface CreateParameters {
     liveRecording?: boolean; //default false
 }
 
-interface CreateOptions {
+export interface CreateOptions {
     alias?: string;
     params?: CreateParameters;
 }
 
-interface CreateParameters {
+export interface CreateParameters {
     ttl?: number;
     rtcpMode?: RTCPMode; //best / worst, default => worst
     mode?: Mode; // push / standard, default => standard
@@ -63,33 +63,33 @@ interface CreateParameters {
     liveRecording?: boolean; //default false
 }
 
-interface CreateOptions {
+export interface CreateOptions {
     alias?: string;
     params?: CreateParameters;
 }
 
-enum UserType {
+export enum UserType {
     USER = "user",
     LISTENER = "listener"
 }
 
-interface JoinUserInfo {
+export interface JoinUserInfo {
     type?:  UserType;
 }
 
-interface JoinOptions {
+export interface JoinOptions {
     user?: JoinUserInfo;
 }
 
-interface RefreshCallback {
+export interface RefreshCallback {
     (): void;
 };
 
-interface TokenRefreshCallback {
+export interface TokenRefreshCallback {
     (): Promise<string>
 };
 
-class Voxeet {
+class Voxeet_ {
 
     refreshAccessTokenCallback: RefreshCallback|null = null;
     refreshToken: TokenRefreshCallback|undefined; 
@@ -242,5 +242,5 @@ class Voxeet {
     }
 }
 
-export = new Voxeet();
+export const Voxeet = new Voxeet_();
 //export default new Voxeet(); // will be available through Voxeet not voxeet -> fake 'singleton'

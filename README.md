@@ -45,6 +45,16 @@ This call use the following import : `import android.view.WindowManager;`
 
 ## Implementation
 
+### Usage
+
+The project is now exporting various elements to help integrate calls into your app
+
+Before using the `Voxeet` singleton, you must use projection to have access to it :
+
+```
+const { Voxeet, UserType } = VoxeetSDK;
+```
+
 ### Import
 
 You can use the Voxeet and UserInfo classes using the following :

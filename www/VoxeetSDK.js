@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /*
  *
  * Voxeet ConferenceKit Cordova
@@ -28,25 +29,25 @@ var RTCPMode;
 (function (RTCPMode) {
     RTCPMode["WORST"] = "worst";
     RTCPMode["BEST"] = "best";
-})(RTCPMode || (RTCPMode = {}));
+})(RTCPMode = exports.RTCPMode || (exports.RTCPMode = {}));
 var Mode;
 (function (Mode) {
     Mode["STANDARD"] = "standard";
     Mode["PUSH"] = "push";
-})(Mode || (Mode = {}));
+})(Mode = exports.Mode || (exports.Mode = {}));
 var Codec;
 (function (Codec) {
     Codec["VP8"] = "VP8";
     Codec["H264"] = "H264";
-})(Codec || (Codec = {}));
+})(Codec = exports.Codec || (exports.Codec = {}));
 var UserType;
 (function (UserType) {
     UserType["USER"] = "user";
     UserType["LISTENER"] = "listener";
-})(UserType || (UserType = {}));
+})(UserType = exports.UserType || (exports.UserType = {}));
 ;
 ;
-class Voxeet {
+class Voxeet_ {
     constructor() {
         this.refreshAccessTokenCallback = null;
         this.refreshAccessTokenCallback = () => {
@@ -172,6 +173,6 @@ class Voxeet {
         });
     }
 }
-module.exports = new Voxeet();
+exports.Voxeet = new Voxeet_();
 //export default new Voxeet(); // will be available through Voxeet not voxeet -> fake 'singleton'
-//# sourceMappingURL=Voxeet.js.map
+//# sourceMappingURL=VoxeetSDK.js.map

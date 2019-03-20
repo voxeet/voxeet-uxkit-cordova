@@ -4,6 +4,8 @@
 rm -rf build/dist
 mkdir -p build/dist/www
 
+rm www/*
+
 # cd to the library files
 cd lib
 
