@@ -124,7 +124,7 @@
 - (void)leave:(CDVInvokedUrlCommand *)command {
     dispatch_async(dispatch_get_main_queue(), ^{
         [VoxeetSDK.shared.conference leaveWithCompletion:^(NSError *error) {
-            if (error == nil) {
+            if (error == nil || error.code == -10002) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
