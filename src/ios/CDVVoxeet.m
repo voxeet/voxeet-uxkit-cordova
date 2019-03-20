@@ -101,7 +101,7 @@
 
 - (void)join:(CDVInvokedUrlCommand *)command {
     NSString *conferenceID = [command.arguments objectAtIndex:0];
-    NSDictionary<NSString *,id> *options = [command.arguments objectAtIndex:1]
+    NSDictionary<NSString *,id> *options = [command.arguments objectAtIndex:1];
     
     NSMutableDictionary *nativeOptions = [[NSMutableDictionary alloc] init];
     [nativeOptions setValue:[options valueForKey:@"alias"] forKey:@"conferenceAlias"];
