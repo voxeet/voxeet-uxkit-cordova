@@ -5,7 +5,7 @@
     "target": "es6",
     "module": "commonjs",
     "esModuleInterop": true,
-    "outDir": "../build/dist/www",
+    "outDir": "../www",
     "sourceMap": true,
     "experimentalDecorators": true,
     "lib": ["dom", "es2015", "es2016"],

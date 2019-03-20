@@ -1,19 +1,22 @@
 #!/bin/bash
 
 # remove files
-mkdir -p build/dist
 rm -rf build/dist
+mkdir -p build/dist/www
 
 # cd to the library files
-cd www
+cd lib
 
 #run typescript compiler
 tsc
+
+# they will be put in the www folder
 
 #back to main
 cd ..
 
 #cp proper files into the dist folder
+cp -r ./www/* ./build/dist/www/
 cp ./package.json ./build/dist/
 cp ./build_ios_frameworks.sh ./build/dist/build_ios_frameworks.sh
 
