@@ -243,7 +243,7 @@ public class VoxeetCordova extends CordovaPlugin {
                         JSONObject parameters = args.getJSONObject(0);
 
 
-                        String confAlias = parameters.getString("conferenceAlias");
+                        String confAlias = parameters.getString("alias");
                         JSONObject object = null;
                         if (!parameters.isNull("metadata")) {
                             object = parameters.getJSONObject("metadata");
