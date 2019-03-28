@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.1.1 (March 28th, 2019)
+  - Bump iOS frameworks versions for Swift 5
+
 ### 1.1 (March 20th, 2019)
   - Android, fix conferenceAlias -> alias
   - iOS implementation of listener mode
