@@ -121,6 +121,10 @@
     });
 }
 
+- (void)broadcast:(CDVInvokedUrlCommand *)command {
+    [self join:command];
+}
+
 - (void)leave:(CDVInvokedUrlCommand *)command {
     dispatch_async(dispatch_get_main_queue(), ^{
         [VoxeetSDK.shared.conference leaveWithCompletion:^(NSError *error) {
