@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.1.2 (April, 12th, 2019)
+  - Add broadcasting mode
+
 ### 1.1.1 (March 28th, 2019)
   - Bump iOS frameworks versions for Swift 5
 
