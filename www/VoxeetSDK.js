@@ -91,6 +91,11 @@ class Voxeet_ {
             exec(resolve, reject, SERVICE, 'join', [conferenceId, options]);
         });
     }
+    broadcast(conferenceId) {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'broadcast', [conferenceId]);
+        });
+    }
     leave() {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'leave', []);
