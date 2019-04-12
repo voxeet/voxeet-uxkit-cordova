@@ -5,20 +5,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.voxeet.sdk.core.VoxeetSdk;
+import com.voxeet.sdk.core.preferences.VoxeetPreferences;
+import com.voxeet.sdk.events.success.DeclineConferenceResultEvent;
+import com.voxeet.sdk.json.UserInfo;
 import com.voxeet.toolkit.activities.notification.IncomingBundleChecker;
 
 import eu.codlab.simplepromise.Promise;
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
-import voxeet.com.sdk.core.VoxeetSdk;
-import voxeet.com.sdk.core.preferences.VoxeetPreferences;
-import voxeet.com.sdk.events.success.DeclineConferenceResultEvent;
-import voxeet.com.sdk.json.UserInfo;
-
-/**
- * Created by kevinleperf on 21/11/2018.
- */
 
 public class RNBundleChecker extends IncomingBundleChecker {
     private static final String TAG = RNBundleChecker.class.getSimpleName();

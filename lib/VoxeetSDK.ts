@@ -143,6 +143,12 @@ class Voxeet_ {
         });
     }
 
+    broadcast(conferenceId: string): Promise<any>  {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'broadcast', [conferenceId]);
+        });
+    }
+
     leave(): Promise<any>  {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'leave', []);

@@ -11,7 +11,28 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.voxeet.android.media.audio.AudioRoute;
+import com.voxeet.audio.AudioRoute;
+import com.voxeet.push.firebase.FirebaseController;
+import com.voxeet.sdk.core.VoxeetSdk;
+import com.voxeet.sdk.core.preferences.VoxeetPreferences;
+import com.voxeet.sdk.core.services.AudioService;
+import com.voxeet.sdk.core.services.authenticate.token.RefreshTokenCallback;
+import com.voxeet.sdk.core.services.authenticate.token.TokenCallback;
+import com.voxeet.sdk.events.error.ConferenceLeftError;
+import com.voxeet.sdk.events.error.PermissionRefusedEvent;
+import com.voxeet.sdk.events.success.ConferenceDestroyedPushEvent;
+import com.voxeet.sdk.events.success.ConferenceJoinedSuccessEvent;
+import com.voxeet.sdk.events.success.ConferenceLeftSuccessEvent;
+import com.voxeet.sdk.events.success.ConferenceRefreshedEvent;
+import com.voxeet.sdk.events.success.ConferenceUserJoinedEvent;
+import com.voxeet.sdk.events.success.SocketConnectEvent;
+import com.voxeet.sdk.events.success.SocketStateChangeEvent;
+import com.voxeet.sdk.factories.VoxeetIntentFactory;
+import com.voxeet.sdk.json.UserInfo;
+import com.voxeet.sdk.json.internal.MetadataHolder;
+import com.voxeet.sdk.json.internal.ParamsHolder;
+import com.voxeet.sdk.models.ConferenceResponse;
+import com.voxeet.sdk.utils.Validate;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.implementation.overlays.OverlayState;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
@@ -41,27 +62,6 @@ import eu.codlab.simplepromise.Promise;
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
-import voxeet.com.sdk.core.FirebaseController;
-import voxeet.com.sdk.core.VoxeetSdk;
-import voxeet.com.sdk.core.preferences.VoxeetPreferences;
-import voxeet.com.sdk.core.services.AudioService;
-import voxeet.com.sdk.core.services.authenticate.token.RefreshTokenCallback;
-import voxeet.com.sdk.core.services.authenticate.token.TokenCallback;
-import voxeet.com.sdk.events.error.ConferenceLeftError;
-import voxeet.com.sdk.events.error.PermissionRefusedEvent;
-import voxeet.com.sdk.events.success.ConferenceDestroyedPushEvent;
-import voxeet.com.sdk.events.success.ConferenceJoinedSuccessEvent;
-import voxeet.com.sdk.events.success.ConferenceLeftSuccessEvent;
-import voxeet.com.sdk.events.success.ConferenceRefreshedEvent;
-import voxeet.com.sdk.events.success.ConferenceUserJoinedEvent;
-import voxeet.com.sdk.events.success.SocketConnectEvent;
-import voxeet.com.sdk.events.success.SocketStateChangeEvent;
-import voxeet.com.sdk.factories.VoxeetIntentFactory;
-import voxeet.com.sdk.json.UserInfo;
-import voxeet.com.sdk.json.internal.MetadataHolder;
-import voxeet.com.sdk.json.internal.ParamsHolder;
-import voxeet.com.sdk.models.ConferenceResponse;
-import voxeet.com.sdk.utils.Validate;
 
 /**
  * Voxeet implementation for Cordova
@@ -271,6 +271,16 @@ public class VoxeetCordova extends CordovaPlugin {
                         }
 
                         create(confAlias, holder, pholder, callbackContext);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        callbackContext.error(e.getMessage());
+                    }
+                    break;
+                case "broadcast":
+                    try {
+                        String confId = args.getString(0);
+                        Log.d(TAG, "execute: broadcast");
+                        broadcast(confId, callbackContext);
                     } catch (Exception e) {
                         e.printStackTrace();
                         callbackContext.error(e.getMessage());
@@ -726,6 +736,42 @@ public class VoxeetCordova extends CordovaPlugin {
                         cb.error("Error while creating the conference " + conferenceAlias);
                     }
                 });
+    }
+
+    private void broadcast(@NonNull String conferenceId, @NonNull final CallbackContext cb) {
+        Context context = mWebView.getContext();
+        Log.d(TAG, "broadcast: broadcasting conference");
+
+        if (null == VoxeetSdk.getInstance()) {
+            cb.error(ERROR_SDK_NOT_INITIALIZED);
+            return;
+        }
+
+        if (null != context && Validate.hasMicrophonePermissions(mWebView.getContext())) {
+            VoxeetSdk.getInstance().getConferenceService().broadcastConference(conferenceId)
+                    .then(new PromiseExec<Boolean, Object>() {
+                        @Override
+                        public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+
+                            cleanBundles();
+
+                            if (startVideoOnJoin) {
+                                startVideo(null);
+                            }
+
+                            cb.success();
+                        }
+                    })
+                    .error(new ErrorPromise() {
+                        @Override
+                        public void onError(@NonNull Throwable error) {
+                            cb.error("Error while joining the conference " + conferenceId);
+                        }
+                    });
+        } else {
+            waitMicrophonePermission = new MicrophonePermissionWait(conferenceId, cb);
+            requestMicrophonePermission();
+        }
     }
 
     private void join(@NonNull String conferenceId, @NonNull final CallbackContext cb) {

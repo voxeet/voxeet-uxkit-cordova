@@ -11,6 +11,15 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.voxeet.sdk.audio.SoundManager;
+import com.voxeet.sdk.core.VoxeetSdk;
+import com.voxeet.sdk.core.services.AudioService;
+import com.voxeet.sdk.events.success.ConferenceDestroyedPushEvent;
+import com.voxeet.sdk.events.success.ConferenceEndedEvent;
+import com.voxeet.sdk.events.success.ConferencePreJoinedEvent;
+import com.voxeet.sdk.events.success.DeclineConferenceResultEvent;
+import com.voxeet.sdk.utils.AndroidManifest;
+import com.voxeet.sdk.utils.AudioType;
 import com.voxeet.toolkit.R;
 import com.voxeet.toolkit.views.internal.rounded.RoundedImageView;
 
@@ -21,19 +30,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
-import voxeet.com.sdk.audio.SoundManager;
-import voxeet.com.sdk.core.VoxeetSdk;
-import voxeet.com.sdk.core.services.AudioService;
-import voxeet.com.sdk.events.success.ConferenceDestroyedPushEvent;
-import voxeet.com.sdk.events.success.ConferenceEndedEvent;
-import voxeet.com.sdk.events.success.ConferencePreJoinedEvent;
-import voxeet.com.sdk.events.success.DeclineConferenceResultEvent;
-import voxeet.com.sdk.utils.AndroidManifest;
-import voxeet.com.sdk.utils.AudioType;
-
-/**
- * Created by kevinleperf on 25/05/2018.
- */
 
 public class CordovaIncomingCallActivity extends AppCompatActivity implements CordovaIncomingBundleChecker.IExtraBundleFillerListener {
 

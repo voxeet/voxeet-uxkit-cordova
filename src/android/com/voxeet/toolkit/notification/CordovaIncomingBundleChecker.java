@@ -8,15 +8,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.voxeet.sdk.core.VoxeetSdk;
+import com.voxeet.sdk.factories.VoxeetIntentFactory;
+import com.voxeet.sdk.json.UserInfo;
 import com.voxeet.toolkit.VoxeetCordova;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 
 import eu.codlab.simplepromise.solve.ErrorPromise;
 import eu.codlab.simplepromise.solve.PromiseExec;
 import eu.codlab.simplepromise.solve.Solver;
-import voxeet.com.sdk.core.VoxeetSdk;
-import voxeet.com.sdk.factories.VoxeetIntentFactory;
-import voxeet.com.sdk.json.UserInfo;
 
 public class CordovaIncomingBundleChecker {
 

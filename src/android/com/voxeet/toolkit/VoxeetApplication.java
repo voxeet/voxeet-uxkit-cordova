@@ -3,18 +3,14 @@ package com.voxeet.toolkit;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
+import com.voxeet.sdk.core.VoxeetEnvironmentHolder;
+import com.voxeet.sdk.core.preferences.VoxeetPreferences;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.implementation.overlays.OverlayState;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
-import voxeet.com.sdk.core.VoxeetEnvironmentHolder;
-import voxeet.com.sdk.core.preferences.VoxeetPreferences;
-
-/**
- * Created by RomainBenmansour on 06,April,2016
- */
 public class VoxeetApplication extends MultiDexApplication {
 
     private CordovaRootViewProvider mCordovaRootViewProvider;
