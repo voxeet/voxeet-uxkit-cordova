@@ -1,5 +1,10 @@
 # Release Notes
 
+### 1.1.4 (April 15th, 2019)
+  - fix mirror mode in Android
+  - fix listener mode on iOS
+  - improved native promises management in Android
+
 ### 1.1.3 (April 15th, 2019)
   - Android, use updated native toolkit
 
