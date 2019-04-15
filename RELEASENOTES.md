@@ -1,6 +1,9 @@
 # Release Notes
 
-### 1.1.2 (April, 12th, 2019)
+### 1.1.3 (April 15th, 2019)
+  - Android, use updated native toolkit
+
+### 1.1.2 (April 12th, 2019)
   - Add broadcasting mode
 
 ### 1.1.1 (March 28th, 2019)
