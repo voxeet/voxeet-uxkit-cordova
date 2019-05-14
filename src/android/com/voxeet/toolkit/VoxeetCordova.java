@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.voxeet.audio.AudioRoute;
@@ -376,6 +377,14 @@ public class VoxeetCordova extends CordovaPlugin {
                 //create -> objet key -> value (value->key->value)
                 //join
                 //leave
+                case "setAudio3DEnabled":
+                    setAudio3DEnabled(args.getBoolean(0));
+                    callbackContext.success();
+                    break;
+                case "setTelecomMode":
+                    setTelecomMode(args.getBoolean(0));
+                    callbackContext.success();
+                    break;
                 case "appearMaximized":
                     appearMaximized(args.getBoolean(0));
                     callbackContext.success();
@@ -893,12 +902,18 @@ public class VoxeetCordova extends CordovaPlugin {
             return;
         }
 
+        String conferenceId = VoxeetSdk.getInstance().getConferenceService().getConferenceId();
+        if(null == conferenceId || TextUtils.isEmpty(conferenceId)) {
+            cb.error("You're not in a conference");
+            return;
+        }
+
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 VoxeetSdk.getInstance()
                         .getConferenceService()
-                        .sendBroadcastMessage(message)
+                        .sendMessage(conferenceId, message)
                         .then(new PromiseExec<Boolean, Object>() {
                             @Override
                             public void onCall(@Nullable Boolean aBoolean, @NonNull Solver<Object> solver) {
@@ -913,6 +928,18 @@ public class VoxeetCordova extends CordovaPlugin {
                         });
             }
         });
+    }
+
+    private void setAudio3DEnabled(boolean enabled) {
+        if(null != VoxeetSdk.getInstance()) {
+            VoxeetSdk.getInstance().getMediaService().setAudio3DEnabled(enabled);
+        }
+    }
+
+    private void setTelecomMode(boolean telecomMode) {
+        if(null != VoxeetSdk.getInstance()) {
+            VoxeetSdk.getInstance().getConferenceService().setTelecomMode(telecomMode);
+        }
     }
 
     private void appearMaximized(final Boolean enabled) {

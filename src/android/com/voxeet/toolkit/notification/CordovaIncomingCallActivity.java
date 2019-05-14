@@ -114,7 +114,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
 
         SoundManager soundManager = AudioService.getSoundManager();
         if (null != soundManager) {
-            soundManager.setInVoiceCallSoundType().playSoundType(AudioType.RING);
+            soundManager.checkOutputRoute().playSoundType(AudioType.RING);
         }
 
         if (mIncomingBundleChecker.isBundleValid()) {
