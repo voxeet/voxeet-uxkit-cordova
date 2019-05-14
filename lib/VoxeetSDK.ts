@@ -169,6 +169,18 @@ class Voxeet_ {
         });
     }
 
+    setAudio3DEnabled(enabled: boolean): Promise<any> {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'setAudio3DEnabled', [enabled]);
+        });
+    }
+
+    setTelecomMode(enabled: boolean): Promise<any> {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'setTelecomMode', [enabled]);
+        });
+    }
+
     appearMaximized(enabled: boolean): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'appearMaximized', [enabled]);
