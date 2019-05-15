@@ -4,8 +4,8 @@ module.exports = function(context) {
 
   var APPLICATION_CLASS = "com.voxeet.toolkit.VoxeetApplication";
 
-  var fs = context.requireCordovaModule('fs'),
-      path = context.requireCordovaModule('path');
+  var fs = require('fs');
+  var path = require('path');
 
   var folders = [
     'platforms/android/app/src/main/',
