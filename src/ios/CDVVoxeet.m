@@ -198,6 +198,36 @@
     });
 }
 
+- (void)setAudio3DEnabled:(CDVInvokedUrlCommand *)command {
+    BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        VoxeetSDK.shared.audio3D = enable;
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    });
+}
+
+- (void)setTelecomMode:(CDVInvokedUrlCommand *)command {
+    BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        VoxeetConferenceKit.shared.telecom = enable;
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    });
+}
+
+- (void)isAudio3DEnabled:(CDVInvokedUrlCommand *)command {
+    BOOL isAudio3D = VoxeetSDK.shared.audio3D;
+
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isAudio3D] callbackId:command.callbackId];
+}
+
+- (void)isTelecomMode:(CDVInvokedUrlCommand *)command {
+    BOOL isTelecom = VoxeetConferenceKit.shared.telecom;
+
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isTelecom] callbackId:command.callbackId];
+}
+
 /*
  *  MARK: Oauth2 helpers
  */

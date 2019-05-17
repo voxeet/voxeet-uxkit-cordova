@@ -17,6 +17,10 @@
 - (void)appearMaximized:(CDVInvokedUrlCommand *)command;
 - (void)defaultBuiltInSpeaker:(CDVInvokedUrlCommand *)command;
 - (void)defaultVideo:(CDVInvokedUrlCommand *)command;
+- (void)setAudio3DEnabled:(CDVInvokedUrlCommand *)command;
+- (void)setTelecomMode:(CDVInvokedUrlCommand *)command;
+- (void)isAudio3DEnabled:(CDVInvokedUrlCommand *)command;
+- (void)isTelecomMode:(CDVInvokedUrlCommand *)command;
 - (void)screenAutoLock:(CDVInvokedUrlCommand *)command;
 - (void)isUserLoggedIn:(CDVInvokedUrlCommand *)command;
 - (void)checkForAwaitingConference:(CDVInvokedUrlCommand *)command;
