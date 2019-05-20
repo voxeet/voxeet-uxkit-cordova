@@ -202,7 +202,7 @@
     BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        VoxeetSDK.shared.audio3D = enable;
+        VoxeetSDK.shared.conference.audio3D = enable;
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
 }
