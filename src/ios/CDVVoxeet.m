@@ -17,7 +17,7 @@
     NSString *consumerSecret = [command.arguments objectAtIndex:1];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        VoxeetSDK.shared.callKit = YES;
+        VoxeetSDK.shared.pushNotification.type = VTPushNotificationTypeCallKit;
         
         [VoxeetSDK.shared initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret userInfo:nil connectSession:true];
         [VoxeetConferenceKit.shared initialize];
@@ -29,7 +29,7 @@
     NSString *accessToken = [command.arguments objectAtIndex:0];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        VoxeetSDK.shared.callKit = YES;
+        VoxeetSDK.shared.pushNotification.type = VTPushNotificationTypeCallKit;
         
         [VoxeetSDK.shared initializeWithAccessToken:accessToken userInfo:nil refreshTokenClosure:^(void (^closure)(NSString *)) {
             self.refreshAccessTokenClosure = closure;
