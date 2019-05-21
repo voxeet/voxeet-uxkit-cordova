@@ -22,17 +22,6 @@ export interface CreateOptions {
     alias?: string;
     params?: CreateParameters;
 }
-export interface CreateParameters {
-    ttl?: number;
-    rtcpMode?: RTCPMode;
-    mode?: Mode;
-    videoCodec?: Codec;
-    liveRecording?: boolean;
-}
-export interface CreateOptions {
-    alias?: string;
-    params?: CreateParameters;
-}
 export declare enum UserType {
     USER = "user",
     LISTENER = "listener"

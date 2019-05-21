@@ -55,19 +55,6 @@ export interface CreateOptions {
     params?: CreateParameters;
 }
 
-export interface CreateParameters {
-    ttl?: number;
-    rtcpMode?: RTCPMode; //best / worst, default => worst
-    mode?: Mode; // push / standard, default => standard
-    videoCodec?: Codec; //default VP8
-    liveRecording?: boolean; //default false
-}
-
-export interface CreateOptions {
-    alias?: string;
-    params?: CreateParameters;
-}
-
 export enum UserType {
     USER = "user",
     LISTENER = "listener"
@@ -114,7 +101,7 @@ class Voxeet_ {
     initializeToken(accessToken: string|undefined, refreshToken: TokenRefreshCallback) {
         return new Promise((resolve, reject) => {
             this.refreshToken = refreshToken;
-            exec(this.refreshAccessTokenCallback, (err) => {}, SERVICE, 'refreshAccessTokenCallback', []);
+            exec(this.refreshAccessTokenCallback, (err: Error) => {}, SERVICE, 'refreshAccessTokenCallback', []);
             exec(resolve, reject, SERVICE, 'initializeToken', [accessToken]);
         });
     }
