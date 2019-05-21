@@ -202,7 +202,7 @@
     BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        VoxeetSDK.shared.conference.audio3D = enable;
+        VoxeetSDK.shared.conference.audio3D = enabled;
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
 }
@@ -211,13 +211,13 @@
     BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        VoxeetConferenceKit.shared.telecom = enable;
+        VoxeetConferenceKit.shared.telecom = enabled;
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
 }
 
 - (void)isAudio3DEnabled:(CDVInvokedUrlCommand *)command {
-    BOOL isAudio3D = VoxeetSDK.shared.audio3D;
+    BOOL isAudio3D = VoxeetSDK.shared.conference.audio3D;
 
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isAudio3D] callbackId:command.callbackId];
 }
