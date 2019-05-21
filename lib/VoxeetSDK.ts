@@ -175,10 +175,18 @@ class Voxeet_ {
         });
     }
 
+    isAudio3DEnabled(): Promise<boolean> {
+        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'isAudio3DEnabled', []));
+    }
+
     setTelecomMode(enabled: boolean): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'setTelecomMode', [enabled]);
         });
+    }
+
+    isTelecomMode(): Promise<boolean> {
+        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'isTelecomMode', []));
     }
 
     appearMaximized(enabled: boolean): Promise<any> {

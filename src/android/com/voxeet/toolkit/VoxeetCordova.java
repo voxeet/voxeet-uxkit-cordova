@@ -236,6 +236,12 @@ public class VoxeetCordova extends CordovaPlugin {
                 case "isUserLoggedIn":
                     isUserLoggedIn(callbackContext);
                     break;
+                case "isAudio3DEnabled":
+                    isAudio3DEnabled(callbackContext);
+                    break;
+                case "isTelecomMode":
+                    isTelecomMode(callbackContext);
+                    break;
                 case "checkForAwaitingConference":
                     checkForAwaitingConference(callbackContext);
                     break;
@@ -595,6 +601,34 @@ public class VoxeetCordova extends CordovaPlugin {
                 }
 
                 cb.sendPluginResult(new PluginResult(PluginResult.Status.OK, logged_in));
+            }
+        });
+    }
+
+    private void isAudio3DEnabled(final CallbackContext cb) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                boolean enabled = false;
+                if (null != VoxeetSdk.getInstance()) {
+                    enabled = VoxeetSdk.getInstance().getMediaService().isAudio3DEnabled();
+                }
+
+                cb.sendPluginResult(new PluginResult(PluginResult.Status.OK, enabled));
+            }
+        });
+    }
+
+    private void isTelecomMode(final CallbackContext cb) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                boolean enabled = false;
+                if (null != VoxeetSdk.getInstance()) {
+                    enabled = VoxeetSdk.getInstance().getConferenceService().isTelecomMode();
+                }
+
+                cb.sendPluginResult(new PluginResult(PluginResult.Status.OK, enabled));
             }
         });
     }
