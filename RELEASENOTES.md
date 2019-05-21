@@ -1,5 +1,13 @@
 # Release Notes
 
+### 1.1.7 (May 21th, 2019)
+  - fix typo from 1.1.6 update
+  - remove typescript duplicates
+
+### 1.1.6 (May 20th, 2019)
+  - audio3D disabled by default
+  - add hybrid accessor for telecom mode and audio3D access
+
 ### 1.1.4 (April 15th, 2019)
   - fix mirror mode in Android
   - fix listener mode on iOS
