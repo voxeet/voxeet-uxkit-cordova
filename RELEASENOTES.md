@@ -1,5 +1,9 @@
 # Release Notes
 
+### 1.1.8 (May 21th, 2019)
+  - lock ios versions
+  - add getter for audio and telecom mode
+
 ### 1.1.7 (May 21th, 2019)
   - fix typo from 1.1.6 update
   - remove typescript duplicates
