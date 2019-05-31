@@ -1,5 +1,5 @@
 import UserInfo from "./UserInfo";
-
+import VoxeetMedia from "./VoxeetMedia";
 /*
  *
  * Voxeet ConferenceKit Cordova
@@ -78,10 +78,15 @@ export interface TokenRefreshCallback {
 
 class Voxeet_ {
 
+    public VoxeetMedia: VoxeetMedia;
+
     refreshAccessTokenCallback: RefreshCallback|null = null;
     refreshToken: TokenRefreshCallback|undefined; 
 
     constructor() {
+
+        this.VoxeetMedia = new VoxeetMedia();
+        
         this.refreshAccessTokenCallback = () => {
             this.refreshToken && this.refreshToken()
             .then(accessToken => this.onAccessTokenOk(accessToken))

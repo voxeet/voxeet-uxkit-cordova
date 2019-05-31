@@ -30,6 +30,10 @@
         <clobbers target="VoxeetSDK" />
     </js-module>
 
+    <js-module src="www/VoxeetMedia.js" name="VoxeetMedia">
+        <clobbers target="VoxeetMedia" />
+    </js-module>
+
     <js-module src="www/UserInfo.js" name="UserInfo">
         <clobbers target="UserInfo" />
     </js-module>
@@ -60,10 +64,14 @@
             <feature name="Voxeet" >
                 <param name="android-package" value="com.voxeet.toolkit.VoxeetCordova"/>
             </feature>
+            <feature name="VoxeetMedia" >
+                <param name="android-package" value="com.voxeet.toolkit.VoxeetMediaCordova"/>
+            </feature>
         </config-file>
 
         <source-file src="src/android/com/voxeet/toolkit/VoxeetApplication.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/VoxeetCordova.java" target-dir="src/com/voxeet/toolkit" />
+        <source-file src="src/android/com/voxeet/toolkit/VoxeetMediaCordova.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/CordovaRootViewProvider.java" target-dir="src/com/voxeet/toolkit" />
 
         <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingBundleChecker.java" target-dir="src/com/voxeet/toolkit/notification" />
