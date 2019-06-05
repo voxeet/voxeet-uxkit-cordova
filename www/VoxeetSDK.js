@@ -1,5 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+}
 Object.defineProperty(exports, "__esModule", { value: true });
+const VoxeetMedia_1 = __importDefault(require("./VoxeetMedia"));
 /*
  *
  * Voxeet ConferenceKit Cordova
@@ -50,6 +54,7 @@ var UserType;
 class Voxeet_ {
     constructor() {
         this.refreshAccessTokenCallback = null;
+        this.VoxeetMedia = new VoxeetMedia_1.default();
         this.refreshAccessTokenCallback = () => {
             this.refreshToken && this.refreshToken()
                 .then(accessToken => this.onAccessTokenOk(accessToken))
