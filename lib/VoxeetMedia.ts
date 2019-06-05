@@ -48,15 +48,17 @@ export default class VoxeetMedia {
         });
     }
 
-    isDefaultFrontFacing(): Promise<boolean>  {
+    //maybe for future references
+    /*isDefaultFrontFacing(): Promise<boolean>  {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE_MEDIA, 'isDefaultFrontFacing', []);
         });
-    }
+    }*/
 
-    isFrontCamera(): Promise<any> {
+    //maybe for future references
+    /*isFrontCamera(): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE_MEDIA, 'isFrontCamera', []);
         });
-    }
+    }*/
 }

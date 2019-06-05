@@ -51,12 +51,12 @@ public class VoxeetMediaCordova extends CordovaPlugin {
                 case "switchCamera":
                     switchCamera(callbackContext);
                     break;
-                case "isDefaultFrontFacing":
-                    isDefaultFrontFacing(callbackContext);
-                    break;
-                case "isFrontCamera":
-                    isFrontCamera(callbackContext);
-                    break;
+                //case "isDefaultFrontFacing":
+                //    isDefaultFrontFacing(callbackContext);
+                //    break;
+                //case "isFrontCamera":
+                //    isFrontCamera(callbackContext);
+                //    break;
                 default:
                     return false;
             }
