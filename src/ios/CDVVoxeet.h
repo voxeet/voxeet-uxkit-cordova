@@ -21,6 +21,9 @@
 - (void)setTelecomMode:(CDVInvokedUrlCommand *)command;
 - (void)isAudio3DEnabled:(CDVInvokedUrlCommand *)command;
 - (void)isTelecomMode:(CDVInvokedUrlCommand *)command;
+- (void)startVideo:(CDVInvokedUrlCommand *)command;
+- (void)stopVideo:(CDVInvokedUrlCommand *)command;
+- (void)switchCamera:(CDVInvokedUrlCommand *)command;
 - (void)screenAutoLock:(CDVInvokedUrlCommand *)command;
 - (void)isUserLoggedIn:(CDVInvokedUrlCommand *)command;
 - (void)checkForAwaitingConference:(CDVInvokedUrlCommand *)command;

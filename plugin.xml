@@ -90,6 +90,9 @@
             <feature name="Voxeet">
                 <param name="ios-package" value="CDVVoxeet" />
             </feature>
+            <feature name="VoxeetMedia">
+                <param name="ios-package" value="CDVVoxeet" />
+            </feature>
         </config-file>
 
         <config-file platform="ios" target="*-Info.plist" parent="UIBackgroundModes">
