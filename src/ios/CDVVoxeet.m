@@ -101,7 +101,10 @@
 
 - (void)join:(CDVInvokedUrlCommand *)command {
     NSString *conferenceID = [command.arguments objectAtIndex:0];
-    NSDictionary<NSString *,id> *options = [command.arguments objectAtIndex:1];
+    NSDictionary<NSString *,id> *options = nil;
+    if ([command.arguments count] > 1) {
+        options = [command.arguments objectAtIndex:1];
+    }
     
     NSMutableDictionary *nativeOptions = [[NSMutableDictionary alloc] init];
     [nativeOptions setValue:[options valueForKey:@"alias"] forKey:@"conferenceAlias"];
@@ -232,7 +235,8 @@
     BOOL isDefaultFrontFacing = [[command.arguments objectAtIndex:0] boolValue];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.conference startVideoWithUserID:nil isDefaultFrontFacing:isDefaultFrontFacing completion:^(NSError *error) {
+        //        [VoxeetSDK.shared.conference startVideoWithUserID:nil isDefaultFrontFacing:isDefaultFrontFacing completion:^(NSError *error) {
+        [VoxeetSDK.shared.conference startVideoWithUserID:VoxeetSDK.shared.session.user.id completion:^(NSError *error) {
             if (error == nil) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {
