@@ -31,5 +31,7 @@
 - (void)stopConference:(CDVInvokedUrlCommand *)command;
 - (void)openSession:(CDVInvokedUrlCommand *)command;
 - (void)closeSession:(CDVInvokedUrlCommand *)command;
+- (void)startRecording:(CDVInvokedUrlCommand *)command;
+- (void)stopRecording:(CDVInvokedUrlCommand *)command;
 
 @end
