@@ -131,6 +131,7 @@ public class VoxeetMediaCordova extends CordovaPlugin {
         });
     }
 
+    /*
     private void isDefaultFrontFacing(final CallbackContext cb) {
         mHandler.post(new Runnable() {
             @Override
@@ -144,8 +145,9 @@ public class VoxeetMediaCordova extends CordovaPlugin {
             }
         });
     }
+    */
 
-
+    /*
     private void isFrontCamera(final CallbackContext cb) {
         mHandler.post(new Runnable() {
             @Override
@@ -159,6 +161,5 @@ public class VoxeetMediaCordova extends CordovaPlugin {
             }
         });
     }
-
-
+    */
 }
