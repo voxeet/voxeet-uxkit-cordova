@@ -383,6 +383,12 @@ public class VoxeetCordova extends CordovaPlugin {
                 //create -> objet key -> value (value->key->value)
                 //join
                 //leave
+                case "startRecording":
+                    startRecording(callbackContext);
+                    break;
+                case "stopRecording":
+                    stopRecording(callbackContext);
+                    break;
                 case "setAudio3DEnabled":
                     setAudio3DEnabled(args.getBoolean(0));
                     callbackContext.success();
@@ -924,6 +930,62 @@ public class VoxeetCordova extends CordovaPlugin {
                             @Override
                             public void onError(@NonNull Throwable throwable) {
                                 cb.error("Error while leaving");
+                            }
+                        });
+            }
+        });
+    }
+
+    private void startRecording(final CallbackContext cb) {
+        if (null == VoxeetSdk.getInstance()) {
+            cb.error(ERROR_SDK_NOT_INITIALIZED);
+            return;
+        }
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                VoxeetSdk.getInstance()
+                        .getConferenceService()
+                        .startRecording()
+                        .then(new PromiseExec<Boolean, Object>() {
+                            @Override
+                            public void onCall(@Nullable Boolean bool, @NonNull Solver<Object> solver) {
+                                cb.success();
+                            }
+                        })
+                        .error(new ErrorPromise() {
+                            @Override
+                            public void onError(@NonNull Throwable throwable) {
+                                cb.error("Error while start recording");
+                            }
+                        });
+            }
+        });
+    }
+
+    private void stopRecording(final CallbackContext cb) {
+        if (null == VoxeetSdk.getInstance()) {
+            cb.error(ERROR_SDK_NOT_INITIALIZED);
+            return;
+        }
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                VoxeetSdk.getInstance()
+                        .getConferenceService()
+                        .stopRecording()
+                        .then(new PromiseExec<Boolean, Object>() {
+                            @Override
+                            public void onCall(@Nullable Boolean bool, @NonNull Solver<Object> solver) {
+                                cb.success();
+                            }
+                        })
+                        .error(new ErrorPromise() {
+                            @Override
+                            public void onError(@NonNull Throwable throwable) {
+                                cb.error("Error while stop recording");
                             }
                         });
             }
