@@ -202,6 +202,20 @@ class Voxeet_ {
         });
     }
 
+    startRecording() {
+        return new Promise((resolve, reject) => {
+            exec(null, null, SERVICE, 'startRecording', []);
+            resolve();
+        });
+    }
+
+    stopRecording() {
+        return new Promise((resolve, reject) => {
+            exec(null, null, SERVICE, 'stopRecording', []);
+            resolve();
+        });
+    }
+
     /*
      *  Android methods
      */
