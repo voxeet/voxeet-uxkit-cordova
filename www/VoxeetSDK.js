@@ -1,7 +1,7 @@
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
-}
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const VoxeetMedia_1 = __importDefault(require("./VoxeetMedia"));
 /*
@@ -149,6 +149,18 @@ class Voxeet_ {
     defaultVideo(enabled) {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'defaultVideo', [enabled]);
+            resolve();
+        });
+    }
+    startRecording() {
+        return new Promise((resolve, reject) => {
+            exec(null, null, SERVICE, 'startRecording', []);
+            resolve();
+        });
+    }
+    stopRecording() {
+        return new Promise((resolve, reject) => {
+            exec(null, null, SERVICE, 'stopRecording', []);
             resolve();
         });
     }

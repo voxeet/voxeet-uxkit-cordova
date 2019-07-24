@@ -101,7 +101,10 @@
 
 - (void)join:(CDVInvokedUrlCommand *)command {
     NSString *conferenceID = [command.arguments objectAtIndex:0];
-    NSDictionary<NSString *,id> *options = [command.arguments objectAtIndex:1];
+    NSDictionary<NSString *,id> *options = nil;
+    if ([command.arguments count] > 1) {
+        options = [command.arguments objectAtIndex:1];
+    }
     
     NSMutableDictionary *nativeOptions = [[NSMutableDictionary alloc] init];
     [nativeOptions setValue:[options valueForKey:@"alias"] forKey:@"conferenceAlias"];
@@ -119,10 +122,6 @@
             [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
         }];
     });
-}
-
-- (void)broadcast:(CDVInvokedUrlCommand *)command {
-    [self join:command];
 }
 
 - (void)leave:(CDVInvokedUrlCommand *)command {
@@ -229,10 +228,11 @@
 }
 
 - (void)startVideo:(CDVInvokedUrlCommand *)command {
-    BOOL isDefaultFrontFacing = [[command.arguments objectAtIndex:0] boolValue];
+    //    BOOL isDefaultFrontFacing = [[command.arguments objectAtIndex:0] boolValue];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.conference startVideoWithUserID:nil isDefaultFrontFacing:isDefaultFrontFacing completion:^(NSError *error) {
+        //        [VoxeetSDK.shared.conference startVideoWithUserID:nil isDefaultFrontFacing:isDefaultFrontFacing completion:^(NSError *error) {
+        [VoxeetSDK.shared.conference startVideoWithUserID:VoxeetSDK.shared.session.user.id completion:^(NSError *error) {
             if (error == nil) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {
@@ -244,7 +244,8 @@
 
 - (void)stopVideo:(CDVInvokedUrlCommand *)command {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.conference stopVideoWithUserID:nil completion:^(NSError *error) {
+        //        [VoxeetSDK.shared.conference stopVideoWithUserID:nil completion:^(NSError *error) {
+        [VoxeetSDK.shared.conference stopVideoWithUserID:VoxeetSDK.shared.session.user.id completion:^(NSError *error) {
             if (error == nil) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {
@@ -258,6 +259,35 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [VoxeetSDK.shared.conference flipCameraWithCompletion:^{
             [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+        }];
+    });
+}
+
+/*
+ *  MARK: Recording
+ */
+
+- (void)startRecording:(CDVInvokedUrlCommand *)command {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [VoxeetSDK.shared.conference startRecordingWithFireInterval:0 completion:^(NSError *error) {
+            if (error == nil) {
+                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+            } else {
+                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
+            }
+        }];
+    });
+    
+}
+
+- (void)stopRecording:(CDVInvokedUrlCommand *)command {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [VoxeetSDK.shared.conference stopRecordingWithCompletion:^(NSError *error) {
+            if (error == nil) {
+                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+            } else {
+                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
+            }
         }];
     });
 }
@@ -285,6 +315,10 @@
 /*
  *  MARK: Android compatibility methods
  */
+
+- (void)broadcast:(CDVInvokedUrlCommand *)command {
+    [self join:command];
+}
 
 - (void)screenAutoLock:(CDVInvokedUrlCommand *)command { /* Android compatibility */
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
