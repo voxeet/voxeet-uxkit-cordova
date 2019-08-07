@@ -45,7 +45,7 @@ declare class Voxeet_ {
     refreshToken: TokenRefreshCallback | undefined;
     constructor();
     initialize(consumerKey: string, consumerSecret: string): Promise<any>;
-    initializeToken(accessToken: string | undefined, refreshToken: TokenRefreshCallback): Promise<{}>;
+    initializeToken(accessToken: string | undefined, refreshToken: TokenRefreshCallback): Promise<unknown>;
     connect(userInfo: UserInfo): Promise<any>;
     disconnect(): Promise<any>;
     create(options: CreateOptions): Promise<any>;
@@ -61,8 +61,8 @@ declare class Voxeet_ {
     appearMaximized(enabled: boolean): Promise<any>;
     defaultBuiltInSpeaker(enabled: boolean): Promise<any>;
     defaultVideo(enabled: boolean): Promise<any>;
-    startRecording(): Promise<{}>;
-    stopRecording(): Promise<{}>;
+    startRecording(): Promise<unknown>;
+    stopRecording(): Promise<unknown>;
     screenAutoLock(enabled: boolean): Promise<any>;
     isUserLoggedIn(): Promise<boolean>;
     checkForAwaitingConference(): Promise<any>;
@@ -70,8 +70,8 @@ declare class Voxeet_ {
     stopConference(): Promise<any>;
     openSession(userInfo: UserInfo): Promise<any>;
     closeSession(): Promise<any>;
-    onAccessTokenOk(accessToken: string): Promise<{}>;
-    onAccessTokenKo(errorMessage: string): Promise<{}>;
+    onAccessTokenOk(accessToken: string): Promise<unknown>;
+    onAccessTokenKo(errorMessage: string): Promise<unknown>;
 }
 export declare const Voxeet: Voxeet_;
 export {};
