@@ -43,6 +43,11 @@ export enum Codec {
     H264 = "H264"
 }
 
+export { Configuration as Configuration} from "./Configurations";
+export { Users as Users} from "./Configurations";
+export { Overlay as Overlay} from "./Configurations";
+export { ActionBar as ActionBar} from "./Configurations";
+
 export interface CreateParameters {
     ttl?: number;
     rtcpMode?: RTCPMode; //best / worst, default => worst

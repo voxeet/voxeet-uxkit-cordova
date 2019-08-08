@@ -13,6 +13,10 @@ export declare enum Codec {
     VP8 = "VP8",
     H264 = "H264"
 }
+export { Configuration as Configuration } from "./Configurations";
+export { Users as Users } from "./Configurations";
+export { Overlay as Overlay } from "./Configurations";
+export { ActionBar as ActionBar } from "./Configurations";
 export interface CreateParameters {
     ttl?: number;
     rtcpMode?: RTCPMode;
@@ -76,4 +80,3 @@ declare class Voxeet_ {
     onAccessTokenKo(errorMessage: string): Promise<{}>;
 }
 export declare const Voxeet: Voxeet_;
-export {};
