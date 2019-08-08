@@ -34,6 +34,10 @@ import com.voxeet.sdk.json.internal.MetadataHolder;
 import com.voxeet.sdk.json.internal.ParamsHolder;
 import com.voxeet.sdk.models.ConferenceResponse;
 import com.voxeet.sdk.utils.Validate;
+import com.voxeet.toolkit.configuration.ActionBar;
+import com.voxeet.toolkit.configuration.Configuration;
+import com.voxeet.toolkit.configuration.Overlay;
+import com.voxeet.toolkit.configuration.Users;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.implementation.overlays.OverlayState;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
@@ -349,6 +353,15 @@ public class VoxeetCordova extends CordovaPlugin {
                         e.printStackTrace();
                         callbackContext.error(e.getMessage());
                     }
+                case "setUIConfiguration":
+                    try {
+                        JSONObject object = args.getJSONObject(0);
+                        setUiConfiguration(object);
+                        callbackContext.success();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        callbackContext.error("Wrong configuration or issue with it");
+                    }
                 case "startConference":
                     try {
                         String confId = args.getString(0);
@@ -423,6 +436,73 @@ public class VoxeetCordova extends CordovaPlugin {
         }
         return false;
     }
+
+    private void setUiConfiguration(JSONObject object) {
+        JSONObject actionBar = jsonObject(object, "actionBar");
+        JSONObject overlay = jsonObject(object, "overlay");
+        JSONObject users = jsonObject(object, "users");
+
+        Configuration configuration = VoxeetToolkit.getInstance().getConferenceToolkit().Configuration;
+        ActionBar cactionBar = configuration.ActionBar;
+        Overlay coverlay = configuration.Overlay;
+        Users cusers = configuration.Users;
+        if (null != actionBar) {
+            if (actionBar.has("displayMute"))
+                cactionBar.displayMute = bool(object, "displayMute");
+            if (actionBar.has("displaySpeaker"))
+                cactionBar.displaySpeaker = bool(object, "displaySpeaker");
+            if (actionBar.has("displayCamera"))
+                cactionBar.displayCamera = bool(object, "displayCamera");
+            if (actionBar.has("displayScreenShare"))
+                cactionBar.displayScreenShare = bool(object, "displayScreenShare");
+            if (actionBar.has("displayLeave"))
+                cactionBar.displayLeave = bool(object, "displayLeave");
+        }
+        if (null != overlay) {
+            if (object.has("backgroundMaximizedColor"))
+                coverlay.background_maximized_color = integer(object, "backgroundMaximizedColor");
+            if (actionBar.has("backgroundMinimizedColor"))
+                coverlay.background_minimized_color = integer(object, "backgroundMinimizedColor");
+        }
+        if (null != users) {
+            if (object.has("speakingUserColor"))
+                cusers.speaking_user_color = integer(object, "speakingUserColor");
+            if (actionBar.has("selectedUserColor"))
+                cusers.selected_user_color = integer(object, "selectedUserColor");
+        }
+    }
+
+    private boolean bool(@Nullable JSONObject object, @NonNull String key) {
+        if (null == object) return false;
+        try {
+            return object.optBoolean(key, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private int integer(@Nullable JSONObject object, @NonNull String key) {
+        if (null == object) return 0;
+        try {
+            return object.optInt(key, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    @Nullable
+    private JSONObject jsonObject(@Nullable JSONObject object, @NonNull String key) {
+        if (null == object) return null;
+        try {
+            return object.optJSONObject(key);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Nullable
 
     private void defaultVideo(boolean startVideo) {
         startVideoOnJoin = startVideo;
