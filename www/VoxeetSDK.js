@@ -126,6 +126,9 @@ class Voxeet_ {
     isAudio3DEnabled() {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'isAudio3DEnabled', []));
     }
+    setOverlayConfiguration(configuration) {
+        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'setOverlayConfiguration', [configuration]));
+    }
     setTelecomMode(enabled) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'setTelecomMode', [enabled]);

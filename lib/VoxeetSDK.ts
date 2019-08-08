@@ -1,5 +1,6 @@
 import UserInfo from "./UserInfo";
 import VoxeetMedia from "./VoxeetMedia";
+import { Configuration } from "./Configurations";
 /*
  *
  * Voxeet ConferenceKit Cordova
@@ -169,6 +170,10 @@ class Voxeet_ {
 
     isAudio3DEnabled(): Promise<boolean> {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'isAudio3DEnabled', []));
+    }
+
+    setOverlayConfiguration(configuration: Configuration) {
+        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'setOverlayConfiguration', [configuration]));
     }
 
     setTelecomMode(enabled: boolean): Promise<any> {
