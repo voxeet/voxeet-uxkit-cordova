@@ -450,7 +450,7 @@ public class VoxeetCordova extends CordovaPlugin {
                                     unlock(lockAwaitingToken);
                                     postRefreshAccessToken();
                                 }
-                            }, null /* no user info */);
+                            });
 
                     internalInitialize(callbackContext);
                 } else {
@@ -469,8 +469,7 @@ public class VoxeetCordova extends CordovaPlugin {
                 Application application = (Application) cordova.getActivity().getApplicationContext();
 
                 if (null == VoxeetSdk.getInstance()) {
-                    VoxeetSdk.initialize(application,
-                            consumerKey, consumerSecret, null);
+                    VoxeetSdk.initialize(application, consumerKey, consumerSecret);
 
                     internalInitialize(callbackContext);
                 } else {
@@ -518,7 +517,7 @@ public class VoxeetCordova extends CordovaPlugin {
             @Override
             public void run() {
 
-                if (null == VoxeetSdk.getInstance()) {
+                if (null == VoxeetSdk.user()) {
                     cb.error(ERROR_SDK_NOT_INITIALIZED);
                     return;
                 }
@@ -536,7 +535,7 @@ public class VoxeetCordova extends CordovaPlugin {
                 } else {
                     _current_user = userInfo;
                     //we have an user
-                    VoxeetSdk.getInstance()
+                    VoxeetSdk.user()
                             .logout()
                             .then(new PromiseExec<Boolean, Object>() {
                                 @Override
@@ -559,8 +558,8 @@ public class VoxeetCordova extends CordovaPlugin {
      * Call this method to log the current selected user
      */
     public void logSelectedUser() {
-        if (null != VoxeetSdk.getInstance()) {
-            VoxeetSdk.getInstance().logUser(_current_user);
+        if (null != VoxeetSdk.user()) {
+            VoxeetSdk.user().login(_current_user);
         }
     }
 
@@ -569,7 +568,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void closeSession(final CallbackContext cb) {
-        if (null == VoxeetSdk.getInstance()) {
+        if (null == VoxeetSdk.user()) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
         }
@@ -577,7 +576,7 @@ public class VoxeetCordova extends CordovaPlugin {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                VoxeetSdk.getInstance()
+                VoxeetSdk.user()
                         .logout()
                         .then(new PromiseExec<Boolean, Object>() {
                             @Override
@@ -602,8 +601,8 @@ public class VoxeetCordova extends CordovaPlugin {
             @Override
             public void run() {
                 boolean logged_in = false;
-                if (null != VoxeetSdk.getInstance()) {
-                    logged_in = VoxeetSdk.getInstance().isSocketOpen();
+                if (null != VoxeetSdk.user()) {
+                    logged_in = VoxeetSdk.user().isSocketOpen();
                 }
 
                 cb.sendPluginResult(new PluginResult(PluginResult.Status.OK, logged_in));
@@ -644,7 +643,7 @@ public class VoxeetCordova extends CordovaPlugin {
             @Override
             public void run() {
                 lock();
-                if (null == VoxeetSdk.getInstance()) {
+                if (null == VoxeetSdk.user()) {
                     if (null != cb) cb.error(ERROR_SDK_NOT_INITIALIZED);
                 } else {
                     CordovaIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
@@ -662,7 +661,7 @@ public class VoxeetCordova extends CordovaPlugin {
                     } else if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE) {
                         CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE.onDecline();
                     } else if (null != checker && checker.isBundleValid()) {
-                        if (VoxeetSdk.getInstance().isSocketOpen()) {
+                        if (VoxeetSdk.user().isSocketOpen()) {
                             checker.onAccept();
                             CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                             if (null != cb) cb.success();
@@ -999,7 +998,7 @@ public class VoxeetCordova extends CordovaPlugin {
         }
 
         String conferenceId = VoxeetSdk.getInstance().getConferenceService().getConferenceId();
-        if(null == conferenceId || TextUtils.isEmpty(conferenceId)) {
+        if (null == conferenceId || TextUtils.isEmpty(conferenceId)) {
             cb.error("You're not in a conference");
             return;
         }
@@ -1027,13 +1026,13 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void setAudio3DEnabled(boolean enabled) {
-        if(null != VoxeetSdk.getInstance()) {
+        if (null != VoxeetSdk.getInstance()) {
             VoxeetSdk.getInstance().getMediaService().setAudio3DEnabled(enabled);
         }
     }
 
     private void setTelecomMode(boolean telecomMode) {
-        if(null != VoxeetSdk.getInstance()) {
+        if (null != VoxeetSdk.getInstance()) {
             VoxeetSdk.getInstance().getConferenceService().setTelecomMode(telecomMode);
         }
     }
@@ -1178,8 +1177,8 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private boolean isConnected() {
-        return VoxeetSdk.getInstance() != null
-                && VoxeetSdk.getInstance().isSocketOpen();
+        return VoxeetSdk.user() != null
+                && VoxeetSdk.user().isSocketOpen();
     }
 
     private boolean isSameUser(@NonNull UserInfo userInfo) {
@@ -1189,7 +1188,7 @@ public class VoxeetCordova extends CordovaPlugin {
     private boolean checkForIncomingConference() {
         CordovaIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
         if (null != checker && checker.isBundleValid() && null != VoxeetSdk.getInstance()) {
-            if (VoxeetSdk.getInstance().isSocketOpen()) {
+            if (VoxeetSdk.user().isSocketOpen()) {
                 checker.onAccept();
                 CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                 return true;
