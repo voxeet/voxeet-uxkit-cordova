@@ -57,7 +57,7 @@ declare class Voxeet_ {
     sendBroadcastMessage(message: string): Promise<any>;
     setAudio3DEnabled(enabled: boolean): Promise<any>;
     isAudio3DEnabled(): Promise<boolean>;
-    setOverlayConfiguration(configuration: Configuration): Promise<{}>;
+    setUIConfiguration(configuration: Configuration): Promise<{}>;
     setTelecomMode(enabled: boolean): Promise<any>;
     isTelecomMode(): Promise<boolean>;
     appearMaximized(enabled: boolean): Promise<any>;

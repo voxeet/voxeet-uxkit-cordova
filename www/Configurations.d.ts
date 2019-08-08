@@ -11,6 +11,7 @@ export interface Overlay {
 }
 export interface Users {
     speakingUserColor?: number;
+    selectedUserColor?: number;
 }
 export interface Configuration {
     actionBar?: ActionBar;
