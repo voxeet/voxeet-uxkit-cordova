@@ -17,10 +17,11 @@
     NSString *consumerSecret = [command.arguments objectAtIndex:1];
     
     dispatch_async(dispatch_get_main_queue(), ^{
+        [VoxeetSDK.shared initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret];
+        [VoxeetUXKit.shared initialize];
+        
         VoxeetSDK.shared.pushNotification.type = VTPushNotificationTypeCallKit;
         
-        [VoxeetSDK.shared initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret userInfo:nil connectSession:true];
-        [VoxeetConferenceKit.shared initialize];
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
 }
@@ -29,16 +30,17 @@
     NSString *accessToken = [command.arguments objectAtIndex:0];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        VoxeetSDK.shared.pushNotification.type = VTPushNotificationTypeCallKit;
-        
-        [VoxeetSDK.shared initializeWithAccessToken:accessToken userInfo:nil refreshTokenClosure:^(void (^closure)(NSString *)) {
+        [VoxeetSDK.shared initializeWithAccessToken:accessToken refreshTokenClosure:^(void (^closure)(NSString *)) {
             self.refreshAccessTokenClosure = closure;
             
             CDVPluginResult *callBackRefresh = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             [callBackRefresh setKeepCallbackAsBool:YES];
             [self.commandDelegate sendPluginResult:callBackRefresh callbackId:self.refreshAccessTokenID];
         }];
-        [VoxeetConferenceKit.shared initialize];
+        [VoxeetUXKit.shared initialize];
+        
+        VoxeetSDK.shared.pushNotification.type = VTPushNotificationTypeCallKit;
+        
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
 }
@@ -174,9 +176,18 @@
     BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        VoxeetConferenceKit.shared.appearMaximized = enabled;
+        VoxeetUXKit.shared.appearMaximized = enabled;
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
+}
+
+- (void)setUIConfiguration:(CDVInvokedUrlCommand *)command {
+    NSString *jsonStr = [command.arguments objectAtIndex:0];
+    NSError *jsonError;
+    NSData *jsonData = [jsonStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                         options:NSJSONReadingMutableContainers
+                                                           error:&jsonError];
 }
 
 - (void)defaultBuiltInSpeaker:(CDVInvokedUrlCommand *)command {
@@ -210,7 +221,7 @@
     BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        VoxeetConferenceKit.shared.telecom = enabled;
+        VoxeetUXKit.shared.telecom = enabled;
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
 }
@@ -257,7 +268,7 @@
 
 - (void)switchCamera:(CDVInvokedUrlCommand *)command {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.conference flipCameraWithCompletion:^{
+        [VoxeetSDK.shared.conference switchCameraWithCompletion:^{
             [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
         }];
     });
