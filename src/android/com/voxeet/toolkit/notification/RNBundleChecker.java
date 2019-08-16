@@ -38,12 +38,11 @@ public class RNBundleChecker extends IncomingBundleChecker {
                     .getConferenceService().decline(getConferenceId());
             //only when error() is called
 
-            Log.d(TAG, "onDecline: isSocketOpen := " + VoxeetSdk.getInstance().isSocketOpen());
-            if (!VoxeetSdk.getInstance().isSocketOpen()) {
+            if (!VoxeetSdk.user().isSocketOpen()) {
                 UserInfo userInfo = VoxeetPreferences.getSavedUserInfo();
 
                 if (null != userInfo) {
-                    VoxeetSdk.getInstance().logUserWithChain(userInfo)
+                    VoxeetSdk.user().login(userInfo)
                             .then(new PromiseExec<Boolean, DeclineConferenceResultEvent>() {
                                 @Override
                                 public void onCall(@Nullable Boolean result, @NonNull Solver<DeclineConferenceResultEvent> solver) {
