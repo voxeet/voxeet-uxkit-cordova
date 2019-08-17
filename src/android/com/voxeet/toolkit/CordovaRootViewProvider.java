@@ -64,7 +64,7 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
 
             CordovaIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
             if (null != checker && checker.isBundleValid()) {
-                if (null != VoxeetSdk.getInstance() && VoxeetSdk.getInstance().isSocketOpen()) {
+                if (null != VoxeetSdk.getInstance() && VoxeetSdk.user().isSocketOpen()) {
                     checker.onAccept();
                     CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                 }
