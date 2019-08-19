@@ -18,7 +18,7 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
       id="cordova-plugin-voxeet"
-      version="1.2.7">
+      version="1.2.8">
     <name>Voxeet</name>
     <description>Cordova Voxeet Plugin</description>
     <license>Apache 2.0 License</license>
@@ -84,7 +84,7 @@
 
     <!-- ios -->
     <platform name="ios">
-        <hook type="before_plugin_install" src="build_ios_frameworks.sh"/>
+        <hook type="before_plugin_install" src="sh build_ios_frameworks.sh"/>
 
         <config-file target="config.xml" parent="/*">
             <feature name="Voxeet">
