@@ -20,7 +20,7 @@ cd ..
 #cp proper files into the dist folder
 cp -r ./www/* ./build/dist/www/
 cp ./package.json ./build/dist/
-cp ./build_ios_frameworks.sh ./build/dist/build_ios_frameworks.sh
+cp ./build_ios_frameworks.js ./build/dist/build_ios_frameworks.js
 cp ./voxeet_application.js ./build/dist/voxeet_application.js
 
 #copy platforms src

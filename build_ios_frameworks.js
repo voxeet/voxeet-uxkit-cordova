@@ -14,7 +14,7 @@ module.exports = function(context) {
   }
   
   if (!skip && fs.existsSync(dir)) {
-    exec(`pushd ${dir} ; sh ./build_ios_frameworks.sh ; popd`, exec_callback);
+    exec(`carthage update --platform ios --project-directory ${dir}/src/ios`, exec_callback);
   } else {
     console.log("skipping script installation...");
   }
