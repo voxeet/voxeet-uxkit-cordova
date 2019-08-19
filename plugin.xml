@@ -84,7 +84,7 @@
 
     <!-- ios -->
     <platform name="ios">
-        <hook type="before_plugin_install" src="sh build_ios_frameworks.sh"/>
+        <hook type="before_plugin_install" src="build_ios_frameworks.js"/>
 
         <config-file target="config.xml" parent="/*">
             <feature name="Voxeet">
