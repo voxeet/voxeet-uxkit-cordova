@@ -32,7 +32,7 @@ import com.voxeet.sdk.factories.VoxeetIntentFactory;
 import com.voxeet.sdk.json.UserInfo;
 import com.voxeet.sdk.json.internal.MetadataHolder;
 import com.voxeet.sdk.json.internal.ParamsHolder;
-import com.voxeet.sdk.models.ConferenceResponse;
+import com.voxeet.sdk.models.v1.ConferenceResponse;
 import com.voxeet.sdk.utils.Validate;
 import com.voxeet.toolkit.configuration.ActionBar;
 import com.voxeet.toolkit.configuration.Configuration;
@@ -585,14 +585,13 @@ public class VoxeetCordova extends CordovaPlugin {
 
         VoxeetToolkit.getInstance().getConferenceToolkit().setScreenShareEnabled(false).enable(true);
 
-        VoxeetSdk.getInstance().register(application, VoxeetCordova.this);
+        VoxeetSdk.getInstance().register(this);
 
         callbackContext.success();
     }
 
     private void openSession(final UserInfo userInfo,
                              final CallbackContext cb) {
-
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -639,7 +638,19 @@ public class VoxeetCordova extends CordovaPlugin {
      */
     public void logSelectedUser() {
         if (null != VoxeetSdk.user()) {
-            VoxeetSdk.user().login(_current_user);
+            VoxeetSdk.user().login(_current_user)
+                    .then(new PromiseExec<Boolean, Object>() {
+                        @Override
+                        public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                            //TODO possibility here to add management for user to be socket managed here
+                        }
+                    })
+                    .error(new ErrorPromise() {
+                        @Override
+                        public void onError(@NonNull Throwable error) {
+                            //error
+                        }
+                    });
         }
     }
 

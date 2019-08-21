@@ -55,7 +55,7 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
         if (!CordovaIncomingCallActivity.class.equals(activity.getClass())) {
 
             if (null != VoxeetSdk.getInstance() && !EventBus.getDefault().isRegistered(this)) {
-                VoxeetSdk.getInstance().register(mApplication, this);
+                VoxeetSdk.getInstance().register(this);
             }
 
             if (!EventBus.getDefault().isRegistered(this)) {

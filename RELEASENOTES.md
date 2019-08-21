@@ -1,5 +1,9 @@
 # Release Notes
 
+### 1.2.9 (August 21th, 2019)
+  - Android, updated SDK to reflect fix for push notification not internally propagated
+  - Android, change Cordova's implementation according to the new SDK version
+
 ### 1.2.0 (May 21th, 2019)
   - lock ios versions
   - add getter for audio and telecom mode
