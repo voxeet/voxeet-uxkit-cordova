@@ -18,6 +18,7 @@ module.exports = function(context) {
     exec(`carthage update --platform ios --project-directory ${dir}/src/ios`, exec_callback);
   } else {
     console.log("skipping script installation...");
+    deferral.resolve();
   }
 
   return deferral.promise;
