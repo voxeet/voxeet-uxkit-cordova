@@ -11,6 +11,7 @@ module.exports = function(context) {
     error && console.log(error);
     stdout && console.log(stdout);
     stderr && console.log(stderr);
+    deferral.resolve();
   }
   
   if (!skip && fs.existsSync(dir)) {
