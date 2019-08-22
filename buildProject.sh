@@ -21,6 +21,7 @@ cd ..
 cp -r ./www/* ./build/dist/www/
 cp ./package.json ./build/dist/
 cp ./build_ios_frameworks.js ./build/dist/build_ios_frameworks.js
+cp ./build_ios_frameworks.sh ./build/dist/build_ios_frameworks.sh
 cp ./voxeet_application.js ./build/dist/voxeet_application.js
 
 #copy platforms src

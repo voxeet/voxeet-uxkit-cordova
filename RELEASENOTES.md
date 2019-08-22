@@ -1,5 +1,12 @@
 # Release Notes
 
+### 1.2.11 (August 22th, 2019)
+  - reset the script to be used in the uploaded package
+
+### 1.2.10 (August 22th, 2019)
+  - iOS install script releasing hold on promise
+  - set the shell script in the uploaded package for quick retro compat
+
 ### 1.2.9 (August 21th, 2019)
   - Android, updated SDK to reflect fix for push notification not internally propagated
   - Android, change Cordova's implementation according to the new SDK version
