@@ -1,7 +1,7 @@
 module.exports = function(context) {
   var fs = require('fs');
-  var Q = context.requireCordovaModule('q');
-  var exec = context.requireCordovaModule('child_process').exec;
+  var Q = require('q');
+  var exec = require('child_process').exec;
   var deferral = new Q.defer();
 
   const dir = context.opts.plugin.dir;
