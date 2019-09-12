@@ -1,5 +1,9 @@
 # Release Notes
 
+### 1.2.12 (September 11th, 2019)
+  - Android, add plugin.xml info such as standard push notification helper
+  - add as well default messaging service
+
 ### 1.2.11 (August 22th, 2019)
   - reset the script to be used in the uploaded package
 

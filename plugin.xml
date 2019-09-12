@@ -18,7 +18,7 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
       id="cordova-plugin-voxeet"
-      version="1.2.11">
+      version="1.2.12">
     <name>Voxeet</name>
     <description>Cordova Voxeet Plugin</description>
     <license>Apache 2.0 License</license>
@@ -45,6 +45,7 @@
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
             <uses-permission android:name="android.permission.WAKE_LOCK" />
             <uses-permission android:name="android.permission.BLUETOOTH" />
+            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
             <uses-permission android:name="android.permission.RECORD_AUDIO" />
             <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
             <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -52,10 +53,27 @@
             <uses-permission android:name="android.permission.READ_PHONE_STATE" />
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
             <uses-permission android:name="android.permission.CAMERA" />
+            <permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+            <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <activity android:label="Incoming Call" android:name="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            
+            <meta-data
+                android:name="voxeet_incoming_class"
+                android:value="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" />
+
+            <service android:name="com.voxeet.toolkit.notification.CordovaFirebaseMessagingService">
+                <intent-filter>
+                    <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                </intent-filter>
+            </service>
+            <service android:name="com.voxeet.push.firebase.VoxeetFirebaseInstanceIDService">
+                <intent-filter>
+                    <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+                </intent-filter>
+            </service>
         </config-file>
 
         <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
