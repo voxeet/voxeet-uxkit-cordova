@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.2.13 (September 17th, 2019)
+  - bump revision to reflect unsent service file for Android
+
 ### 1.2.12 (September 11th, 2019)
   - Android, add plugin.xml info such as standard push notification helper
   - add as well default messaging service
