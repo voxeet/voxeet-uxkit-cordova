@@ -15,6 +15,7 @@
 - (void)leave:(CDVInvokedUrlCommand *)command;
 - (void)sendBroadcastMessage:(CDVInvokedUrlCommand *)command;
 - (void)appearMaximized:(CDVInvokedUrlCommand *)command;
+- (void)setUIConfiguration:(CDVInvokedUrlCommand *)command;
 - (void)defaultBuiltInSpeaker:(CDVInvokedUrlCommand *)command;
 - (void)defaultVideo:(CDVInvokedUrlCommand *)command;
 - (void)setAudio3DEnabled:(CDVInvokedUrlCommand *)command;
