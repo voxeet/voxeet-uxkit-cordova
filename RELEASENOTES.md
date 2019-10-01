@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.2.14 (October 1st, 2019)
+- bump iOS Voxeet SDKs for Swift 5.1
+
 ### 1.2.13 (September 17th, 2019)
   - bump revision to reflect unsent service file for Android
 
