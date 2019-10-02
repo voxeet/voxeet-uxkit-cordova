@@ -7,7 +7,9 @@ import android.util.Log;
 
 import com.voxeet.sdk.core.VoxeetSdk;
 import com.voxeet.sdk.core.preferences.VoxeetPreferences;
-import com.voxeet.sdk.events.success.DeclineConferenceResultEvent;
+import com.voxeet.sdk.core.services.ConferenceService;
+import com.voxeet.sdk.core.services.SessionService;
+import com.voxeet.sdk.events.sdk.DeclineConferenceResultEvent;
 import com.voxeet.sdk.json.UserInfo;
 import com.voxeet.toolkit.activities.notification.IncomingBundleChecker;
 
@@ -32,17 +34,19 @@ public class RNBundleChecker extends IncomingBundleChecker {
                     getExternalUserId(),
                     getAvatarUrl());
 
+            SessionService service = VoxeetSdk.session();
+            ConferenceService conferenceService = VoxeetSdk.conference();
+
             Log.d(TAG, "onDecline: mConferenceId := " + getConferenceId());
             //join the conference
-            final Promise<DeclineConferenceResultEvent> decline = VoxeetSdk.getInstance()
-                    .getConferenceService().decline(getConferenceId());
+            final Promise<DeclineConferenceResultEvent> decline = conferenceService.decline(getConferenceId());
             //only when error() is called
 
-            if (!VoxeetSdk.user().isSocketOpen()) {
+            if (null != service && !service.isSocketOpen()) {
                 UserInfo userInfo = VoxeetPreferences.getSavedUserInfo();
 
                 if (null != userInfo) {
-                    VoxeetSdk.user().login(userInfo)
+                    service.open(userInfo)
                             .then(new PromiseExec<Boolean, DeclineConferenceResultEvent>() {
                                 @Override
                                 public void onCall(@Nullable Boolean result, @NonNull Solver<DeclineConferenceResultEvent> solver) {

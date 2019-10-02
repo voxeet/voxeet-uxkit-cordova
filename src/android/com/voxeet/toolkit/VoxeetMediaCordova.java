@@ -7,11 +7,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.voxeet.sdk.core.VoxeetSdk;
+import com.voxeet.sdk.core.services.ConferenceService;
+import com.voxeet.sdk.core.services.MediaDeviceService;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 
 import eu.codlab.simplepromise.Promise;
@@ -70,8 +71,12 @@ public class VoxeetMediaCordova extends CordovaPlugin {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                VoxeetSdk.getInstance().getConferenceService()
-                        .startVideo(front)
+                ConferenceService service = VoxeetSdk.conference();
+                if (null == service) {
+                    cb.error("NOT INITIALIZED");
+                    return;
+                }
+                service.startVideo(front)
                         .then(new PromiseExec<Boolean, Object>() {
                             @Override
                             public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
@@ -92,8 +97,12 @@ public class VoxeetMediaCordova extends CordovaPlugin {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                VoxeetSdk.getInstance().getConferenceService()
-                        .stopVideo()
+                ConferenceService service = VoxeetSdk.conference();
+                if (null == service) {
+                    cb.error("NOT INITIALIZED");
+                    return;
+                }
+                service.stopVideo()
                         .then(new PromiseExec<Boolean, Object>() {
                             @Override
                             public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
@@ -114,7 +123,12 @@ public class VoxeetMediaCordova extends CordovaPlugin {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                VoxeetSdk.getInstance().getMediaService().switchCamera()
+                MediaDeviceService service = VoxeetSdk.mediaDevice();
+                if (null == service) {
+                    cb.error("NOT INITIALIZED");
+                    return;
+                }
+                service.switchCamera()
                         .then(new PromiseExec<Boolean, Object>() {
                             @Override
                             public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {

@@ -6,10 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.voxeet.sdk.core.VoxeetSdk;
-import com.voxeet.sdk.events.error.ConferenceJoinedError;
-import com.voxeet.sdk.events.success.ConferenceDestroyedPushEvent;
-import com.voxeet.sdk.events.success.ConferenceJoinedSuccessEvent;
-import com.voxeet.sdk.events.success.ConferencePreJoinedEvent;
+import com.voxeet.sdk.core.services.SessionService;
+import com.voxeet.sdk.events.sdk.ConferenceStateEvent;
+import com.voxeet.sdk.json.ConferenceDestroyedPush;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
@@ -54,8 +53,8 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
 
         if (!CordovaIncomingCallActivity.class.equals(activity.getClass())) {
 
-            if (null != VoxeetSdk.getInstance() && !EventBus.getDefault().isRegistered(this)) {
-                VoxeetSdk.getInstance().register(this);
+            if (null != VoxeetSdk.instance() && !EventBus.getDefault().isRegistered(this)) {
+                VoxeetSdk.instance().register(this);
             }
 
             if (!EventBus.getDefault().isRegistered(this)) {
@@ -64,7 +63,8 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
 
             CordovaIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
             if (null != checker && checker.isBundleValid()) {
-                if (null != VoxeetSdk.getInstance() && VoxeetSdk.user().isSocketOpen()) {
+                SessionService session = VoxeetSdk.session();
+                if (null != session && session.isSocketOpen()) {
                     checker.onAccept();
                     CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                 }
@@ -106,27 +106,19 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ConferenceDestroyedPushEvent event) {
-        if (mCordovaIncomingBundleChecker != null)
-            mCordovaIncomingBundleChecker.flushIntent();
+    public void onEvent(ConferenceStateEvent event) {
+        switch (event.state) {
+            case JOINING:
+            case JOINED:
+            case JOINED_ERROR:
+                if (mCordovaIncomingBundleChecker != null)
+                    mCordovaIncomingBundleChecker.flushIntent();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ConferencePreJoinedEvent event) {
+    public void onEvent(ConferenceDestroyedPush event) {
         if (mCordovaIncomingBundleChecker != null)
             mCordovaIncomingBundleChecker.flushIntent();
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ConferenceJoinedSuccessEvent event) {
-        if (mCordovaIncomingBundleChecker != null)
-            mCordovaIncomingBundleChecker.flushIntent();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ConferenceJoinedError event) {
-        if (mCordovaIncomingBundleChecker != null)
-            mCordovaIncomingBundleChecker.flushIntent();
-    }
-
 }

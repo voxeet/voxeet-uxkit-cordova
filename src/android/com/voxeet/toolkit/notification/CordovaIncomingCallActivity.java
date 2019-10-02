@@ -11,13 +11,14 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.voxeet.sdk.audio.SoundManager;
+import com.voxeet.audio.utils.Constants;
 import com.voxeet.sdk.core.VoxeetSdk;
 import com.voxeet.sdk.core.services.AudioService;
-import com.voxeet.sdk.events.success.ConferenceDestroyedPushEvent;
-import com.voxeet.sdk.events.success.ConferenceEndedEvent;
-import com.voxeet.sdk.events.success.ConferencePreJoinedEvent;
-import com.voxeet.sdk.events.success.DeclineConferenceResultEvent;
+import com.voxeet.sdk.core.services.ConferenceService;
+import com.voxeet.sdk.events.sdk.ConferenceStateEvent;
+import com.voxeet.sdk.events.sdk.DeclineConferenceResultEvent;
+import com.voxeet.sdk.json.ConferenceDestroyedPush;
+import com.voxeet.sdk.media.audio.SoundManager;
 import com.voxeet.sdk.utils.AndroidManifest;
 import com.voxeet.sdk.utils.AudioType;
 import com.voxeet.toolkit.R;
@@ -114,12 +115,12 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
 
         SoundManager soundManager = AudioService.getSoundManager();
         if (null != soundManager) {
-            soundManager.checkOutputRoute().playSoundType(AudioType.RING);
+            soundManager.checkOutputRoute().playSoundType(AudioType.RING, Constants.STREAM_MUSIC);
         }
 
         if (mIncomingBundleChecker.isBundleValid()) {
-            if (null != VoxeetSdk.getInstance()) {
-                mEventBus = VoxeetSdk.getInstance().getEventBus();
+            if (null != VoxeetSdk.instance()) {
+                mEventBus = VoxeetSdk.instance().getEventBus();
                 if (null != mEventBus) mEventBus.register(this);
             }
 
@@ -150,8 +151,8 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ConferenceDestroyedPushEvent event) {
-        if (mIncomingBundleChecker.isSameConference(event.getPush().getConferenceId())) {
+    public void onEvent(ConferenceDestroyedPush event) {
+        if (mIncomingBundleChecker.isSameConference(event.conferenceId)) {
             finish();
         }
     }
@@ -159,12 +160,6 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      * Specific event used to manage the current "incoming" call feature
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ConferenceEndedEvent event) {
-        if (mIncomingBundleChecker.isSameConference(event.getEvent().getConferenceId())) {
-            finish();
-        }
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(DeclineConferenceResultEvent event) {
@@ -172,9 +167,15 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ConferencePreJoinedEvent event) {
-        if (mIncomingBundleChecker.isSameConference(event.getConferenceId())) {
-            finish();
+    public void onEvent(ConferenceStateEvent event) {
+        switch (event.state) {
+            case JOINING:
+            case JOINED:
+                if (mIncomingBundleChecker.isSameConference(event.conference.getId())) {
+                    finish();
+                }
+                break;
+            default:
         }
     }
 
@@ -184,8 +185,9 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     }
 
     protected void onDecline() {
-        if (getConferenceId() != null && null != VoxeetSdk.getInstance()) {
-            VoxeetSdk.getInstance().getConferenceService().decline(getConferenceId())
+        ConferenceService service = VoxeetSdk.conference();
+        if (getConferenceId() != null && null != service) {
+            service.decline(getConferenceId())
                     .then(new PromiseExec<DeclineConferenceResultEvent, Object>() {
                         @Override
                         public void onCall(@Nullable DeclineConferenceResultEvent result, @NonNull Solver<Object> solver) {
