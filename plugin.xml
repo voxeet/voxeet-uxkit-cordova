@@ -63,17 +63,6 @@
             <meta-data
                 android:name="voxeet_incoming_class"
                 android:value="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" />
-
-            <service android:name="com.voxeet.toolkit.notification.CordovaFirebaseMessagingService">
-                <intent-filter>
-                    <action android:name="com.google.firebase.MESSAGING_EVENT" />
-                </intent-filter>
-            </service>
-            <service android:name="com.voxeet.push.firebase.VoxeetFirebaseInstanceIDService">
-                <intent-filter>
-                    <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-                </intent-filter>
-            </service>
         </config-file>
 
         <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
@@ -92,7 +81,6 @@
         <source-file src="src/android/com/voxeet/toolkit/VoxeetMediaCordova.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/CordovaRootViewProvider.java" target-dir="src/com/voxeet/toolkit" />
 
-        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaFirebaseMessagingService.java" target-dir="src/com/voxeet/toolkit/notification" />
         <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingBundleChecker.java" target-dir="src/com/voxeet/toolkit/notification" />
         <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingCallActivity.java" target-dir="src/com/voxeet/toolkit/notification" />
         <source-file src="src/android/com/voxeet/toolkit/notification/RNBundleChecker.java" target-dir="src/com/voxeet/toolkit/notification" />
