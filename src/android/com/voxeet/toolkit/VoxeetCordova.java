@@ -535,7 +535,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
                     internalInitialize(callbackContext);
                 } else {
-                    callbackContext.error(SDK_ALREADY_CONFIGURED_ERROR);
+                    callbackContext.success();
                 }
             }
         });
@@ -554,7 +554,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
                     internalInitialize(callbackContext);
                 } else {
-                    callbackContext.error(SDK_ALREADY_CONFIGURED_ERROR);
+                    callbackContext.success();
                 }
             }
         });
