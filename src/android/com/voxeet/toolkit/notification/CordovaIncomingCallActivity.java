@@ -118,15 +118,27 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
             soundManager.checkOutputRoute().playSoundType(AudioType.RING, Constants.STREAM_MUSIC);
         }
 
+        try {
+            EventBus.getDefault().register(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (mIncomingBundleChecker.isBundleValid()) {
             if (null != VoxeetSdk.instance()) {
                 mEventBus = VoxeetSdk.instance().getEventBus();
-                if (null != mEventBus) mEventBus.register(this);
+                try {
+                    if (null != mEventBus && !mEventBus.isRegistered(this))
+                        mEventBus.register(this);
+                } catch (Exception e) {
+
+                }
             }
 
             mUsername.setText(mIncomingBundleChecker.getUserName());
             Picasso.get()
                     .load(mIncomingBundleChecker.getAvatarUrl())
+                    .placeholder(R.drawable.default_avatar)
+                    .error(R.drawable.default_avatar)
                     .into(mAvatar);
         } else {
             mIncomingBundleChecker.dumpIntent();
@@ -138,13 +150,23 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     protected void onPause() {
         isResumed = false;
 
+        try {
+            EventBus.getDefault().unregister(this);
+        } catch (Exception e) {
+
+        }
+
         SoundManager soundManager = AudioService.getSoundManager();
         if (null != soundManager) {
             soundManager.resetDefaultSoundType().stopSoundType(AudioType.RING);
         }
 
-        if (mEventBus != null) {
-            mEventBus.unregister(this);
+        try {
+            if (mEventBus != null) {
+                mEventBus.unregister(this);
+            }
+        } catch (Exception e) {
+
         }
 
         super.onPause();

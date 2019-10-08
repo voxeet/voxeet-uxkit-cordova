@@ -2,8 +2,8 @@
 
 // check for the environment variable to apply the push notification
 // to enable push notification in builds : export USE_PUSH_NOTIFICATION=true
-def push = System.getenv("USE_PUSH_NOTIFICATION")
-def push_manifest = System.getenv("USE_PUSH_NOTIFICATION_IN_MANIFEST")
+def push = "true".equals(System.getenv("USE_PUSH_NOTIFICATION"))
+def push_manifest = "true".equals(System.getenv("USE_PUSH_NOTIFICATION_IN_MANIFEST"))
 
 android {
     defaultConfig {
@@ -19,12 +19,12 @@ android {
 
 dependencies {
     compile 'com.android.support:multidex:1.0.3'
-    compile ('com.voxeet.sdk:toolkit:2.0.69.14') {
+    compile ('com.voxeet.sdk:toolkit:2.0.69.17') {
         transitive = true
     }
 
     if(push_manifest) {
-        compile ('com.voxeet.sdk:push_manifest:2.0.69.14')
+        compile ('com.voxeet.sdk:push_manifest:2.0.69.17')
     }
 }
 
@@ -35,7 +35,7 @@ ext.cdvCompileSdkVersion = 28
 ext.cdvBuildToolsVersion = "28.0.3"
 
 //use the push variable
-if ("true".equals(push)) {
+if (push) {
   cdvPluginPostBuildExtras.add({
     apply plugin: 'com.google.gms.google-services'
   })
