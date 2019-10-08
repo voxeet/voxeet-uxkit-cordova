@@ -1,5 +1,11 @@
 # Release Notes
 
+### 1.2.15 (October 8th, 2019)
+- iOS, crash fixed in stop video for iOS 13
+- Android use improved internal SDK revision with light support
+- Android, less push configuration required (favor of metadata only)
+- Android, multiple init won't collide and reject promise (similar to iOS behaviour)
+
 ### 1.2.14 (October 1st, 2019)
 - bump iOS Voxeet SDKs for Swift 5.1
 
