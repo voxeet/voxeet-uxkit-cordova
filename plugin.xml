@@ -70,6 +70,7 @@
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="Voxeet" >
                 <param name="android-package" value="com.voxeet.toolkit.VoxeetCordova"/>
+                <param name="onload" value="true" />
             </feature>
             <feature name="VoxeetMedia" >
                 <param name="android-package" value="com.voxeet.toolkit.VoxeetMediaCordova"/>

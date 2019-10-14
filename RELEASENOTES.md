@@ -1,5 +1,11 @@
 # Release Notes
 
+### TBD (October 14th, 2019)
+- Android, use initialize with onload
+
+### 1.2.16 (October 14th, 2019)
+- iOS, bump version and dependencies
+
 ### 1.2.15 (October 8th, 2019)
 - iOS, crash fixed in stop video for iOS 13
 - Android use improved internal SDK revision with light support

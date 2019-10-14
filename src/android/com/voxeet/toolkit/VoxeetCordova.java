@@ -33,6 +33,7 @@ import com.voxeet.sdk.json.internal.MetadataHolder;
 import com.voxeet.sdk.json.internal.ParamsHolder;
 import com.voxeet.sdk.models.User;
 import com.voxeet.sdk.models.v1.CreateConferenceResult;
+import com.voxeet.sdk.utils.AndroidManifest;
 import com.voxeet.sdk.utils.Validate;
 import com.voxeet.toolkit.configuration.ActionBar;
 import com.voxeet.toolkit.configuration.Configuration;
@@ -74,6 +75,9 @@ import eu.codlab.simplepromise.solve.Solver;
 
 public class VoxeetCordova extends CordovaPlugin {
 
+    private static final String CONSUMER_KEY = "cordova_consumer_key";
+    private static final String CONSUMER_SECRET = "cordova_consumer_secret";
+
     private static final String ERROR_SDK_NOT_INITIALIZED = "ERROR_SDK_NOT_INITIALIZED";
     private static final String ERROR_SDK_NOT_LOGGED_IN = "ERROR_SDK_NOT_LOGGED_IN";
     private static final String SDK_ALREADY_CONFIGURED_ERROR = "The SDK is already configured";
@@ -107,6 +111,15 @@ public class VoxeetCordova extends CordovaPlugin {
         super.initialize(cordova, webView);
 
         mWebView = webView;
+
+        Context context = cordova.getContext();
+        String consumerKeyManifest = AndroidManifest.readMetadata(context, CONSUMER_KEY, null);
+        String consumerSecretManifest = AndroidManifest.readMetadata(context, CONSUMER_SECRET, null);
+
+        if (null != consumerKeyManifest && null != consumerSecretManifest && null == VoxeetSdk.instance()) {
+            VoxeetSdk.initialize(consumerKeyManifest, consumerSecretManifest);
+            internalInitialize(null);
+        }
     }
 
     @Override
@@ -560,7 +573,7 @@ public class VoxeetCordova extends CordovaPlugin {
         });
     }
 
-    private void internalInitialize(final CallbackContext callbackContext) {
+    private void internalInitialize(@Nullable final CallbackContext callbackContext) {
         ConferenceService service = VoxeetSdk.conference();
         if (null != service) service.setTimeOut(-1); //no timeout by default in the cordova impl
 
@@ -589,7 +602,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
         VoxeetSdk.instance().register(this);
 
-        callbackContext.success();
+        if (null != callbackContext) callbackContext.success();
     }
 
     private void openSession(final UserInfo userInfo,
