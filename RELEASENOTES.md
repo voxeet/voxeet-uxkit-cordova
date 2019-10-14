@@ -6,6 +6,12 @@
 - Android, less push configuration required (favor of metadata only)
 - Android, multiple init won't collide and reject promise (similar to iOS behaviour)
 
+### 1.2.16 (October 14th, 2019)
+- bump iOS Voxeet SDKs to fix crash issues
+
+### 1.2.15 (October 8th, 2019)
+- use updated sdk (video stream etc...)/register event for push in invite
+
 ### 1.2.14 (October 1st, 2019)
 - bump iOS Voxeet SDKs for Swift 5.1
 
