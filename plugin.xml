@@ -63,6 +63,8 @@
             <meta-data
                 android:name="voxeet_incoming_class"
                 android:value="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" />
+            <meta-data android:name="cordova_consumer_key" android:value="${VOXEET_CORDOVA_CONSUMER_KEY}" />
+            <meta-data android:name="cordova_consumer_secret" android:value="${VOXEET_CORDOVA_CONSUMER_SECRET}" />
         </config-file>
 
         <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />

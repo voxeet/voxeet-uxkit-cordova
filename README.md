@@ -77,19 +77,11 @@ Voxeet.initialize(<consumer_key>: string , <secret_key>: string)
 ```
 
 
-**Note: (Android only right now) ** in some cases, it is needed to initialize the SDK beforehand. To accomplish this, edit your `config.xml` file to add the consumerKey / consumerSecret :
+**Note: (Android only right now) ** POSSIBLE OPTION : in some cases, it is needed to initialize the SDK beforehand. To accomplish this, edit your `config.xml` file to add the consumerKey / consumerSecret :
 
 ```
-<platform name="android">
-  ...
-  <config-file target="AndroidManifest.xml" parent="/manifest/application">
-    ...
-    <meta-data android:name="cordova_consumer_key" android:value="key value" />
-    <meta-data android:name="cordova_consumer_secret" android:value="secret value" />
-    ...
-    </config-file>
-  ...
-</platform>
+<preference name="VOXEET_CORDOVA_CONSUMER_KEY" value="key"/>
+<preference name="VOXEET_CORDOVA_CONSUMER_SECRET" value="secret"/>
 ```
 
 ### Initialize with OAuth2
