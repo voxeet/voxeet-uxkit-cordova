@@ -12,18 +12,34 @@
 
 @implementation CDVVoxeet
 
+- (void)pluginInitialize {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishLaunching:) name:UIApplicationDidFinishLaunchingNotification object:nil];
+}
+
+- (void)finishLaunching:(NSNotification *)notification {
+    NSString *consumerKey = [((CDVViewController *)self.viewController).settings objectForKey:@"voxeet_cordova_consumer_key"];
+    NSString *consumerSecret = [((CDVViewController *)self.viewController).settings objectForKey:@"voxeet_cordova_consumer_secret"];
+    
+    if (consumerKey && consumerSecret) {
+        [self initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret];
+    }
+}
+
 - (void)initialize:(CDVInvokedUrlCommand *)command {
     NSString *consumerKey = [command.arguments objectAtIndex:0];
     NSString *consumerSecret = [command.arguments objectAtIndex:1];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret];
-        [VoxeetUXKit.shared initialize];
-        
-        VoxeetSDK.shared.pushNotification.type = VTPushNotificationTypeCallKit;
-        
+        [self initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret];
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
+}
+
+- (void)initializeWithConsumerKey:(NSString *)consumerKey consumerSecret:(NSString *)consumerSecret {
+    [VoxeetSDK.shared initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret];
+    [VoxeetUXKit.shared initialize];
+    
+    VoxeetSDK.shared.pushNotification.type = VTPushNotificationTypeCallKit;
 }
 
 - (void)initializeToken:(CDVInvokedUrlCommand *)command {

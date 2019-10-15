@@ -71,11 +71,11 @@
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="Voxeet" >
-                <param name="android-package" value="com.voxeet.toolkit.VoxeetCordova"/>
+                <param name="android-package" value="com.voxeet.toolkit.VoxeetCordova" />
                 <param name="onload" value="true" />
             </feature>
             <feature name="VoxeetMedia" >
-                <param name="android-package" value="com.voxeet.toolkit.VoxeetMediaCordova"/>
+                <param name="android-package" value="com.voxeet.toolkit.VoxeetMediaCordova" />
             </feature>
         </config-file>
 
@@ -95,11 +95,12 @@
 
     <!-- ios -->
     <platform name="ios">
-        <hook type="before_plugin_install" src="build_ios_frameworks.js"/>
+        <hook type="before_plugin_install" src="build_ios_frameworks.js" />
 
         <config-file target="config.xml" parent="/*">
             <feature name="Voxeet">
                 <param name="ios-package" value="CDVVoxeet" />
+                <param name="onload" value="true" />
             </feature>
             <feature name="VoxeetMedia">
                 <param name="ios-package" value="CDVVoxeet" />
@@ -112,7 +113,6 @@
                 <string>voip</string>
             </array>
         </config-file>
-
         <config-file platform="ios" target="*-Info.plist" parent="NSMicrophoneUsageDescription">
             <string>Microphone permission is needed</string>
         </config-file>
@@ -123,9 +123,9 @@
         <header-file src="src/ios/CDVVoxeet.h" />
         <source-file src="src/ios/CDVVoxeet.m" />
 
-        <framework src="src/ios/Carthage/Build/iOS/VoxeetConferenceKit.framework" custom="true" embed="true"/>
-        <framework src="src/ios/Carthage/Build/iOS/VoxeetSDK.framework" custom="true" embed="true"/>
-        <framework src="src/ios/Carthage/Build/iOS/WebRTC.framework" custom="true" embed="true"/>
-        <framework src="src/ios/Carthage/Build/iOS/Kingfisher.framework" custom="true" embed="true"/>
+        <framework src="src/ios/Carthage/Build/iOS/VoxeetConferenceKit.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/iOS/VoxeetSDK.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/iOS/WebRTC.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/iOS/Kingfisher.framework" custom="true" embed="true" />
     </platform>
 </plugin>
