@@ -66,8 +66,6 @@
             <meta-data
                 android:name="voxeet_incoming_class"
                 android:value="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" />
-            <meta-data android:name="cordova_consumer_key" android:value="@string/voxeet_consumer_key" />
-            <meta-data android:name="cordova_consumer_secret" android:value="@string/voxeet_consumer_secret" />
         </config-file>
         <config-file target="res/values/strings.xml" parent="/resources">
             <string name="voxeet_consumer_key">$VOXEET_CORDOVA_CONSUMER_KEY</string>

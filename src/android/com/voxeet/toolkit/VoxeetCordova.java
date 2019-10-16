@@ -75,8 +75,8 @@ import eu.codlab.simplepromise.solve.Solver;
 
 public class VoxeetCordova extends CordovaPlugin {
 
-    private static final String CONSUMER_KEY = "cordova_consumer_key";
-    private static final String CONSUMER_SECRET = "cordova_consumer_secret";
+    private static final String CONSUMER_KEY = "voxeet_consumer_key";
+    private static final String CONSUMER_SECRET = "voxeet_consumer_secret";
 
     private static final String ERROR_SDK_NOT_INITIALIZED = "ERROR_SDK_NOT_INITIALIZED";
     private static final String ERROR_SDK_NOT_LOGGED_IN = "ERROR_SDK_NOT_LOGGED_IN";
@@ -112,13 +112,22 @@ public class VoxeetCordova extends CordovaPlugin {
 
         mWebView = webView;
 
-        Context context = cordova.getContext();
-        String consumerKeyManifest = AndroidManifest.readMetadata(context, CONSUMER_KEY, null);
-        String consumerSecretManifest = AndroidManifest.readMetadata(context, CONSUMER_SECRET, null);
+        try {
+            Context context = cordova.getContext();
+            int consumer_key = context.getResources().getIdentifier(CONSUMER_KEY, "string", context.getPackageName());
+            int consumer_secret = context.getResources().getIdentifier(CONSUMER_SECRET, "string", context.getPackageName());
 
-        if (null != consumerKeyManifest && null != consumerSecretManifest && null == VoxeetSdk.instance()) {
-            VoxeetSdk.initialize(consumerKeyManifest, consumerSecretManifest);
-            internalInitialize(null);
+            if (0 != consumer_key && 0 != consumer_secret) {
+                String consumerKeyManifest = context.getString(consumer_key);
+                String consumerSecretManifest = context.getString(consumer_secret);
+
+                if (!isEmpty(consumerKeyManifest) && !isEmpty(consumerSecretManifest) && null == VoxeetSdk.instance()) {
+                    VoxeetSdk.initialize(consumerKeyManifest, consumerSecretManifest);
+                    internalInitialize(null);
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -1357,5 +1366,9 @@ public class VoxeetCordova extends CordovaPlugin {
         CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT = null;
         CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = null;
         CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT = null;
+    }
+
+    private boolean isEmpty(@Nullable String str) {
+        return null == str || TextUtils.isEmpty(str) || "null".equalsIgnoreCase(str);
     }
 }
