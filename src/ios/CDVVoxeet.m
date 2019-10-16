@@ -20,13 +20,18 @@
 
 - (void)finishLaunching:(NSNotification *)notification {
     NSString *consumerKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"VOXEET_CORDOVA_CONSUMER_KEY"];
+    NSString *consumerKeyPref = [self.commandDelegate.settings objectForKey:[@"VOXEET_CORDOVA_CONSUMER_KEY" lowercaseString]];
     NSString *consumerSecret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"VOXEET_CORDOVA_CONSUMER_SECRET"];
+    NSString *consumerSecretPref = [self.commandDelegate.settings objectForKey:[@"VOXEET_CORDOVA_CONSUMER_SECRET" lowercaseString]];
     
     if (consumerKey != nil && consumerKey.length != 0 && ![consumerKey isEqualToString:@"null"] &&
         consumerSecret != nil && consumerSecret.length != 0 && ![consumerSecret isEqualToString:@"null"]) {
         _consumerKey = consumerKey;
         _consumerSecret = consumerSecret;
-        
+        [self initializeWithConsumerKey:_consumerKey consumerSecret:_consumerSecret];
+    } else if (consumerKeyPref != nil && consumerKeyPref.length != 0 && consumerSecretPref != nil && consumerSecretPref.length != 0) {
+        _consumerKey = consumerKeyPref;
+        _consumerSecret = consumerSecretPref;
         [self initializeWithConsumerKey:_consumerKey consumerSecret:_consumerSecret];
     }
 }
