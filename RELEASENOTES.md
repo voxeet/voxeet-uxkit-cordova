@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.2.18 (October 16th, 2019)
+- Protect iOS initialize method to handle both config.xml and js init at the same time
+
 ### 1.2.17 (October 16th, 2019)
 - Android & iOS, use initialize with onload
 
