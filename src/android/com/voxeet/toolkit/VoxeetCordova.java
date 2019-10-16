@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.XmlResourceParser;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,7 +34,6 @@ import com.voxeet.sdk.json.internal.MetadataHolder;
 import com.voxeet.sdk.json.internal.ParamsHolder;
 import com.voxeet.sdk.models.User;
 import com.voxeet.sdk.models.v1.CreateConferenceResult;
-import com.voxeet.sdk.utils.AndroidManifest;
 import com.voxeet.sdk.utils.Validate;
 import com.voxeet.toolkit.configuration.ActionBar;
 import com.voxeet.toolkit.configuration.Configuration;
@@ -58,8 +58,12 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
@@ -75,6 +79,8 @@ import eu.codlab.simplepromise.solve.Solver;
 
 public class VoxeetCordova extends CordovaPlugin {
 
+    private static final String VOXEET_CORDOVA_CONSUMER_KEY = "VOXEET_CORDOVA_CONSUMER_KEY";
+    private static final String VOXEET_CORDOVA_CONSUMER_SECRET = "VOXEET_CORDOVA_CONSUMER_SECRET";
     private static final String CONSUMER_KEY = "voxeet_consumer_key";
     private static final String CONSUMER_SECRET = "voxeet_consumer_secret";
 
@@ -112,22 +118,32 @@ public class VoxeetCordova extends CordovaPlugin {
 
         mWebView = webView;
 
+        String consumerKeyManifest = null;
+        String consumerSecretManifest = null;
+
         try {
             Context context = cordova.getContext();
             int consumer_key = context.getResources().getIdentifier(CONSUMER_KEY, "string", context.getPackageName());
             int consumer_secret = context.getResources().getIdentifier(CONSUMER_SECRET, "string", context.getPackageName());
 
             if (0 != consumer_key && 0 != consumer_secret) {
-                String consumerKeyManifest = context.getString(consumer_key);
-                String consumerSecretManifest = context.getString(consumer_secret);
-
-                if (!isEmpty(consumerKeyManifest) && !isEmpty(consumerSecretManifest) && null == VoxeetSdk.instance()) {
-                    VoxeetSdk.initialize(consumerKeyManifest, consumerSecretManifest);
-                    internalInitialize(null);
-                }
+                consumerKeyManifest = context.getString(consumer_key);
+                consumerSecretManifest = context.getString(consumer_secret);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        HashMap<String, String> map = loadConfigsFromXml(cordova.getContext());
+        if (map.containsKey(VOXEET_CORDOVA_CONSUMER_KEY))
+            consumerKeyManifest = map.get(VOXEET_CORDOVA_CONSUMER_KEY);
+        if (map.containsKey(VOXEET_CORDOVA_CONSUMER_SECRET))
+            consumerSecretManifest = map.get(VOXEET_CORDOVA_CONSUMER_SECRET);
+
+        Log.d("CORDOVA", "initialize: " + consumerKeyManifest + " " + consumerSecretManifest);
+        if (!isEmpty(consumerKeyManifest) && !isEmpty(consumerSecretManifest) && null == VoxeetSdk.instance()) {
+            VoxeetSdk.initialize(consumerKeyManifest, consumerSecretManifest);
+            internalInitialize(null);
         }
     }
 
@@ -1371,4 +1387,50 @@ public class VoxeetCordova extends CordovaPlugin {
     private boolean isEmpty(@Nullable String str) {
         return null == str || TextUtils.isEmpty(str) || "null".equalsIgnoreCase(str);
     }
+
+    private List<String> preferences = Arrays.asList(VOXEET_CORDOVA_CONSUMER_KEY, VOXEET_CORDOVA_CONSUMER_SECRET);
+
+
+    //TODO use intent extras in the future
+    @NonNull
+    private HashMap<String, String> loadConfigsFromXml(@NonNull Context context) {
+        HashMap<String, String> configs = new HashMap<>();
+        int identifier = context.getResources().getIdentifier("config", "xml", context.getPackageName());
+
+        if (0 == identifier) {
+            return configs;
+        }
+
+        XmlResourceParser xrp = context.getResources().getXml(identifier);
+
+        try {
+            xrp.next();
+            while (XmlResourceParser.END_DOCUMENT != xrp.getEventType()) {
+                if ("preference".equals(xrp.getName()) || "variable".equals(xrp.getName())) {
+                    String key = checkKey(xrp.getAttributeValue(null, "name"));
+                    if (key != null) {
+                        configs.put(key, xrp.getAttributeValue(null, "value"));
+                    }
+                }
+                xrp.next();
+            }
+        } catch (XmlPullParserException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return configs;
+    }
+
+    @Nullable
+    private String checkKey(@Nullable String keyToCheck) {
+        for (String key : preferences) {
+            if (null != key && key.equalsIgnoreCase(keyToCheck)) {
+                return key;
+            }
+        }
+        return null;
+    }
+
 }
