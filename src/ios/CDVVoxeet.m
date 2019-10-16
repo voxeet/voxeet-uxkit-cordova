@@ -5,6 +5,8 @@
 
 @interface CDVVoxeet()
 
+@property (nonatomic, copy) NSString *consumerKey;
+@property (nonatomic, copy) NSString *consumerSecret;
 @property (nonatomic, copy) NSString *refreshAccessTokenID;
 @property (nonatomic, copy) void (^refreshAccessTokenClosure)(NSString *);
 
@@ -17,22 +19,28 @@
 }
 
 - (void)finishLaunching:(NSNotification *)notification {
-    NSString *consumerKey = [((CDVViewController *)self.viewController).settings objectForKey:@"voxeet_cordova_consumer_key"];
-    NSString *consumerSecret = [((CDVViewController *)self.viewController).settings objectForKey:@"voxeet_cordova_consumer_secret"];
+    _consumerKey = [((CDVViewController *)self.viewController).settings objectForKey:@"voxeet_cordova_consumer_key"];
+    _consumerSecret = [((CDVViewController *)self.viewController).settings objectForKey:@"voxeet_cordova_consumer_secret"];
     
-    if (consumerKey && consumerSecret) {
-        [self initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret];
+    if (_consumerKey && _consumerSecret) {
+        [self initializeWithConsumerKey:_consumerKey consumerSecret:_consumerSecret];
     }
 }
 
 - (void)initialize:(CDVInvokedUrlCommand *)command {
-    NSString *consumerKey = [command.arguments objectAtIndex:0];
-    NSString *consumerSecret = [command.arguments objectAtIndex:1];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret];
-        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
-    });
+    if (_consumerKey == nil && _consumerSecret == nil) {
+        _consumerKey = [command.arguments objectAtIndex:0];
+        _consumerSecret = [command.arguments objectAtIndex:1];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self initializeWithConsumerKey:self.consumerKey consumerSecret:self.consumerSecret];
+            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+        });
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+        });
+    }
 }
 
 - (void)initializeWithConsumerKey:(NSString *)consumerKey consumerSecret:(NSString *)consumerSecret {
