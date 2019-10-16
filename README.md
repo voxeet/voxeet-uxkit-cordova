@@ -12,6 +12,11 @@ It is mandatory that you added:
 
     `cordova plugin add cordova-plugin-voxeet`
 
+**Note:** in some cases, it is needed to initialize the SDK beforehand. Especially in cases a plugin used by the application is delaying the `onDeviceReady` event.
+
+    `cordova plugin add cordova-plugin-voxeet --variable VOXEET_CORDOVA_CONSUMER_KEY="your key" --variable VOXEET_CORDOVA_CONSUMER_SECRET="your secret"`
+
+
 ### iOS
 
 - after `cordova platform add ios` in the project root folder
@@ -74,14 +79,6 @@ Voxeet.initialize(<consumer_key>: string , <secret_key>: string)
 .catch(err => {
   //in case of error
 });
-```
-
-
-**Note: (Android only right now) ** POSSIBLE OPTION : in some cases, it is needed to initialize the SDK beforehand. To accomplish this, edit your `config.xml` file to add the consumerKey / consumerSecret :
-
-```
-<preference name="VOXEET_CORDOVA_CONSUMER_KEY" value="key"/>
-<preference name="VOXEET_CORDOVA_CONSUMER_SECRET" value="secret"/>
 ```
 
 ### Initialize with OAuth2

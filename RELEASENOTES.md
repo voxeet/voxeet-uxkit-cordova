@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3 (October 16th, 2019)
+- plugin variable properly used to initialize the SDK on Cordova's warmup
+
 ### 1.2.18 (October 16th, 2019)
 - Protect iOS initialize method to handle both config.xml and js init at the same time
 
