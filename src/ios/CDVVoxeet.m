@@ -19,10 +19,14 @@
 }
 
 - (void)finishLaunching:(NSNotification *)notification {
-    _consumerKey = [((CDVViewController *)self.viewController).settings objectForKey:@"voxeet_cordova_consumer_key"];
-    _consumerSecret = [((CDVViewController *)self.viewController).settings objectForKey:@"voxeet_cordova_consumer_secret"];
+    NSString *consumerKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"VOXEET_CORDOVA_CONSUMER_KEY"];
+    NSString *consumerSecret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"VOXEET_CORDOVA_CONSUMER_SECRET"];
     
-    if (_consumerKey && _consumerSecret) {
+    if (consumerKey != nil && consumerKey.length != 0 && ![consumerKey isEqualToString:@"null"] &&
+        consumerSecret != nil && consumerSecret.length != 0 && ![consumerSecret isEqualToString:@"null"]) {
+        _consumerKey = consumerKey;
+        _consumerSecret = consumerSecret;
+        
         [self initializeWithConsumerKey:_consumerKey consumerSecret:_consumerSecret];
     }
 }

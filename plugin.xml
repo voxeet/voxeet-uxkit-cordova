@@ -38,6 +38,9 @@
         <clobbers target="UserInfo" />
     </js-module>
 
+    <preference name="VOXEET_CORDOVA_CONSUMER_KEY" default="null" />
+    <preference name="VOXEET_CORDOVA_CONSUMER_SECRET" default="null" />
+
     <!-- android -->
     <platform name="android">
         <config-file target="AndroidManifest.xml" parent="/manifest">
@@ -108,7 +111,6 @@
             </feature>
             <feature name="VoxeetMedia">
                 <param name="ios-package" value="CDVVoxeet" />
-                <param name="onload" value="true" />
             </feature>
         </config-file>
 
@@ -123,6 +125,12 @@
         </config-file>
         <config-file platform="ios" target="*-Info.plist" parent="NSCameraUsageDescription">
             <string>Camera permission is needed</string>
+        </config-file>
+        <config-file platform="ios" target="*-Info.plist" parent="VOXEET_CORDOVA_CONSUMER_KEY">
+            <string>$VOXEET_CORDOVA_CONSUMER_KEY</string>
+        </config-file>
+        <config-file platform="ios" target="*-Info.plist" parent="VOXEET_CORDOVA_CONSUMER_SECRET">
+            <string>$VOXEET_CORDOVA_CONSUMER_SECRET</string>
         </config-file>
 
         <header-file src="src/ios/CDVVoxeet.h" />
