@@ -63,8 +63,12 @@
             <meta-data
                 android:name="voxeet_incoming_class"
                 android:value="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" />
-            <meta-data android:name="cordova_consumer_key" android:value="${VOXEET_CORDOVA_CONSUMER_KEY}" />
-            <meta-data android:name="cordova_consumer_secret" android:value="${VOXEET_CORDOVA_CONSUMER_SECRET}" />
+            <meta-data android:name="cordova_consumer_key" android:value="@string/voxeet_consumer_key" />
+            <meta-data android:name="cordova_consumer_secret" android:value="@string/voxeet_consumer_secret" />
+        </config-file>
+        <config-file target="res/values/strings.xml" parent="/resources">
+            <string name="voxeet_consumer_key">$VOXEET_CORDOVA_CONSUMER_KEY</string>
+            <string name="voxeet_consumer_secret">$VOXEET_CORDOVA_CONSUMER_SECRET</string>
         </config-file>
 
         <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
@@ -104,6 +108,7 @@
             </feature>
             <feature name="VoxeetMedia">
                 <param name="ios-package" value="CDVVoxeet" />
+                <param name="onload" value="true" />
             </feature>
         </config-file>
 
