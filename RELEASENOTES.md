@@ -1,7 +1,7 @@
 # Release Notes
 
-### TBD (October 14th, 2019)
-- Android, use initialize with onload
+### 1.2.17 (October 16th, 2019)
+- Android & iOS, use initialize with onload
 
 ### 1.2.16 (October 14th, 2019)
 - iOS, bump version and dependencies
