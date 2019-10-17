@@ -163,13 +163,18 @@ public class VoxeetCordova extends CordovaPlugin {
             }
         }
 
-        setVolumeVoiceCall();
+        ConferenceService service = VoxeetSdk.conference();
+        if(null != service && service.isLive()) {
+            setVolumeVoiceCall();
+        } else {
+            setVolumeMusic();
+        }
         checkForAwaitingConference(null);
     }
 
     @Override
     public void onPause(boolean multitasking) {
-        setVolumeVoiceCall();
+        setVolumeMusic();
 
         super.onPause(multitasking);
 
@@ -1347,19 +1352,19 @@ public class VoxeetCordova extends CordovaPlugin {
                 cleanBundles();
                 break;
             case CREATED_ERROR:
-                setVolumeStream();
+                setVolumeMusic();
                 break;
             case JOINED_ERROR:
-                setVolumeStream();
+                setVolumeMusic();
                 cleanBundles();
                 break;
             case LEAVING:
             case LEFT:
             case LEFT_ERROR:
-                setVolumeStream();
+                setVolumeMusic();
             default:
         }
-        setVolumeStream();
+        setVolumeMusic();
     }
 
     private void setVolumeVoiceCall() {
@@ -1369,7 +1374,7 @@ public class VoxeetCordova extends CordovaPlugin {
         }
     }
 
-    private void setVolumeStream() {
+    private void setVolumeMusic() {
         cordova.getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
         if (null != AudioService.getSoundManager()) {
             AudioService.getSoundManager().abandonAudioFocusRequest().unsetMediaRoute().enableMedia();
