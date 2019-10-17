@@ -1,5 +1,10 @@
 # Release Notes
 
+### 1.3.2 (October 17th, 2019)
+- Android, use suggested google play services built in
+- renaming of the stream method into music for more context and accuracy
+- replace possible unaccurate and mixed state of the onResume/onPause for call/music discrepancy
+
 ### 1.3.1 (October 17th, 2019)
 - copy intercom way of using config.xml inside build.gradle
 
