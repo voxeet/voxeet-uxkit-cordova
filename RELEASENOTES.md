@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.1 (October 17th, 2019)
+- copy intercom way of using config.xml inside build.gradle
+
 ### 1.3 (October 16th, 2019)
 - plugin variable properly used to initialize the SDK on Cordova's warmup
 

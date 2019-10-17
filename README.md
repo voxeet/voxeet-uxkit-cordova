@@ -233,6 +233,19 @@ Voxeet.initialize('YOUR_CONSUMER_KEY', 'YOUR_CONSUMER_SECRET')
 .error(err => alert(err));
 ```
 
+## Enabling Android push notification
+
+Inside your project's config.xml
+
+add the following preference at the end :
+
+```xml
+<widget>
+  <every other="tags">
+  <preference name="VOXEET_CORDOVA_USE_PUSH" value="true">
+</widget>
+```
+
 ## Supported Platforms
 
 - iOS

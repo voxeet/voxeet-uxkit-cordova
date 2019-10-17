@@ -1,9 +1,20 @@
 //build for voxeet's SDK
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.+'
+        classpath 'com.google.gms:google-services:3.2.0'
+    }
+}
 
-// check for the environment variable to apply the push notification
-// to enable push notification in builds : export USE_PUSH_NOTIFICATION=true
-def push = "true".equals(System.getenv("USE_PUSH_NOTIFICATION"))
-def push_manifest = "true".equals(System.getenv("USE_PUSH_NOTIFICATION_IN_MANIFEST"))
+repositories {
+    google()
+    jcenter()
+}
 
 android {
     defaultConfig {
@@ -17,13 +28,29 @@ android {
     }
 }
 
+
+// check for the environment variable to apply the push notification
+// to enable push notification in builds :
+// <widget ...>
+//   ...
+//   <preference name="VOXEET_CORDOVA_USE_PUSH" value="true" />
+// </widget>
+def push = false
+
+new XmlSlurper().parse(file('../app/src/main/res/xml/config.xml')).preference.each {
+    if (it.@name.text() == 'VOXEET_CORDOVA_USE_PUSH') {
+        def value = it.@value.text().toLowerCase()
+        push = "true".equalsIgnoreCase(value)
+    }
+}
+
 dependencies {
     compile 'com.android.support:multidex:1.0.3'
     compile ('com.voxeet.sdk:toolkit:2.0.69.17') {
         transitive = true
     }
 
-    if(push_manifest) {
+    if(push) {
         compile ('com.voxeet.sdk:push_manifest:2.0.69.17')
     }
 }
