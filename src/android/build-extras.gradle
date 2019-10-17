@@ -64,6 +64,6 @@ ext.cdvBuildToolsVersion = "28.0.3"
 //use the push variable
 if (push) {
   cdvPluginPostBuildExtras.add({
-    apply plugin: 'com.google.gms.google-services'
+    apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
   })
 }
