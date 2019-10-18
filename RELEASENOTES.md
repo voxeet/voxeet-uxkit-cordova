@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.3 (October 18th, 2019)
+- Android, on accepted incoming call, if the sdk is already initialized and an user was known, also connect the call
+
 ### 1.3.2 (October 17th, 2019)
 - Android, use suggested google play services built in
 - renaming of the stream method into music for more context and accuracy
