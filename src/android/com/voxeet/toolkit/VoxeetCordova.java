@@ -89,12 +89,14 @@ public class VoxeetCordova extends CordovaPlugin {
     private static final String SDK_ALREADY_CONFIGURED_ERROR = "The SDK is already configured";
     private static final String TAG = VoxeetCordova.class.getSimpleName();
 
+    private static final Handler HANDLER = new Handler(Looper.getMainLooper());
+    private static final List<String> PREFERENCES = Arrays.asList(VOXEET_CORDOVA_CONSUMER_KEY, VOXEET_CORDOVA_CONSUMER_SECRET);
+
     //static to let CordovaIncomingBundleChecker to check the state of it
     //it'll do the trick until the sdk is able to create and maintain a proper
     //conference configuration holder (something expected second half 2019)
     public static boolean startVideoOnJoin = false;
 
-    private final Handler mHandler;
     private UserInfo _current_user;
     private CallbackContext _log_in_callback;
     private ReentrantLock lock = new ReentrantLock();
@@ -106,10 +108,9 @@ public class VoxeetCordova extends CordovaPlugin {
 
     public VoxeetCordova() {
         super();
-        mHandler = new Handler(Looper.getMainLooper());
         mAwaitingTokenCallback = new ArrayList<>();
 
-        Promise.setHandler(mHandler);
+        Promise.setHandler(HANDLER);
     }
 
     @Override
@@ -118,11 +119,15 @@ public class VoxeetCordova extends CordovaPlugin {
 
         mWebView = webView;
 
+        tryInitialize(cordova.getContext(), cordova.getActivity());
+        if (null != VoxeetSdk.instance()) VoxeetSdk.instance().register(this);
+    }
+
+    public static void tryInitialize(@NonNull Context context, @NonNull Activity activity) {
         String consumerKeyManifest = null;
         String consumerSecretManifest = null;
 
         try {
-            Context context = cordova.getContext();
             int consumer_key = context.getResources().getIdentifier(CONSUMER_KEY, "string", context.getPackageName());
             int consumer_secret = context.getResources().getIdentifier(CONSUMER_SECRET, "string", context.getPackageName());
 
@@ -134,7 +139,7 @@ public class VoxeetCordova extends CordovaPlugin {
             e.printStackTrace();
         }
 
-        HashMap<String, String> map = loadConfigsFromXml(cordova.getContext());
+        HashMap<String, String> map = loadConfigsFromXml(context);
         if (map.containsKey(VOXEET_CORDOVA_CONSUMER_KEY))
             consumerKeyManifest = map.get(VOXEET_CORDOVA_CONSUMER_KEY);
         if (map.containsKey(VOXEET_CORDOVA_CONSUMER_SECRET))
@@ -143,7 +148,7 @@ public class VoxeetCordova extends CordovaPlugin {
         Log.d("CORDOVA", "initialize: " + consumerKeyManifest + " " + consumerSecretManifest);
         if (!isEmpty(consumerKeyManifest) && !isEmpty(consumerSecretManifest) && null == VoxeetSdk.instance()) {
             VoxeetSdk.initialize(consumerKeyManifest, consumerSecretManifest);
-            internalInitialize(null);
+            internalInitialize(null, activity);
         }
     }
 
@@ -557,7 +562,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void initialize(final String accessToken,
                             final CallbackContext callbackContext) {
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 Application application = (Application) cordova.getActivity().getApplicationContext();
@@ -576,7 +581,8 @@ public class VoxeetCordova extends CordovaPlugin {
                                 }
                             });
 
-                    internalInitialize(callbackContext);
+                    internalInitialize(callbackContext, cordova.getActivity());
+                    if (null != VoxeetSdk.instance()) VoxeetSdk.instance().register(this);
                 } else {
                     callbackContext.success();
                 }
@@ -587,7 +593,7 @@ public class VoxeetCordova extends CordovaPlugin {
     private void initialize(final String consumerKey,
                             final String consumerSecret,
                             final CallbackContext callbackContext) {
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 Application application = (Application) cordova.getActivity().getApplicationContext();
@@ -595,7 +601,8 @@ public class VoxeetCordova extends CordovaPlugin {
                 if (null == VoxeetSdk.instance()) {
                     VoxeetSdk.initialize(consumerKey, consumerSecret);
 
-                    internalInitialize(callbackContext);
+                    internalInitialize(callbackContext, cordova.getActivity());
+                    if (null != VoxeetSdk.instance()) VoxeetSdk.instance().register(this);
                 } else {
                     callbackContext.success();
                 }
@@ -603,11 +610,11 @@ public class VoxeetCordova extends CordovaPlugin {
         });
     }
 
-    private void internalInitialize(@Nullable final CallbackContext callbackContext) {
+    private static void internalInitialize(@Nullable final CallbackContext callbackContext, @NonNull Activity activity) {
         ConferenceService service = VoxeetSdk.conference();
         if (null != service) service.setTimeOut(-1); //no timeout by default in the cordova impl
 
-        Application application = (Application) cordova.getActivity().getApplicationContext();
+        Application application = (Application) activity.getApplicationContext();
 
         //also enable the push token upload and log
         FirebaseController.getInstance()
@@ -630,14 +637,12 @@ public class VoxeetCordova extends CordovaPlugin {
 
         VoxeetToolkit.instance().getConferenceToolkit().setScreenShareEnabled(false).enable(true);
 
-        VoxeetSdk.instance().register(this);
-
         if (null != callbackContext) callbackContext.success();
     }
 
     private void openSession(final UserInfo userInfo,
                              final CallbackContext cb) {
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 SessionService service = VoxeetSdk.session();
@@ -711,7 +716,7 @@ public class VoxeetCordova extends CordovaPlugin {
             return;
         }
 
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 service.close()
@@ -735,7 +740,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void isUserLoggedIn(final CallbackContext cb) {
         SessionService service = VoxeetSdk.session();
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 boolean logged_in = null != service && service.isSocketOpen();
@@ -746,7 +751,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void isAudio3DEnabled(final CallbackContext cb) {
         MediaDeviceService service = VoxeetSdk.mediaDevice();
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 boolean enabled = null != service && service.isAudio3DEnabled();
@@ -756,7 +761,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void isTelecomMode(final CallbackContext cb) {
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 ConferenceService service = VoxeetSdk.conference();
@@ -768,7 +773,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void checkForAwaitingConference(@Nullable final CallbackContext cb) {
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 lock();
@@ -818,7 +823,7 @@ public class VoxeetCordova extends CordovaPlugin {
             return;
         }
 
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 service.invite(conferenceId, participants)
@@ -1001,7 +1006,7 @@ public class VoxeetCordova extends CordovaPlugin {
             return;
         }
 
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 service.leave()
@@ -1028,7 +1033,7 @@ public class VoxeetCordova extends CordovaPlugin {
             return;
         }
 
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 service.startRecording()
@@ -1055,7 +1060,7 @@ public class VoxeetCordova extends CordovaPlugin {
             return;
         }
 
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 service.stopRecording()
@@ -1088,7 +1093,7 @@ public class VoxeetCordova extends CordovaPlugin {
             return;
         }
 
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 service.sendMessage(conferenceId, message)
@@ -1125,7 +1130,7 @@ public class VoxeetCordova extends CordovaPlugin {
             return;
         }
 
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 VoxeetToolkit.getInstance()
@@ -1136,13 +1141,13 @@ public class VoxeetCordova extends CordovaPlugin {
         });
     }
 
-    private void defaultBuiltInSpeaker(final boolean enabled) {
+    private static void defaultBuiltInSpeaker(final boolean enabled) {
         AudioService service = VoxeetSdk.audio();
         if (null == service) {
             return;
         }
 
-        mHandler.post(new Runnable() {
+        HANDLER.post(new Runnable() {
             @Override
             public void run() {
                 AudioRoute route = AudioRoute.ROUTE_PHONE;
@@ -1410,16 +1415,14 @@ public class VoxeetCordova extends CordovaPlugin {
         CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT = null;
     }
 
-    private boolean isEmpty(@Nullable String str) {
+    private static boolean isEmpty(@Nullable String str) {
         return null == str || TextUtils.isEmpty(str) || "null".equalsIgnoreCase(str);
     }
-
-    private List<String> preferences = Arrays.asList(VOXEET_CORDOVA_CONSUMER_KEY, VOXEET_CORDOVA_CONSUMER_SECRET);
 
 
     //TODO use intent extras in the future
     @NonNull
-    private HashMap<String, String> loadConfigsFromXml(@NonNull Context context) {
+    private static HashMap<String, String> loadConfigsFromXml(@NonNull Context context) {
         HashMap<String, String> configs = new HashMap<>();
         int identifier = context.getResources().getIdentifier("config", "xml", context.getPackageName());
 
@@ -1450,8 +1453,8 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     @Nullable
-    private String checkKey(@Nullable String keyToCheck) {
-        for (String key : preferences) {
+    private static String checkKey(@Nullable String keyToCheck) {
+        for (String key : PREFERENCES) {
             if (null != key && key.equalsIgnoreCase(keyToCheck)) {
                 return key;
             }

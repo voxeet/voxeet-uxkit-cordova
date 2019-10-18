@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.4 (October 18th, 2019)
+- Android, improve initialize with possibility of statically init the SDK before hand
+
 ### 1.3.3 (October 18th, 2019)
 - Android, on accepted incoming call, if the sdk is already initialized and an user was known, also connect the call
 

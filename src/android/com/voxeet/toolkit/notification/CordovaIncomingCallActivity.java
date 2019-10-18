@@ -60,6 +60,8 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
         super.onCreate(savedInstanceState);
         isResumed = false;
 
+        VoxeetCordova.tryInitialize(this, this);
+
         //we preInit the AudioService,
         AudioService.preInitSounds(getApplicationContext());
 
@@ -240,7 +242,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
 
     protected void onAccept() {
         if (mIncomingBundleChecker.isBundleValid()) {
-            if(canDirectlyUseJoin()) {
+            if (canDirectlyUseJoin()) {
                 VoxeetCordova.checkForIncomingConference(mIncomingBundleChecker);
             } else {
                 CORDOVA_ROOT_BUNDLE = mIncomingBundleChecker;
