@@ -164,7 +164,7 @@ public class VoxeetCordova extends CordovaPlugin {
         }
 
         ConferenceService service = VoxeetSdk.conference();
-        if(null != service && service.isLive()) {
+        if (null != service && service.isLive()) {
             setVolumeVoiceCall();
         } else {
             setVolumeMusic();
@@ -1210,7 +1210,7 @@ public class VoxeetCordova extends CordovaPlugin {
             _log_in_callback.success();
             _log_in_callback = null;
 
-            checkForIncomingConference();
+            VoxeetCordova.checkForIncomingConference();
         }
     }
 
@@ -1265,12 +1265,33 @@ public class VoxeetCordova extends CordovaPlugin {
         return userInfo.getExternalId().equals(getCurrentUser());
     }
 
-    private boolean checkForIncomingConference() {
+    public static boolean checkForIncomingConference() {
         CordovaIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
+        return VoxeetCordova.checkForIncomingConference(checker);
+    }
+
+    public static boolean checkForIncomingConference(@Nullable CordovaIncomingBundleChecker checker) {
         SessionService service = VoxeetSdk.session();
-        if (null != checker && checker.isBundleValid() && null != checker) {
+        if (null != service && null != checker && checker.isBundleValid()) {
+            UserInfo userInfo = VoxeetPreferences.getSavedUserInfo();
+
             if (service.isSocketOpen()) {
                 checker.onAccept();
+                CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
+                return true;
+            } else if (null != userInfo) {
+                service.open(userInfo).then(new PromiseExec<Boolean, Object>() {
+                    @Override
+                    public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                        checker.onAccept();
+                    }
+                }).error(new ErrorPromise() {
+                    @Override
+                    public void onError(@NonNull Throwable error) {
+                        Log.d(TAG, "onError: unable to join from bundle via push notification");
+                        error.printStackTrace();
+                    }
+                });
                 CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                 return true;
             } else {

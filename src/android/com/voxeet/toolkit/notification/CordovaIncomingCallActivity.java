@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.voxeet.audio.utils.Constants;
 import com.voxeet.sdk.core.VoxeetSdk;
+import com.voxeet.sdk.core.preferences.VoxeetPreferences;
 import com.voxeet.sdk.core.services.AudioService;
 import com.voxeet.sdk.core.services.ConferenceService;
 import com.voxeet.sdk.events.sdk.ConferenceStateEvent;
@@ -22,6 +23,7 @@ import com.voxeet.sdk.media.audio.SoundManager;
 import com.voxeet.sdk.utils.AndroidManifest;
 import com.voxeet.sdk.utils.AudioType;
 import com.voxeet.toolkit.R;
+import com.voxeet.toolkit.VoxeetCordova;
 import com.voxeet.toolkit.views.internal.rounded.RoundedImageView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -238,7 +240,11 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
 
     protected void onAccept() {
         if (mIncomingBundleChecker.isBundleValid()) {
-            CORDOVA_ROOT_BUNDLE = mIncomingBundleChecker;
+            if(canDirectlyUseJoin()) {
+                VoxeetCordova.checkForIncomingConference(mIncomingBundleChecker);
+            } else {
+                CORDOVA_ROOT_BUNDLE = mIncomingBundleChecker;
+            }
 
             Intent intent = mIncomingBundleChecker.createActivityAccepted(this);
             //start the accepted call activity
@@ -248,6 +254,10 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
             finish();
             overridePendingTransition(0, 0);
         }
+    }
+
+    private boolean canDirectlyUseJoin() {
+        return null != VoxeetSdk.session() && null != VoxeetPreferences.getSavedUserInfo();
     }
 
     /**
