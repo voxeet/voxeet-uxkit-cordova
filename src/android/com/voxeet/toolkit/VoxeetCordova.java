@@ -20,8 +20,10 @@ import com.voxeet.push.firebase.FirebaseController;
 import com.voxeet.sdk.core.VoxeetSdk;
 import com.voxeet.sdk.core.preferences.VoxeetPreferences;
 import com.voxeet.sdk.core.services.AudioService;
+import com.voxeet.sdk.core.services.CommandService;
 import com.voxeet.sdk.core.services.ConferenceService;
 import com.voxeet.sdk.core.services.MediaDeviceService;
+import com.voxeet.sdk.core.services.RecordingService;
 import com.voxeet.sdk.core.services.SessionService;
 import com.voxeet.sdk.events.error.PermissionRefusedEvent;
 import com.voxeet.sdk.events.sdk.ConferenceStateEvent;
@@ -705,6 +707,7 @@ public class VoxeetCordova extends CordovaPlugin {
         }
     }
 
+    @Nullable
     public UserInfo getCurrentUser() {
         return _current_user;
     }
@@ -1027,7 +1030,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void startRecording(final CallbackContext cb) {
-        ConferenceService service = VoxeetSdk.conference();
+        RecordingService service = VoxeetSdk.recording();
         if (null == service) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
@@ -1054,7 +1057,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void stopRecording(final CallbackContext cb) {
-        ConferenceService service = VoxeetSdk.conference();
+        RecordingService service = VoxeetSdk.recording();
         if (null == service) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
@@ -1081,13 +1084,14 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void sendBroadcastMessage(final String message, final CallbackContext cb) {
-        ConferenceService service = VoxeetSdk.conference();
-        if (null == service) {
+        CommandService commandService = VoxeetSdk.command();
+        ConferenceService conferenceService = VoxeetSdk.conference();
+        if (null == commandService || null == conferenceService) {
             cb.error(ERROR_SDK_NOT_INITIALIZED);
             return;
         }
 
-        String conferenceId = service.getConferenceId();
+        String conferenceId = conferenceService.getConferenceId();
         if (null == conferenceId || TextUtils.isEmpty(conferenceId)) {
             cb.error("You're not in a conference");
             return;
@@ -1096,7 +1100,7 @@ public class VoxeetCordova extends CordovaPlugin {
         HANDLER.post(new Runnable() {
             @Override
             public void run() {
-                service.sendMessage(conferenceId, message)
+                commandService.sendMessage(conferenceId, message)
                         .then(new PromiseExec<Boolean, Object>() {
                             @Override
                             public void onCall(@Nullable Boolean aBoolean, @NonNull Solver<Object> solver) {
@@ -1222,9 +1226,9 @@ public class VoxeetCordova extends CordovaPlugin {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(SocketStateChangeEvent event) {
-        switch (event.message()) {
-            case "CLOSING":
-            case "CLOSED":
+        switch (event.state) {
+            case CLOSING:
+            case CLOSED:
                 if (null != _log_in_callback) {
                     _log_in_callback.error("Error while logging in");
                     _log_in_callback = null;
@@ -1267,7 +1271,10 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private boolean isSameUser(@NonNull UserInfo userInfo) {
-        return userInfo.getExternalId().equals(getCurrentUser());
+        UserInfo currentUser = getCurrentUser();
+        String externalId = userInfo.getExternalId();
+        if (null == currentUser || null == externalId) return false;
+        return externalId.equals(currentUser.getExternalId());
     }
 
     public static boolean checkForIncomingConference() {
