@@ -51,7 +51,7 @@ dependencies {
     }
 
     if(push) {
-        compile ('com.voxeet.sdk:push_manifest:2.0.71')
+        compile ('com.voxeet.sdk:push_manifest:2.0.71.1')
     }
 }
 
