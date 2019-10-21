@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.5 (October 21th, 2019)
+- Android, accept incoming calls for empty avatar urls
+
 ### 1.3.4 (October 18th, 2019)
 - Android, improve initialize with possibility of statically init the SDK before hand
 

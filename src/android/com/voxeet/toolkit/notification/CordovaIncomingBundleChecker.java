@@ -121,7 +121,7 @@ public class CordovaIncomingBundleChecker {
                 && mIntent.hasExtra(VoxeetIntentFactory.INVITER_NAME)
                 && mIntent.hasExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID)
                 && mIntent.hasExtra(VoxeetIntentFactory.INVITER_ID)
-                && mIntent.hasExtra(VoxeetIntentFactory.INVITER_URL)
+                //&& mIntent.hasExtra(VoxeetIntentFactory.INVITER_URL) //accepting empty avatars
                 && mIntent.hasExtra(VoxeetIntentFactory.CONF_ID);
     }
 
