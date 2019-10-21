@@ -158,6 +158,8 @@ public class VoxeetCordova extends CordovaPlugin {
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
 
+        if (null != VoxeetSdk.instance()) VoxeetSdk.instance().register(this);
+
         //check for permission result
         //actually not testing it in the permission callback to prevent issue with flow
         MicrophonePermissionWait current = waitMicrophonePermission;
@@ -586,6 +588,7 @@ public class VoxeetCordova extends CordovaPlugin {
                     internalInitialize(callbackContext, cordova.getActivity());
                     if (null != VoxeetSdk.instance()) VoxeetSdk.instance().register(this);
                 } else {
+                    VoxeetSdk.instance().register(this);
                     callbackContext.success();
                 }
             }
@@ -606,6 +609,7 @@ public class VoxeetCordova extends CordovaPlugin {
                     internalInitialize(callbackContext, cordova.getActivity());
                     if (null != VoxeetSdk.instance()) VoxeetSdk.instance().register(this);
                 } else {
+                    VoxeetSdk.instance().register(this);
                     callbackContext.success();
                 }
             }
