@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -145,6 +146,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
                     .error(R.drawable.default_avatar)
                     .into(mAvatar);
         } else {
+            Log.d(TAG, "onResume: incoming call will quit, bundle invalid ...");
             mIncomingBundleChecker.dumpIntent();
             finish();
         }

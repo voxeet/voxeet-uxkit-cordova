@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.6 (cOtober 23th, 2019)
+- Android, improved incoming call for metadata + parameters conjunction
+
 ### 1.3.5 (October 21th, 2019)
 - Android, accept incoming calls for empty avatar urls
 
