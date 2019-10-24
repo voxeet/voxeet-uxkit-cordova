@@ -1,6 +1,11 @@
 # Release Notes
 
-### 1.3.6 (cOtober 23th, 2019)
+### 1.3.7 (October 24th, 2019)
+- Android, mic permission of accept calls
+- Improve events forwarding onto proper element
+- add INTERACT_ACROSS_USERS permission following evolution into new Samsung's Android 8 build (breaking change from old INTERACT_ACROSS_USERS_FULL prior to those builds)
+
+### 1.3.6 (October 23th, 2019)
 - Android, improved incoming call for metadata + parameters conjunction
 
 ### 1.3.5 (October 21th, 2019)
