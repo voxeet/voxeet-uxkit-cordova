@@ -1,10 +1,13 @@
 package com.voxeet.toolkit.notification;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +43,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     private final static String TAG = CordovaIncomingCallActivity.class.getSimpleName();
     private static final String DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY = "voxeet_incoming_call_duration";
     private static final int DEFAULT_VOXEET_INCOMING_CALL_DURATION_VALUE = 40 * 1000;
+    private static final int RECORD_AUDIO_RESULT = 0x10;
     public static CordovaIncomingBundleChecker CORDOVA_ROOT_BUNDLE = null;
     public static RNBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT = null;
     public static RNBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = null;
@@ -178,6 +182,29 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
         super.onPause();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+
+        switch (requestCode) {
+            case RECORD_AUDIO_RESULT: {
+                for (int i = 0; i < permissions.length; i++) {
+                    String permission = permissions[i];
+                    int grantResult = grantResults[i];
+
+                    if (Manifest.permission.RECORD_AUDIO.equals(permission) && grantResult == PackageManager.PERMISSION_GRANTED) {
+                        onAcceptWithPermission();
+                    } else {
+                        //possible message to show? display?
+                    }
+                }
+                return;
+            }
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(ConferenceDestroyedPush event) {
         if (mIncomingBundleChecker.isSameConference(event.conferenceId)) {
@@ -242,7 +269,20 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
         }
     }
 
+    /**
+     * Accept a call following an user interaction. This call also check for the mic permission - and will ask the user accordingly.
+     * The permission callback will then automatically consider mic granted as the accept action
+     * (the only flow to have mic permission with this activity in the accept call button)
+     */
     protected void onAccept() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO_RESULT);
+        } else {
+            onAcceptWithPermission();
+        }
+    }
+
+    protected void onAcceptWithPermission() {
         if (mIncomingBundleChecker.isBundleValid()) {
             if (canDirectlyUseJoin()) {
                 VoxeetCordova.checkForIncomingConference(mIncomingBundleChecker);
