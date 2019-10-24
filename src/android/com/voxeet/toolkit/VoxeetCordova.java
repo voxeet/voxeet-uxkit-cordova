@@ -586,9 +586,9 @@ public class VoxeetCordova extends CordovaPlugin {
                             });
 
                     internalInitialize(callbackContext, cordova.getActivity());
-                    if (null != VoxeetSdk.instance()) VoxeetSdk.instance().register(this);
+                    if (null != VoxeetSdk.instance()) VoxeetSdk.instance().register(VoxeetCordova.this);
                 } else {
-                    VoxeetSdk.instance().register(this);
+                    VoxeetSdk.instance().register(VoxeetCordova.this);
                     callbackContext.success();
                 }
             }
@@ -607,9 +607,9 @@ public class VoxeetCordova extends CordovaPlugin {
                     VoxeetSdk.initialize(consumerKey, consumerSecret);
 
                     internalInitialize(callbackContext, cordova.getActivity());
-                    if (null != VoxeetSdk.instance()) VoxeetSdk.instance().register(this);
+                    if (null != VoxeetSdk.instance()) VoxeetSdk.instance().register(VoxeetCordova.this);
                 } else {
-                    VoxeetSdk.instance().register(this);
+                    VoxeetSdk.instance().register(VoxeetCordova.this);
                     callbackContext.success();
                 }
             }
