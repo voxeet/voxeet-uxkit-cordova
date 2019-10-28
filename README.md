@@ -233,6 +233,29 @@ Voxeet.initialize('YOUR_CONSUMER_KEY', 'YOUR_CONSUMER_SECRET')
 .error(err => alert(err));
 ```
 
+## Example starting Broadcasting/Webinar mode
+
+To start a webinar or broadcast mode conference, 
+### Conference creation
+```
+const options:  = {
+  alias: "some_alias",
+  params: {
+    liveRecording: true
+  }
+}
+
+const promise = Voxeet.create(options);
+//resolving
+```
+
+### Joining it
+
+```
+const promise = Voxeet.broadcast(conferenceId);
+//resolving
+```
+
 ## Enabling Android push notification
 
 Inside your project's config.xml
