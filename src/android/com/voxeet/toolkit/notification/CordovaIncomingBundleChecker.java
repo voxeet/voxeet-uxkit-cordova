@@ -8,9 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.voxeet.push.center.management.Constants;
 import com.voxeet.sdk.core.VoxeetSdk;
 import com.voxeet.sdk.core.services.ConferenceService;
-import com.voxeet.sdk.factories.VoxeetIntentFactory;
 import com.voxeet.sdk.json.UserInfo;
 import com.voxeet.toolkit.VoxeetCordova;
 
@@ -56,11 +56,11 @@ public class CordovaIncomingBundleChecker {
         mIntent = intent;
 
         if (null != mIntent) {
-            mUserName = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_NAME);
-            mExternalUserId = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID);
-            mUserId = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_ID);
-            mAvatarUrl = mIntent.getStringExtra(VoxeetIntentFactory.INVITER_URL);
-            mConferenceId = mIntent.getStringExtra(VoxeetIntentFactory.CONF_ID);
+            mUserName = mIntent.getStringExtra(Constants.INVITER_NAME);
+            mExternalUserId = mIntent.getStringExtra(Constants.INVITER_EXTERNAL_ID);
+            mUserId = mIntent.getStringExtra(Constants.INVITER_ID);
+            mAvatarUrl = mIntent.getStringExtra(Constants.INVITER_URL);
+            mConferenceId = mIntent.getStringExtra(Constants.CONF_ID);
         }
     }
 
@@ -118,11 +118,11 @@ public class CordovaIncomingBundleChecker {
      */
     final public boolean isBundleValid() {
         return null != mIntent
-                && mIntent.hasExtra(VoxeetIntentFactory.INVITER_NAME)
-                && mIntent.hasExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID)
-                && mIntent.hasExtra(VoxeetIntentFactory.INVITER_ID)
-                //&& mIntent.hasExtra(VoxeetIntentFactory.INVITER_URL) //accepting empty avatars
-                && mIntent.hasExtra(VoxeetIntentFactory.CONF_ID);
+                && mIntent.hasExtra(Constants.INVITER_NAME)
+                && mIntent.hasExtra(Constants.INVITER_EXTERNAL_ID)
+                && mIntent.hasExtra(Constants.INVITER_ID)
+                //&& mIntent.hasExtra(Constants.INVITER_URL) //accepting empty avatars
+                && mIntent.hasExtra(Constants.CONF_ID);
     }
 
     @Nullable
@@ -185,11 +185,11 @@ public class CordovaIncomingBundleChecker {
      */
     public void flushIntent() {
         if (null != mIntent) {
-            mIntent.removeExtra(VoxeetIntentFactory.INVITER_ID);
-            mIntent.removeExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID);
-            //mIntent.removeExtra(VoxeetIntentFactory.CONF_ID);
-            mIntent.removeExtra(VoxeetIntentFactory.INVITER_URL);
-            mIntent.removeExtra(VoxeetIntentFactory.INVITER_NAME);
+            mIntent.removeExtra(Constants.INVITER_ID);
+            mIntent.removeExtra(Constants.INVITER_EXTERNAL_ID);
+            //mIntent.removeExtra(Constants.CONF_ID);
+            mIntent.removeExtra(Constants.INVITER_URL);
+            mIntent.removeExtra(Constants.INVITER_NAME);
         }
     }
 
@@ -206,11 +206,11 @@ public class CordovaIncomingBundleChecker {
 
     public void dumpIntent() {
         Log.d(TAG, "dumpIntent: "
-                + keyString(VoxeetIntentFactory.INVITER_ID)
-                + keyString(VoxeetIntentFactory.INVITER_EXTERNAL_ID)
-                + keyString(VoxeetIntentFactory.CONF_ID)
-                + keyString(VoxeetIntentFactory.INVITER_URL)
-                + keyString(VoxeetIntentFactory.INVITER_NAME));
+                + keyString(Constants.INVITER_ID)
+                + keyString(Constants.INVITER_EXTERNAL_ID)
+                + keyString(Constants.CONF_ID)
+                + keyString(Constants.INVITER_URL)
+                + keyString(Constants.INVITER_NAME));
     }
 
     private String keyString(String name) {

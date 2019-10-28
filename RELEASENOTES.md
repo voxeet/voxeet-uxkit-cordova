@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.8 (October 28th, 2019)
+- use sdk and uxkit embedding new push center management
+
 ### 1.3.7 (October 24th, 2019)
 - Android, mic permission of accept calls
 - Improve events forwarding onto proper element

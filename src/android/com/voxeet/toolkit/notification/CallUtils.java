@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
-import com.voxeet.sdk.factories.VoxeetIntentFactory;
+import com.voxeet.push.center.management.Constants;
 import com.voxeet.sdk.utils.AndroidManifest;
 
 /**
@@ -72,11 +72,11 @@ public class CallUtils {
 
         intent.putExtra(BUNDLE_EXTRA_BUNDLE, extraBundle);
 
-        intent.putExtra(VoxeetIntentFactory.CONF_ID, conferenceId)
-                .putExtra(VoxeetIntentFactory.INVITER_NAME, userName)
-                .putExtra(VoxeetIntentFactory.INVITER_ID, userId)
-                .putExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID, externalUserId)
-                .putExtra(VoxeetIntentFactory.INVITER_URL, avatarUrl);
+        intent.putExtra(Constants.CONF_ID, conferenceId)
+                .putExtra(Constants.INVITER_NAME, userName)
+                .putExtra(Constants.INVITER_ID, userId)
+                .putExtra(Constants.INVITER_EXTERNAL_ID, externalUserId)
+                .putExtra(Constants.INVITER_URL, avatarUrl);
 
         //deprecated
         intent.putExtra("join", isAccepted);

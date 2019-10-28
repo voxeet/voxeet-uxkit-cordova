@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -16,6 +17,11 @@ import android.util.Log;
 import com.voxeet.audio.AudioRoute;
 import com.voxeet.authent.token.RefreshTokenCallback;
 import com.voxeet.authent.token.TokenCallback;
+import com.voxeet.push.center.NotificationCenterFactory;
+import com.voxeet.push.center.invitation.InvitationBundle;
+import com.voxeet.push.center.management.EnforcedNotificationMode;
+import com.voxeet.push.center.management.NotificationMode;
+import com.voxeet.push.center.management.VersionFilter;
 import com.voxeet.push.firebase.FirebaseController;
 import com.voxeet.sdk.core.VoxeetSdk;
 import com.voxeet.sdk.core.preferences.VoxeetPreferences;
@@ -30,7 +36,6 @@ import com.voxeet.sdk.events.sdk.ConferenceStateEvent;
 import com.voxeet.sdk.events.sdk.SocketConnectEvent;
 import com.voxeet.sdk.events.sdk.SocketStateChangeEvent;
 import com.voxeet.sdk.events.v2.UserAddedEvent;
-import com.voxeet.sdk.factories.VoxeetIntentFactory;
 import com.voxeet.sdk.json.UserInfo;
 import com.voxeet.sdk.json.internal.MetadataHolder;
 import com.voxeet.sdk.json.internal.ParamsHolder;
@@ -43,6 +48,8 @@ import com.voxeet.toolkit.configuration.Overlay;
 import com.voxeet.toolkit.configuration.Users;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.implementation.overlays.OverlayState;
+import com.voxeet.toolkit.incoming.IncomingFullScreen;
+import com.voxeet.toolkit.incoming.IncomingNotification;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
 import com.voxeet.toolkit.notification.RNBundleChecker;
@@ -113,6 +120,17 @@ public class VoxeetCordova extends CordovaPlugin {
         mAwaitingTokenCallback = new ArrayList<>();
 
         Promise.setHandler(HANDLER);
+    }
+
+    public static void initNotificationCenter() {
+        //set Android Q as the minimum version no more supported by the full screen mode
+        NotificationCenterFactory.instance.register(NotificationMode.FULLSCREEN_INCOMING_CALL, new VersionFilter(VersionFilter.ALL, 29))
+                //register notification only mode
+                .register(NotificationMode.OVERHEAD_INCOMING_CALL, new IncomingNotification())
+                //register full screen mode
+                .register(NotificationMode.FULLSCREEN_INCOMING_CALL, new IncomingFullScreen(CordovaIncomingCallActivity.class))
+                //activate fullscreen -> notification mode only
+                .setEnforcedNotificationMode(EnforcedNotificationMode.MIXED_INCOMING_CALL);
     }
 
     @Override
@@ -620,6 +638,8 @@ public class VoxeetCordova extends CordovaPlugin {
         ConferenceService service = VoxeetSdk.conference();
         if (null != service) service.setTimeOut(-1); //no timeout by default in the cordova impl
 
+        VoxeetCordova.initNotificationCenter();
+
         Application application = (Application) activity.getApplicationContext();
 
         //also enable the push token upload and log
@@ -628,10 +648,6 @@ public class VoxeetCordova extends CordovaPlugin {
                 .enable(true);
         FirebaseController
                 .createNotificationChannel(application);
-
-        //reset the incoming call activity, in case the SDK was no initialized, it would have
-        //erased this method call
-        VoxeetPreferences.setDefaultActivity(CordovaIncomingCallActivity.class.getCanonicalName());
 
         //set the 2 optional default configuration from previous saved state
         VoxeetCordova.startVideoOnJoin = VoxeetPreferences.isDefaultVideoOn();
@@ -792,12 +808,11 @@ public class VoxeetCordova extends CordovaPlugin {
 
                     if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT) {
                         RNBundleChecker bundle = CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT;
-                        Activity activity = cordova.getActivity();
-                        if (null != activity) {
-                            Intent intent = VoxeetIntentFactory.buildFrom(activity, VoxeetPreferences.getDefaultActivity(), bundle.createExtraBundle());
-                            if (intent != null)
-                                activity.startActivity(intent);
-                        }
+
+                        InvitationBundle invitationBundle = new InvitationBundle(bundle.createExtraBundle());
+
+                        NotificationCenterFactory.instance.onInvitationReceived(cordova.getActivity(), invitationBundle.asMap(),
+                                Build.MANUFACTURER, Build.VERSION.SDK_INT);
                     } else if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT) {
                         CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT.onAccept();
                     } else if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE) {

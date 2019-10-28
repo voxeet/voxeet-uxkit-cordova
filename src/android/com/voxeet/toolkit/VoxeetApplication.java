@@ -7,7 +7,6 @@ import com.voxeet.sdk.core.VoxeetEnvironmentHolder;
 import com.voxeet.sdk.core.preferences.VoxeetPreferences;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.implementation.overlays.OverlayState;
-import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -30,9 +29,8 @@ public class VoxeetApplication extends MultiDexApplication {
         //force a default voxeet preferences manager
         //in sdk mode, no issues
         VoxeetPreferences.init(this, new VoxeetEnvironmentHolder(this));
-        //deprecated but we can only use it using the cordova plugin - for now
-        VoxeetPreferences.setDefaultActivity(CordovaIncomingCallActivity.class.getCanonicalName());
 
+        VoxeetCordova.initNotificationCenter();
         //change the overlay used by default
         VoxeetToolkit.getInstance().getConferenceToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
         VoxeetToolkit.getInstance().getReplayMessageToolkit().setDefaultOverlayState(OverlayState.EXPANDED);

@@ -241,8 +241,19 @@ add the following preference at the end :
 
 ```xml
 <widget>
-  <every other="tags">
-  <preference name="VOXEET_CORDOVA_USE_PUSH" value="true">
+  <every other="tags" />
+  <preference name="VOXEET_CORDOVA_USE_PUSH" value="true" />
+</widget>
+```
+
+### Android Q breaking changes
+
+Due to new mechanisms preventing standard behaviour, Android Q+ needs the following modification done :
+
+```xml
+<widget>
+  <preference name="VOXEET_CORDOVA_ANDROID_ACCEPTED_CALL_ACTIVITY" 
+    value="com.your.packageId.MainActivity" />
 </widget>
 ```
 
