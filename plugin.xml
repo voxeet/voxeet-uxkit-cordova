@@ -63,6 +63,7 @@
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <activity android:label="Incoming Call" android:name="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            <activity android:label="Incoming Call" android:name="com.voxeet.toolkit.notification.CordovaIncomingFromNotificationActivity" android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
             
             <meta-data
                 android:name="voxeet_incoming_class"
@@ -89,6 +90,9 @@
         <source-file src="src/android/com/voxeet/toolkit/VoxeetCordova.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/VoxeetMediaCordova.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/CordovaRootViewProvider.java" target-dir="src/com/voxeet/toolkit" />
+
+        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingFromNotificationActivity.java" target-dir="src/com/voxeet/toolkit/notification" />
+        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingNotification.java" target-dir="src/com/voxeet/toolkit/notification" />
 
         <source-file src="src/android/com/voxeet/toolkit/notification/CordovaFirebaseMessagingService.java" target-dir="src/com/voxeet/toolkit/notification" />
         <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingBundleChecker.java" target-dir="src/com/voxeet/toolkit/notification" />

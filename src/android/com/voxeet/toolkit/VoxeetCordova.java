@@ -52,6 +52,7 @@ import com.voxeet.toolkit.incoming.IncomingFullScreen;
 import com.voxeet.toolkit.incoming.IncomingNotification;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
+import com.voxeet.toolkit.notification.CordovaIncomingNotification;
 import com.voxeet.toolkit.notification.RNBundleChecker;
 
 import org.apache.cordova.CallbackContext;
@@ -126,7 +127,7 @@ public class VoxeetCordova extends CordovaPlugin {
         //set Android Q as the minimum version no more supported by the full screen mode
         NotificationCenterFactory.instance.register(NotificationMode.FULLSCREEN_INCOMING_CALL, new VersionFilter(VersionFilter.ALL, 29))
                 //register notification only mode
-                .register(NotificationMode.OVERHEAD_INCOMING_CALL, new IncomingNotification())
+                .register(NotificationMode.OVERHEAD_INCOMING_CALL, new CordovaIncomingNotification())
                 //register full screen mode
                 .register(NotificationMode.FULLSCREEN_INCOMING_CALL, new IncomingFullScreen(CordovaIncomingCallActivity.class))
                 //activate fullscreen -> notification mode only
