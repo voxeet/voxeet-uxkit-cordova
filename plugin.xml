@@ -40,6 +40,7 @@
 
     <preference name="VOXEET_CORDOVA_CONSUMER_KEY" default="null" />
     <preference name="VOXEET_CORDOVA_CONSUMER_SECRET" default="null" />
+    <preference name="VOXEET_CORDOVA_ANDROID_ACCEPTED_CALL_ACTIVITY" default="null" />
 
     <!-- android -->
     <platform name="android">
