@@ -45,7 +45,7 @@ This call use the following import : `import android.view.WindowManager;`
 
 - in order to implement properly the push notification, you also need to register the default accepted view **if you changed its name**. Edit the _AndroidManifest.xml_ file and put this xml node in the _<application></application>_ :
 ```
-<meta-data android:name="rn_voxeet_incoming_call_accepted_or_declined" android:value="fully.qualified.package.name.to.the.default.cordova.activity" />
+<meta-data android:name="voxeet_incoming_accepted_class" android:value="fully.qualified.package.name.to.the.default.cordova.activity" />
 ```
 
 ## Implementation
@@ -271,14 +271,15 @@ add the following preference at the end :
 
 ### Android Q breaking changes
 
-Due to new mechanisms preventing standard behaviour, Android Q+ needs the following modification done :
+Previously given as an option, due to new mechanisms preventing standard behaviour, Android Q+ needs the following modification done :
 
 ```xml
-<widget>
-  <preference name="VOXEET_CORDOVA_ANDROID_ACCEPTED_CALL_ACTIVITY" 
-    value="com.your.packageId.MainActivity" />
-</widget>
+<config-file parent="./application" target="AndroidManifest.xml">
+  <meta-data android:name="voxeet_incoming_accepted_class" android:value="fully.qualified.package.name.to.the.default.cordova.activity" />
+</config-file>
 ```
+
+If this is not set, a caught-exception will be set in the logs.
 
 ## Supported Platforms
 

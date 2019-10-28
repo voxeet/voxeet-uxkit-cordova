@@ -40,7 +40,6 @@
 
     <preference name="VOXEET_CORDOVA_CONSUMER_KEY" default="null" />
     <preference name="VOXEET_CORDOVA_CONSUMER_SECRET" default="null" />
-    <preference name="VOXEET_CORDOVA_ANDROID_ACCEPTED_CALL_ACTIVITY" default="null" />
 
     <!-- android -->
     <platform name="android">
@@ -68,9 +67,6 @@
             <meta-data
                 android:name="voxeet_incoming_class"
                 android:value="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" />
-            <meta-data
-                android:name="voxeet_incoming_accepted_class"
-                android:value="$VOXEET_CORDOVA_ANDROID_ACCEPTED_CALL_ACTIVITY" />
         </config-file>
         <config-file target="res/values/strings.xml" parent="/resources">
             <string name="voxeet_consumer_key">$VOXEET_CORDOVA_CONSUMER_KEY</string>
