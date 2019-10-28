@@ -17,7 +17,7 @@ import com.voxeet.sdk.utils.AndroidManifest;
 
 public class CallUtils {
     public final static String BUNDLE_EXTRA_BUNDLE = "BUNDLE_EXTRA_BUNDLE";
-    public final static String METADATA_CALL_ACCEPTED_OR_DECLINED = "rn_voxeet_incoming_call_accepted_or_declined";
+    public final static String METADATA_CALL_ACCEPTED_OR_DECLINED = "voxeet_incoming_accepted_class";
 
     @Nullable
     public static Class createClassToCall(@NonNull Context context) {
