@@ -71,6 +71,7 @@ public class CordovaIncomingBundleChecker {
      * not from the incoming call activity (!)
      */
     public void onAccept() {
+        Log.d(TAG, "onAccept: checking for conference id in the bundle := " + mConferenceId);
         if (mConferenceId != null) {
             UserInfo info = new UserInfo(getUserName(),
                     getExternalUserId(),

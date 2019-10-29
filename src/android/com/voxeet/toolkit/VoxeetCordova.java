@@ -1303,18 +1303,23 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     public static boolean checkForIncomingConference(@Nullable CordovaIncomingBundleChecker checker) {
+        Log.d(TAG, "checkForIncomingConference: checker := " + checker);
         SessionService service = VoxeetSdk.session();
         if (null != service && null != checker && checker.isBundleValid()) {
             UserInfo userInfo = VoxeetPreferences.getSavedUserInfo();
 
+            Log.d(TAG, "checkForIncomingConference: socket opened := " + service.isSocketOpen());
             if (service.isSocketOpen()) {
+                Log.d(TAG, "checkForIncomingConference: direct onAccept()");
                 checker.onAccept();
                 CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                 return true;
             } else if (null != userInfo) {
+                Log.d(TAG, "checkForIncomingConference: user infos saved := login");
                 service.open(userInfo).then(new PromiseExec<Boolean, Object>() {
                     @Override
                     public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                        Log.d(TAG, "onCall: session opened");
                         checker.onAccept();
                     }
                 }).error(new ErrorPromise() {
@@ -1327,8 +1332,11 @@ public class VoxeetCordova extends CordovaPlugin {
                 CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                 return true;
             } else {
+                Log.d(TAG, "checkForIncomingConference: no user infos saved");
                 return false;
             }
+        } else {
+            Log.d(TAG, "checkForIncomingConference: invalid bundle or sdk not initialized");
         }
         return true;
     }
