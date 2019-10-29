@@ -43,7 +43,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     private final static String TAG = CordovaIncomingCallActivity.class.getSimpleName();
     private static final String DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY = "voxeet_incoming_call_duration";
     private static final int DEFAULT_VOXEET_INCOMING_CALL_DURATION_VALUE = 40 * 1000;
-    private static final int RECORD_AUDIO_RESULT = 0x10;
+    static final int RECORD_AUDIO_RESULT = 0x10;
     public static CordovaIncomingBundleChecker CORDOVA_ROOT_BUNDLE = null;
     public static RNBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT = null;
     public static RNBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = null;

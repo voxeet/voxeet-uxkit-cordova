@@ -16,6 +16,4 @@ public class CordovaIncomingNotification extends IncomingNotification {
         //not returning super since this activity will be responsible for that
         return CordovaIncomingFromNotificationActivity.class.getName(); //canonical would have returned name
     }
-
-
 }

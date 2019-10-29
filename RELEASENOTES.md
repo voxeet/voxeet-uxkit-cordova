@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.9 (October 29th, 2019)
+- update notification management with proxy (for now)
+
 ### 1.3.8 (October 28th, 2019)
 - use sdk and uxkit embedding new push center management
 
