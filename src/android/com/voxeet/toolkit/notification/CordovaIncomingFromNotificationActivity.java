@@ -29,6 +29,10 @@ public class CordovaIncomingFromNotificationActivity extends AppCompatActivity i
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //force init the SDK in such case
+        VoxeetCordova.tryInitialize(this, this);
+
         //we preInit the AudioService,
         AudioService.preInitSounds(getApplicationContext());
 
