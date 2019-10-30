@@ -425,6 +425,7 @@ public class VoxeetCordova extends CordovaPlugin {
                         e.printStackTrace();
                         callbackContext.error(e.getMessage());
                     }
+                    break;
                 case "setUIConfiguration":
                     try {
                         JSONObject object = args.getJSONObject(0);
@@ -434,6 +435,7 @@ public class VoxeetCordova extends CordovaPlugin {
                         e.printStackTrace();
                         callbackContext.error("Wrong configuration or issue with it");
                     }
+                    break;
                 case "startConference":
                     /*try {
                         String confId = args.getString(0);
