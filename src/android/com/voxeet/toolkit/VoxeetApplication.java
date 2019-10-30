@@ -1,5 +1,6 @@
 package com.voxeet.toolkit;
 
+import android.support.annotation.Nullable;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
@@ -12,7 +13,8 @@ import org.greenrobot.eventbus.EventBus;
 
 public class VoxeetApplication extends MultiDexApplication {
 
-    private CordovaRootViewProvider mCordovaRootViewProvider;
+    @Nullable
+    public static CordovaRootViewProvider ROOT_VIEW_PROVIDER;
 
     @Override
     public void onCreate() {
@@ -21,8 +23,8 @@ public class VoxeetApplication extends MultiDexApplication {
         Log.d("VoxeetApplication", "onCreate called");
         VoxeetToolkit.initialize(this, EventBus.getDefault());
 
-        mCordovaRootViewProvider = new CordovaRootViewProvider(this, VoxeetToolkit.getInstance());
-        VoxeetToolkit.getInstance().setProvider(mCordovaRootViewProvider);
+        ROOT_VIEW_PROVIDER = new CordovaRootViewProvider(this, VoxeetToolkit.getInstance());
+        VoxeetToolkit.getInstance().setProvider(ROOT_VIEW_PROVIDER);
 
         VoxeetToolkit.getInstance().enableOverlay(true);
 
