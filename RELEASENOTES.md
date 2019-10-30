@@ -1,7 +1,11 @@
 # Release Notes
 
-### 1.3.9 (October 29th, 2019)
+### 1.3.11 (October 30th, 2019)
+- if the current app is opened on Android 10, start the incoming call
+
+### 1.3.10 (October 29~30th, 2019)
 - update notification management with proxy (for now)
+- 1.3.9 should not be used (issue with the package)
 
 ### 1.3.8 (October 28th, 2019)
 - use sdk and uxkit embedding new push center management
