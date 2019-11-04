@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.12 (November 4th, 2019)
+- bump iOS SDK to 1.4.8 to support Swift 5.1.2
+
 ### 1.3.11 (October 30th, 2019)
 - if the current app is opened on Android 10, start the incoming call
 
