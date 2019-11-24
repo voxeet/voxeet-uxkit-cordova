@@ -1,5 +1,10 @@
 # Release Notes
 
+### 1.3.13 (November 24th, 2019)
+- Android's media library with embedded native library
+- Android's main SDK and toolkit upgrade
+- use of toolkit-firebase instead of previous push library when push notification are enabled
+
 ### 1.3.12 (November 4th, 2019)
 - bump iOS SDK to 1.4.8 to support Swift 5.1.2
 
