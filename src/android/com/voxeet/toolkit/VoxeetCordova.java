@@ -22,25 +22,24 @@ import com.voxeet.push.center.invitation.InvitationBundle;
 import com.voxeet.push.center.management.EnforcedNotificationMode;
 import com.voxeet.push.center.management.NotificationMode;
 import com.voxeet.push.center.management.VersionFilter;
-import com.voxeet.push.firebase.FirebaseController;
-import com.voxeet.sdk.core.VoxeetSdk;
-import com.voxeet.sdk.core.preferences.VoxeetPreferences;
-import com.voxeet.sdk.core.services.AudioService;
-import com.voxeet.sdk.core.services.CommandService;
-import com.voxeet.sdk.core.services.ConferenceService;
-import com.voxeet.sdk.core.services.MediaDeviceService;
-import com.voxeet.sdk.core.services.RecordingService;
-import com.voxeet.sdk.core.services.SessionService;
+import com.voxeet.sdk.VoxeetSdk;
 import com.voxeet.sdk.events.error.PermissionRefusedEvent;
 import com.voxeet.sdk.events.sdk.ConferenceStateEvent;
-import com.voxeet.sdk.events.sdk.SocketConnectEvent;
 import com.voxeet.sdk.events.sdk.SocketStateChangeEvent;
 import com.voxeet.sdk.events.v2.UserAddedEvent;
 import com.voxeet.sdk.json.UserInfo;
 import com.voxeet.sdk.json.internal.MetadataHolder;
 import com.voxeet.sdk.json.internal.ParamsHolder;
+import com.voxeet.sdk.models.Conference;
 import com.voxeet.sdk.models.User;
 import com.voxeet.sdk.models.v1.CreateConferenceResult;
+import com.voxeet.sdk.preferences.VoxeetPreferences;
+import com.voxeet.sdk.services.AudioService;
+import com.voxeet.sdk.services.CommandService;
+import com.voxeet.sdk.services.ConferenceService;
+import com.voxeet.sdk.services.MediaDeviceService;
+import com.voxeet.sdk.services.RecordingService;
+import com.voxeet.sdk.services.SessionService;
 import com.voxeet.sdk.utils.Validate;
 import com.voxeet.toolkit.configuration.ActionBar;
 import com.voxeet.toolkit.configuration.Configuration;
@@ -576,7 +575,6 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     @Nullable
-
     private void defaultVideo(boolean startVideo) {
         startVideoOnJoin = startVideo;
         VoxeetPreferences.setDefaultVideoOn(startVideo);
@@ -637,18 +635,11 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private static void internalInitialize(@Nullable final CallbackContext callbackContext, @NonNull Activity activity) {
         ConferenceService service = VoxeetSdk.conference();
-        if (null != service) service.setTimeOut(-1); //no timeout by default in the cordova impl
+        if (null != service) service.ConferenceConfigurations.TelecomWaitingForParticipantTimeout = -1; //no timeout by default in the cordova impl
 
         VoxeetCordova.initNotificationCenter();
 
         Application application = (Application) activity.getApplicationContext();
-
-        //also enable the push token upload and log
-        FirebaseController.getInstance()
-                .log(true)
-                .enable(true);
-        FirebaseController
-                .createNotificationChannel(application);
 
         //set the 2 optional default configuration from previous saved state
         VoxeetCordova.startVideoOnJoin = VoxeetPreferences.isDefaultVideoOn();
@@ -789,7 +780,7 @@ public class VoxeetCordova extends CordovaPlugin {
             @Override
             public void run() {
                 ConferenceService service = VoxeetSdk.conference();
-                boolean enabled = null != service && service.isTelecomMode();
+                boolean enabled = null != service && service.ConferenceConfigurations.telecomMode;
 
                 cb.sendPluginResult(new PluginResult(PluginResult.Status.OK, enabled));
             }
@@ -819,7 +810,7 @@ public class VoxeetCordova extends CordovaPlugin {
                     } else if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE) {
                         CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE.onDecline();
                     } else if (null != checker && checker.isBundleValid()) {
-                        if (null != service && service.isSocketOpen()) {
+                        if (service.isSocketOpen()) {
                             checker.onAccept();
                             CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                             if (null != cb) cb.success();
@@ -911,9 +902,9 @@ public class VoxeetCordova extends CordovaPlugin {
 
         if (null != context && Validate.hasMicrophonePermissions(mWebView.getContext())) {
             service.broadcast(conferenceId)
-                    .then(new PromiseExec<Boolean, Object>() {
+                    .then(new PromiseExec<Conference, Object>() {
                         @Override
-                        public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                        public void onCall(@Nullable Conference result, @NonNull Solver<Object> solver) {
 
                             cleanBundles();
 
@@ -948,9 +939,9 @@ public class VoxeetCordova extends CordovaPlugin {
 
         if (null != context && Validate.hasMicrophonePermissions(mWebView.getContext())) {
             service.join(conferenceId)
-                    .then(new PromiseExec<Boolean, Object>() {
+                    .then(new PromiseExec<Conference, Object>() {
                         @Override
-                        public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                        public void onCall(@Nullable Conference result, @NonNull Solver<Object> solver) {
 
                             cleanBundles();
 
@@ -983,9 +974,9 @@ public class VoxeetCordova extends CordovaPlugin {
         }
 
         service.listen(conferenceId)
-                .then(new PromiseExec<Boolean, Object>() {
+                .then(new PromiseExec<Conference, Object>() {
                     @Override
-                    public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                    public void onCall(@Nullable Conference result, @NonNull Solver<Object> solver) {
                         cleanBundles();
 
                         cb.success();
@@ -1059,7 +1050,7 @@ public class VoxeetCordova extends CordovaPlugin {
         HANDLER.post(new Runnable() {
             @Override
             public void run() {
-                service.startRecording()
+                service.start()
                         .then(new PromiseExec<Boolean, Object>() {
                             @Override
                             public void onCall(@Nullable Boolean bool, @NonNull Solver<Object> solver) {
@@ -1086,7 +1077,7 @@ public class VoxeetCordova extends CordovaPlugin {
         HANDLER.post(new Runnable() {
             @Override
             public void run() {
-                service.stopRecording()
+                service.stop()
                         .then(new PromiseExec<Boolean, Object>() {
                             @Override
                             public void onCall(@Nullable Boolean bool, @NonNull Solver<Object> solver) {
@@ -1120,7 +1111,7 @@ public class VoxeetCordova extends CordovaPlugin {
         HANDLER.post(new Runnable() {
             @Override
             public void run() {
-                commandService.sendMessage(conferenceId, message)
+                commandService.send(conferenceId, message)
                         .then(new PromiseExec<Boolean, Object>() {
                             @Override
                             public void onCall(@Nullable Boolean aBoolean, @NonNull Solver<Object> solver) {
@@ -1145,7 +1136,7 @@ public class VoxeetCordova extends CordovaPlugin {
     private void setTelecomMode(boolean telecomMode) {
         ConferenceService service = VoxeetSdk.conference();
         if (null != service) {
-            service.setTelecomMode(telecomMode);
+            service.ConferenceConfigurations.telecomMode = telecomMode;
         }
     }
 
@@ -1232,21 +1223,16 @@ public class VoxeetCordova extends CordovaPlugin {
         refreshAccessTokenCallbackInstance = callbackContext;
     }
 
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(final SocketConnectEvent event) {
-        if (null != _log_in_callback) {
-            _log_in_callback.success();
-            _log_in_callback = null;
-
-            VoxeetCordova.checkForIncomingConference();
-        }
-    }
-
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(SocketStateChangeEvent event) {
         switch (event.state) {
+            case CONNECTED:
+                if (null != _log_in_callback) {
+                    _log_in_callback.success();
+                    _log_in_callback = null;
+
+                    VoxeetCordova.checkForIncomingConference();
+                }
             case CLOSING:
             case CLOSED:
                 if (null != _log_in_callback) {

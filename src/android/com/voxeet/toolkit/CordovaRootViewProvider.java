@@ -5,10 +5,10 @@ import android.app.Application;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.voxeet.sdk.core.VoxeetSdk;
-import com.voxeet.sdk.core.services.SessionService;
+import com.voxeet.sdk.VoxeetSdk;
 import com.voxeet.sdk.events.sdk.ConferenceStateEvent;
 import com.voxeet.sdk.json.ConferenceDestroyedPush;
+import com.voxeet.sdk.services.SessionService;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
@@ -79,7 +79,7 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
     }
 
     @Override
-    public void onActivityPaused(Activity activity) {
+    public void onActivityPaused(@NonNull Activity activity) {
         super.onActivityPaused(activity);
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);

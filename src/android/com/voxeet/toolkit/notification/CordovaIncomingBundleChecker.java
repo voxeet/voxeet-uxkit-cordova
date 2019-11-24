@@ -9,9 +9,10 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.voxeet.push.center.management.Constants;
-import com.voxeet.sdk.core.VoxeetSdk;
-import com.voxeet.sdk.core.services.ConferenceService;
+import com.voxeet.sdk.VoxeetSdk;
 import com.voxeet.sdk.json.UserInfo;
+import com.voxeet.sdk.models.Conference;
+import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.toolkit.VoxeetCordova;
 
 import eu.codlab.simplepromise.solve.ErrorPromise;
@@ -21,7 +22,6 @@ import eu.codlab.simplepromise.solve.Solver;
 public class CordovaIncomingBundleChecker {
 
     private static final String TAG = CordovaIncomingBundleChecker.class.getSimpleName();
-    private Context mContext;
 
     @Nullable
     private IExtraBundleFillerListener mFillerListener;
@@ -51,7 +51,6 @@ public class CordovaIncomingBundleChecker {
     public CordovaIncomingBundleChecker(Context context, @NonNull Intent intent, @Nullable IExtraBundleFillerListener filler_listener) {
         this();
 
-        mContext = context;
         mFillerListener = filler_listener;
         mIntent = intent;
 
@@ -82,11 +81,11 @@ public class CordovaIncomingBundleChecker {
             if (null == service) return;
 
             service.join(mConferenceId /*, info*/) //TODO reinstantiate inviter ?
-                    .then(new PromiseExec<Boolean, Object>() {
+                    .then(new PromiseExec<Conference, Object>() {
                         @Override
-                        public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                        public void onCall(@Nullable Conference result, @NonNull Solver<Object> solver) {
                             //possible callback to set ?
-                            if (VoxeetCordova.startVideoOnJoin && null != service) {
+                            if (VoxeetCordova.startVideoOnJoin) {
                                 service.startVideo()
                                         .then(new PromiseExec<Boolean, Object>() {
                                             @Override
@@ -105,7 +104,7 @@ public class CordovaIncomingBundleChecker {
                     })
                     .error(new ErrorPromise() {
                         @Override
-                        public void onError(Throwable error) {
+                        public void onError(@NonNull Throwable error) {
                             error.printStackTrace();
                         }
                     });

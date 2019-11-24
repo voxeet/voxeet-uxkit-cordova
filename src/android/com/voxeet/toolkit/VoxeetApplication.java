@@ -4,8 +4,8 @@ import android.support.annotation.Nullable;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
-import com.voxeet.sdk.core.VoxeetEnvironmentHolder;
-import com.voxeet.sdk.core.preferences.VoxeetPreferences;
+import com.voxeet.sdk.VoxeetEnvironmentHolder;
+import com.voxeet.sdk.preferences.VoxeetPreferences;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.implementation.overlays.OverlayState;
 
@@ -24,9 +24,9 @@ public class VoxeetApplication extends MultiDexApplication {
         VoxeetToolkit.initialize(this, EventBus.getDefault());
 
         ROOT_VIEW_PROVIDER = new CordovaRootViewProvider(this, VoxeetToolkit.getInstance());
-        VoxeetToolkit.getInstance().setProvider(ROOT_VIEW_PROVIDER);
+        VoxeetToolkit.instance().setProvider(ROOT_VIEW_PROVIDER);
 
-        VoxeetToolkit.getInstance().enableOverlay(true);
+        VoxeetToolkit.instance().enableOverlay(true);
 
         //force a default voxeet preferences manager
         //in sdk mode, no issues
@@ -34,7 +34,7 @@ public class VoxeetApplication extends MultiDexApplication {
 
         VoxeetCordova.initNotificationCenter();
         //change the overlay used by default
-        VoxeetToolkit.getInstance().getConferenceToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
-        VoxeetToolkit.getInstance().getReplayMessageToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
+        VoxeetToolkit.instance().getConferenceToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
+        VoxeetToolkit.instance().getReplayMessageToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
     }
 }

@@ -5,12 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.voxeet.sdk.core.VoxeetSdk;
-import com.voxeet.sdk.core.preferences.VoxeetPreferences;
-import com.voxeet.sdk.core.services.ConferenceService;
-import com.voxeet.sdk.core.services.SessionService;
-import com.voxeet.sdk.events.sdk.DeclineConferenceResultEvent;
+import com.voxeet.sdk.VoxeetSdk;
 import com.voxeet.sdk.json.UserInfo;
+import com.voxeet.sdk.preferences.VoxeetPreferences;
+import com.voxeet.sdk.services.ConferenceService;
+import com.voxeet.sdk.services.SessionService;
 import com.voxeet.toolkit.activities.notification.IncomingBundleChecker;
 
 import eu.codlab.simplepromise.Promise;
@@ -39,7 +38,7 @@ public class RNBundleChecker extends IncomingBundleChecker {
 
             Log.d(TAG, "onDecline: mConferenceId := " + getConferenceId());
             //join the conference
-            final Promise<DeclineConferenceResultEvent> decline = conferenceService.decline(getConferenceId());
+            final Promise<Boolean> decline = conferenceService.decline(getConferenceId());
             //only when error() is called
 
             if (null != service && !service.isSocketOpen()) {
@@ -47,16 +46,16 @@ public class RNBundleChecker extends IncomingBundleChecker {
 
                 if (null != userInfo) {
                     service.open(userInfo)
-                            .then(new PromiseExec<Boolean, DeclineConferenceResultEvent>() {
+                            .then(new PromiseExec<Boolean, Boolean>() {
                                 @Override
-                                public void onCall(@Nullable Boolean result, @NonNull Solver<DeclineConferenceResultEvent> solver) {
+                                public void onCall(@Nullable Boolean result, @NonNull Solver<Boolean> solver) {
                                     Log.d(TAG, "onCall: log user info := " + result);
                                     solver.resolve(decline);
                                 }
                             })
-                            .then(new PromiseExec<DeclineConferenceResultEvent, Object>() {
+                            .then(new PromiseExec<Boolean, Object>() {
                                 @Override
-                                public void onCall(@Nullable DeclineConferenceResultEvent result, @NonNull Solver<Object> solver) {
+                                public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
                                     Log.d(TAG, "onCall: decline conference := " + result);
                                 }
                             })

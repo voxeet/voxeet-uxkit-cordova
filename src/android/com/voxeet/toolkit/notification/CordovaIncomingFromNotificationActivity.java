@@ -9,11 +9,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
-import com.voxeet.sdk.core.VoxeetSdk;
-import com.voxeet.sdk.core.preferences.VoxeetPreferences;
-import com.voxeet.sdk.core.services.AudioService;
+import com.voxeet.sdk.VoxeetSdk;
+import com.voxeet.sdk.preferences.VoxeetPreferences;
+import com.voxeet.sdk.services.AudioService;
 import com.voxeet.sdk.utils.Validate;
 import com.voxeet.toolkit.VoxeetCordova;
 import com.voxeet.toolkit.incoming.IncomingNotification;
