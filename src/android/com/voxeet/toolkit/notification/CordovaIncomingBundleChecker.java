@@ -9,14 +9,10 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.voxeet.push.center.management.Constants;
-import com.voxeet.sdk.core.VoxeetSdk;
-import com.voxeet.sdk.core.services.ConferenceService;
-import com.voxeet.sdk.json.UserInfo;
+import com.voxeet.sdk.VoxeetSdk;
+import com.voxeet.sdk.json.ParticipantInfo;
+import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.toolkit.VoxeetCordova;
-
-import eu.codlab.simplepromise.solve.ErrorPromise;
-import eu.codlab.simplepromise.solve.PromiseExec;
-import eu.codlab.simplepromise.solve.Solver;
 
 public class CordovaIncomingBundleChecker {
 
@@ -73,7 +69,7 @@ public class CordovaIncomingBundleChecker {
     public void onAccept() {
         Log.d(TAG, "onAccept: checking for conference id in the bundle := " + mConferenceId);
         if (mConferenceId != null) {
-            UserInfo info = new UserInfo(getUserName(),
+            ParticipantInfo info = new ParticipantInfo(getUserName(),
                     getExternalUserId(),
                     getAvatarUrl());
 
@@ -82,33 +78,17 @@ public class CordovaIncomingBundleChecker {
             if (null == service) return;
 
             service.join(mConferenceId /*, info*/) //TODO reinstantiate inviter ?
-                    .then(new PromiseExec<Boolean, Object>() {
-                        @Override
-                        public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
-                            //possible callback to set ?
-                            if (VoxeetCordova.startVideoOnJoin && null != service) {
-                                service.startVideo()
-                                        .then(new PromiseExec<Boolean, Object>() {
-                                            @Override
-                                            public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
-                                                //video started ?
-                                            }
-                                        })
-                                        .error(new ErrorPromise() {
-                                            @Override
-                                            public void onError(@NonNull Throwable error) {
-                                                error.printStackTrace();
-                                            }
-                                        });
-                            }
+                    .then((result) -> {
+                        //possible callback to set ?
+                        if (VoxeetCordova.startVideoOnJoin && null != service) {
+                            service.startVideo()
+                                    .then((result1) -> {
+                                        //video started ?
+                                    })
+                                    .error(Throwable::printStackTrace);
                         }
                     })
-                    .error(new ErrorPromise() {
-                        @Override
-                        public void onError(Throwable error) {
-                            error.printStackTrace();
-                        }
-                    });
+                    .error(Throwable::printStackTrace);
         }
     }
 

@@ -4,8 +4,8 @@ import android.support.annotation.Nullable;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
-import com.voxeet.sdk.core.VoxeetEnvironmentHolder;
-import com.voxeet.sdk.core.preferences.VoxeetPreferences;
+import com.voxeet.sdk.VoxeetEnvironmentHolder;
+import com.voxeet.sdk.preferences.VoxeetPreferences;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.implementation.overlays.OverlayState;
 

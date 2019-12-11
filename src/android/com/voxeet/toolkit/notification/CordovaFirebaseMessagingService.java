@@ -2,7 +2,9 @@ package com.voxeet.toolkit.notification;
 
 import android.util.Log;
 
-public class CordovaFirebaseMessagingService extends com.voxeet.push.firebase.VoxeetFirebaseMessagingService {
+import com.google.firebase.messaging.FirebaseMessagingService;
+
+public class CordovaFirebaseMessagingService extends FirebaseMessagingService {
     public CordovaFirebaseMessagingService() {
         super();
 

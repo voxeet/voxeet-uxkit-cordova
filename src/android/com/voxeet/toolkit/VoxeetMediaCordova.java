@@ -2,23 +2,18 @@ package com.voxeet.toolkit;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.voxeet.sdk.core.VoxeetSdk;
-import com.voxeet.sdk.core.services.ConferenceService;
-import com.voxeet.sdk.core.services.MediaDeviceService;
+import com.voxeet.promise.Promise;
+import com.voxeet.promise.solve.ThenVoid;
+import com.voxeet.sdk.VoxeetSdk;
+import com.voxeet.sdk.services.ConferenceService;
+import com.voxeet.sdk.services.MediaDeviceService;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONException;
-
-import eu.codlab.simplepromise.Promise;
-import eu.codlab.simplepromise.solve.ErrorPromise;
-import eu.codlab.simplepromise.solve.PromiseExec;
-import eu.codlab.simplepromise.solve.Solver;
 
 /**
  * Voxeet's Media layer implementation for Cordova
@@ -77,45 +72,22 @@ public class VoxeetMediaCordova extends CordovaPlugin {
                     return;
                 }
                 service.startVideo(front)
-                        .then(new PromiseExec<Boolean, Object>() {
-                            @Override
-                            public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
-                                cb.success();
-                            }
-                        })
-                        .error(new ErrorPromise() {
-                            @Override
-                            public void onError(@NonNull Throwable error) {
-                                cb.error("Error while starting video");
-                            }
-                        });
+                        .then((ThenVoid<Boolean>) (result) -> cb.success())
+                        .error(error -> cb.error("Error while starting video"));
             }
         });
     }
 
     private void stopVideo(final CallbackContext cb) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                ConferenceService service = VoxeetSdk.conference();
-                if (null == service) {
-                    cb.error("NOT INITIALIZED");
-                    return;
-                }
-                service.stopVideo()
-                        .then(new PromiseExec<Boolean, Object>() {
-                            @Override
-                            public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
-                                cb.success();
-                            }
-                        })
-                        .error(new ErrorPromise() {
-                            @Override
-                            public void onError(@NonNull Throwable error) {
-                                cb.error("Error while stopping video");
-                            }
-                        });
+        mHandler.post(() -> {
+            ConferenceService service = VoxeetSdk.conference();
+            if (null == service) {
+                cb.error("NOT INITIALIZED");
+                return;
             }
+            service.stopVideo()
+                    .then((ThenVoid<Boolean>) (result) -> cb.success())
+                    .error(error -> cb.error("Error while stopping video"));
         });
     }
 
@@ -129,18 +101,8 @@ public class VoxeetMediaCordova extends CordovaPlugin {
                     return;
                 }
                 service.switchCamera()
-                        .then(new PromiseExec<Boolean, Object>() {
-                            @Override
-                            public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
-                                cb.success();
-                            }
-                        })
-                        .error(new ErrorPromise() {
-                            @Override
-                            public void onError(@NonNull Throwable error) {
-                                cb.error("Error while switching camera");
-                            }
-                        });
+                        .then((ThenVoid<Boolean>) (result) -> cb.success())
+                        .error(error -> cb.error("Error while switching camera"));
             }
         });
     }

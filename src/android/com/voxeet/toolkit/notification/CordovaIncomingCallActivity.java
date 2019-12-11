@@ -16,14 +16,16 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.voxeet.audio.utils.Constants;
-import com.voxeet.sdk.core.VoxeetSdk;
-import com.voxeet.sdk.core.preferences.VoxeetPreferences;
-import com.voxeet.sdk.core.services.AudioService;
-import com.voxeet.sdk.core.services.ConferenceService;
-import com.voxeet.sdk.events.sdk.ConferenceStateEvent;
-import com.voxeet.sdk.events.sdk.DeclineConferenceResultEvent;
+import com.voxeet.promise.solve.ErrorPromise;
+import com.voxeet.promise.solve.PromiseExec;
+import com.voxeet.promise.solve.Solver;
+import com.voxeet.sdk.VoxeetSdk;
+import com.voxeet.sdk.events.sdk.ConferenceStatusUpdatedEvent;
 import com.voxeet.sdk.json.ConferenceDestroyedPush;
 import com.voxeet.sdk.media.audio.SoundManager;
+import com.voxeet.sdk.preferences.VoxeetPreferences;
+import com.voxeet.sdk.services.AudioService;
+import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.utils.AndroidManifest;
 import com.voxeet.sdk.utils.AudioType;
 import com.voxeet.toolkit.R;
@@ -33,10 +35,6 @@ import com.voxeet.toolkit.views.internal.rounded.RoundedImageView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import eu.codlab.simplepromise.solve.ErrorPromise;
-import eu.codlab.simplepromise.solve.PromiseExec;
-import eu.codlab.simplepromise.solve.Solver;
 
 public class CordovaIncomingCallActivity extends AppCompatActivity implements CordovaIncomingBundleChecker.IExtraBundleFillerListener {
 
@@ -217,12 +215,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(DeclineConferenceResultEvent event) {
-        finish();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ConferenceStateEvent event) {
+    public void onEvent(ConferenceStatusUpdatedEvent event) {
         switch (event.state) {
             case JOINING:
             case JOINED:
@@ -243,10 +236,10 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
         ConferenceService service = VoxeetSdk.conference();
         if (getConferenceId() != null && null != service) {
             service.decline(getConferenceId())
-                    .then(new PromiseExec<DeclineConferenceResultEvent, Object>() {
+                    .then(new PromiseExec<Boolean, Object>() {
                         @Override
-                        public void onCall(@Nullable DeclineConferenceResultEvent result, @NonNull Solver<Object> solver) {
-                            //
+                        public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                            finish();
                         }
                     })
                     .error(new ErrorPromise() {

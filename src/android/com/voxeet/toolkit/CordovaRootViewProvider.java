@@ -5,10 +5,10 @@ import android.app.Application;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.voxeet.sdk.core.VoxeetSdk;
-import com.voxeet.sdk.core.services.SessionService;
-import com.voxeet.sdk.events.sdk.ConferenceStateEvent;
+import com.voxeet.sdk.VoxeetSdk;
+import com.voxeet.sdk.events.sdk.ConferenceStatusUpdatedEvent;
 import com.voxeet.sdk.json.ConferenceDestroyedPush;
+import com.voxeet.sdk.services.SessionService;
 import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
@@ -106,11 +106,11 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ConferenceStateEvent event) {
+    public void onEvent(ConferenceStatusUpdatedEvent event) {
         switch (event.state) {
             case JOINING:
             case JOINED:
-            case JOINED_ERROR:
+            case ERROR:
                 if (mCordovaIncomingBundleChecker != null)
                     mCordovaIncomingBundleChecker.flushIntent();
         }

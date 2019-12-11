@@ -1,5 +1,17 @@
 # Release Notes
 
+### 1.3.14 (December 11th, 2019)
+- use Android sdk version with 1.8 support
+- CordovaFirebaseMessagingService is now a dummy service for compat wit failed install (refer to auto )
+- set blacklist of Android 10 for fullscreen notification
+- Voice mode release will not take over the media but will still switch to media mode
+- add Nexus 7 support
+- add hisi codec support
+
+### 1.3.12 (November 19th, 2019)
+- Android, remove dismiss keyguard on incoming calls
+- add 1.3.13 as well (file movement)
+
 ### 1.3.11 (October 30th, 2019)
 - if the current app is opened on Android 10, start the incoming call
 

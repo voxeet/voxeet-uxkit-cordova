@@ -47,14 +47,12 @@ new XmlSlurper().parse(file('../app/src/main/res/xml/config.xml')).preference.ea
 
 dependencies {
     compile 'com.android.support:multidex:1.0.3'
-    compile ('com.voxeet.sdk:media:1.72.37')
-    compile ('com.voxeet.sdk:toolkit:2.0.71.9') {
+    compile ('com.voxeet.sdk:toolkit:2.0.73.16') {
         transitive = true
-        exclude group: "com.voxeet.sdk", module: "media"
     }
 
     if(push) {
-        compile ('com.voxeet.sdk:push_manifest:2.0.71.5')
+        compile ('com.voxeet.sdk:toolkit-firebase:0.0.6')
     }
 }
 

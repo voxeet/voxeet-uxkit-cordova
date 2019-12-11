@@ -5,18 +5,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.voxeet.sdk.core.VoxeetSdk;
-import com.voxeet.sdk.core.preferences.VoxeetPreferences;
-import com.voxeet.sdk.core.services.ConferenceService;
-import com.voxeet.sdk.core.services.SessionService;
-import com.voxeet.sdk.events.sdk.DeclineConferenceResultEvent;
-import com.voxeet.sdk.json.UserInfo;
+import com.voxeet.promise.Promise;
+import com.voxeet.promise.solve.ErrorPromise;
+import com.voxeet.promise.solve.PromiseExec;
+import com.voxeet.promise.solve.Solver;
+import com.voxeet.promise.solve.ThenPromise;
+import com.voxeet.promise.solve.ThenVoid;
+import com.voxeet.sdk.VoxeetSdk;
+import com.voxeet.sdk.json.ParticipantInfo;
+import com.voxeet.sdk.preferences.VoxeetPreferences;
+import com.voxeet.sdk.services.ConferenceService;
+import com.voxeet.sdk.services.SessionService;
 import com.voxeet.toolkit.activities.notification.IncomingBundleChecker;
-
-import eu.codlab.simplepromise.Promise;
-import eu.codlab.simplepromise.solve.ErrorPromise;
-import eu.codlab.simplepromise.solve.PromiseExec;
-import eu.codlab.simplepromise.solve.Solver;
 
 public class RNBundleChecker extends IncomingBundleChecker {
     private static final String TAG = RNBundleChecker.class.getSimpleName();
@@ -30,7 +30,7 @@ public class RNBundleChecker extends IncomingBundleChecker {
 
     public void onDecline() {
         if (getConferenceId() != null) {
-            UserInfo info = new UserInfo(getUserName(),
+            ParticipantInfo info = new ParticipantInfo(getUserName(),
                     getExternalUserId(),
                     getAvatarUrl());
 
@@ -39,49 +39,27 @@ public class RNBundleChecker extends IncomingBundleChecker {
 
             Log.d(TAG, "onDecline: mConferenceId := " + getConferenceId());
             //join the conference
-            final Promise<DeclineConferenceResultEvent> decline = conferenceService.decline(getConferenceId());
+            final Promise<Boolean> decline = conferenceService.decline(getConferenceId());
             //only when error() is called
 
             if (null != service && !service.isSocketOpen()) {
-                UserInfo userInfo = VoxeetPreferences.getSavedUserInfo();
+                ParticipantInfo userInfo = VoxeetPreferences.getSavedUserInfo();
 
                 if (null != userInfo) {
                     service.open(userInfo)
-                            .then(new PromiseExec<Boolean, DeclineConferenceResultEvent>() {
-                                @Override
-                                public void onCall(@Nullable Boolean result, @NonNull Solver<DeclineConferenceResultEvent> solver) {
-                                    Log.d(TAG, "onCall: log user info := " + result);
-                                    solver.resolve(decline);
-                                }
+                            .then((ThenPromise<Boolean, Boolean>) (result) -> {
+                                Log.d(TAG, "onCall: log user info := " + result);
+                                return decline;
                             })
-                            .then(new PromiseExec<DeclineConferenceResultEvent, Object>() {
-                                @Override
-                                public void onCall(@Nullable DeclineConferenceResultEvent result, @NonNull Solver<Object> solver) {
-                                    Log.d(TAG, "onCall: decline conference := " + result);
-                                }
-                            })
-                            .error(new ErrorPromise() {
-                                @Override
-                                public void onError(@NonNull Throwable error) {
-                                    error.printStackTrace();
-                                }
-                            });
+                            .then((ThenVoid<Boolean>) result -> Log.d(TAG, "onCall: decline conference := " + result))
+                            .error(Throwable::printStackTrace);
                 } else {
                     Log.d(TAG, "onAccept: unable to log the user");
                 }
 
             } else {
-                decline.then(new PromiseExec<Boolean, Object>() {
-                    @Override
-                    public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
-                        Log.d(TAG, "onCall: resolved");
-                    }
-                }).error(new ErrorPromise() {
-                    @Override
-                    public void onError(@NonNull Throwable error) {
-                        error.printStackTrace();
-                    }
-                });
+                decline.then((ThenVoid<Boolean>) (result) -> Log.d(TAG, "onCall: resolved"))
+                        .error(Throwable::printStackTrace);
             }
         }
     }

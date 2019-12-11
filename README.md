@@ -35,7 +35,6 @@ To enable push notification, follow the steps in the app, for push notification,
 right before the call to `super.onCreate(savedInstanceState);` :
 ```
 getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
         WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
 );
