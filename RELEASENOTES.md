@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.16 (December 12th, 2019)
+- remove remaining Firebase's service following deprecation 
+
 ### 1.3.15 (December 12th, 2019)
 - bump iOS SDK to 1.4.9 to support Swift 5.1.3
 
