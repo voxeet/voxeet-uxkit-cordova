@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.15 (December 12th, 2019)
+- bump iOS SDK to 1.4.9 to support Swift 5.1.3
+
 ### 1.3.14 (December 11th, 2019)
 - use Android sdk version with 1.8 support
 - CordovaFirebaseMessagingService is now a dummy service for compat wit failed install (refer to auto )
