@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.17 (December 17th, 2019)
+- use Carthage binary instead of github for VoxeetSDK dependency
+
 ### 1.3.16 (December 12th, 2019)
 - remove remaining Firebase's service following deprecation 
 

@@ -1,2 +1,2 @@
 github "voxeet/voxeet-ios-conferencekit" == 1.2.5
-github "voxeet/voxeet-ios-sdk" == 1.4.9
+binary "https://voxeet-cdn.s3.amazonaws.com/sdk/ios/release/VoxeetSDK.json" == 1.4.9
