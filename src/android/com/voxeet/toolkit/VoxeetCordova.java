@@ -28,6 +28,11 @@ import com.voxeet.sdk.json.ParticipantInfo;
 import com.voxeet.sdk.json.internal.MetadataHolder;
 import com.voxeet.sdk.json.internal.ParamsHolder;
 import com.voxeet.sdk.preferences.VoxeetPreferences;
+import com.voxeet.sdk.push.center.NotificationCenterFactory;
+import com.voxeet.sdk.push.center.invitation.InvitationBundle;
+import com.voxeet.sdk.push.center.management.EnforcedNotificationMode;
+import com.voxeet.sdk.push.center.management.NotificationMode;
+import com.voxeet.sdk.push.center.management.VersionFilter;
 import com.voxeet.sdk.services.AudioService;
 import com.voxeet.sdk.services.CommandService;
 import com.voxeet.sdk.services.ConferenceService;
@@ -994,11 +999,12 @@ public class VoxeetCordova extends CordovaPlugin {
         }
 
         HANDLER.post(() -> {
-            AudioRoute route = AudioRoute.ROUTE_PHONE;
-            if (enabled) route = AudioRoute.ROUTE_SPEAKER;
+            //comment lines introducing a switch in the mode
+            //AudioRoute route = AudioRoute.ROUTE_PHONE;
+            //if (enabled) route = AudioRoute.ROUTE_SPEAKER;
 
             VoxeetPreferences.setDefaultBuiltInSpeakerOn(enabled);
-            service.setAudioRoute(route);
+            //service.setAudioRoute(route);
         });
     }
 
