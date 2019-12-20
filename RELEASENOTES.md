@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.18 (December 20th, 2019)
+- missing elements for media and keyguard
+
 ### 1.3.17 (December 17th, 2019)
 - use Carthage binary instead of github for VoxeetSDK dependency
 
