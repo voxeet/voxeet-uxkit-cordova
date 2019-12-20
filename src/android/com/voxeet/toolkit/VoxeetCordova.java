@@ -15,16 +15,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.voxeet.audio.AudioRoute;
-import com.voxeet.authent.token.TokenCallback;
 import com.voxeet.promise.Promise;
 import com.voxeet.promise.solve.ErrorPromise;
 import com.voxeet.promise.solve.ThenVoid;
-import com.voxeet.push.center.NotificationCenterFactory;
-import com.voxeet.push.center.invitation.InvitationBundle;
-import com.voxeet.push.center.management.EnforcedNotificationMode;
-import com.voxeet.push.center.management.NotificationMode;
-import com.voxeet.push.center.management.VersionFilter;
 import com.voxeet.sdk.VoxeetSdk;
+import com.voxeet.sdk.authent.token.TokenCallback;
 import com.voxeet.sdk.events.error.PermissionRefusedEvent;
 import com.voxeet.sdk.events.sdk.ConferenceStatusUpdatedEvent;
 import com.voxeet.sdk.events.sdk.SocketStateChangeEvent;

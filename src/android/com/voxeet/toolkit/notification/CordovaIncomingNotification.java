@@ -3,7 +3,7 @@ package com.voxeet.toolkit.notification;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.voxeet.push.center.invitation.InvitationBundle;
+import com.voxeet.sdk.push.center.invitation.InvitationBundle;
 import com.voxeet.toolkit.CordovaRootViewProvider;
 import com.voxeet.toolkit.VoxeetApplication;
 import com.voxeet.toolkit.incoming.IncomingFullScreen;

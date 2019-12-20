@@ -8,9 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.voxeet.push.center.management.Constants;
 import com.voxeet.sdk.VoxeetSdk;
 import com.voxeet.sdk.json.ParticipantInfo;
+import com.voxeet.sdk.push.center.management.Constants;
 import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.toolkit.VoxeetCordova;
 
