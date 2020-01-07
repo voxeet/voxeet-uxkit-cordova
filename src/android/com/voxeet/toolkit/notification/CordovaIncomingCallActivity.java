@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -141,11 +142,23 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
             }
 
             mUsername.setText(mIncomingBundleChecker.getUserName());
-            Picasso.get()
-                    .load(mIncomingBundleChecker.getAvatarUrl())
-                    .placeholder(R.drawable.default_avatar)
-                    .error(R.drawable.default_avatar)
-                    .into(mAvatar);
+            try {
+                String avatarUrl = mIncomingBundleChecker.getAvatarUrl();
+                if (!TextUtils.isEmpty(avatarUrl)) {
+                    Picasso.get()
+                            .load(avatarUrl)
+                            .placeholder(R.drawable.default_avatar)
+                            .error(R.drawable.default_avatar)
+                            .into(mAvatar);
+                } else {
+                    Picasso.get()
+                            .load(R.drawable.default_avatar)
+                            .error(R.drawable.default_avatar)
+                            .into(mAvatar);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             Log.d(TAG, "onResume: incoming call will quit, bundle invalid ...");
             mIncomingBundleChecker.dumpIntent();
