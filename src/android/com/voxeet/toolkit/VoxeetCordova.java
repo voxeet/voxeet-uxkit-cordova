@@ -1239,17 +1239,19 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void setVolumeVoiceCall() {
+        if (Build.MANUFACTURER.equals("samsung")) {
+            Log.d(TAG, "setVolumeVoiceCall not to be used with samsung devices. Report issue if side effect");
+        }
+
         cordova.getActivity().setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
         if (null != AudioService.getSoundManager()) {
-            AudioService.getSoundManager().setMediaRoute().enable().requestAudioFocus();
+            AudioService.getSoundManager().unsetMediaRoute().enable().requestAudioFocus();
         }
     }
 
     private void setVolumeMusic() {
-        cordova.getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
         if (null != AudioService.getSoundManager()) {
             AudioService.getSoundManager().abandonAudioFocusRequest();
-            //AudioService.getSoundManager().abandonAudioFocusRequest().unsetMediaRoute().enableMedia();
         }
     }
 
