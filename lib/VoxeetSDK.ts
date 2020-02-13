@@ -3,8 +3,8 @@ import VoxeetMedia from "./VoxeetMedia";
 import { Configuration } from "./Configurations";
 /*
  *
- * Voxeet ConferenceKit Cordova
- * Copyright (C) 2018
+ * VoxeetUXKit Cordova
+ * Copyright (C) 2020
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import { Configuration } from "./Configurations";
 */
 
 /**
- * This class enable interaction with Voxeet ConferenceKit
+ * This class enable interaction with VoxeetUXKit
  * @constructor
  */
 const exec:any = require('cordova/exec');

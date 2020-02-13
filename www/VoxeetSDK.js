@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const VoxeetMedia_1 = __importDefault(require("./VoxeetMedia"));
 /*
  *
- * Voxeet ConferenceKit Cordova
- * Copyright (C) 2018
+ * VoxeetUXKit Cordova
+ * Copyright (C) 2020
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ const VoxeetMedia_1 = __importDefault(require("./VoxeetMedia"));
  *
 */
 /**
- * This class enable interaction with Voxeet ConferenceKit
+ * This class enable interaction with VoxeetUXKit
  * @constructor
  */
 const exec = require('cordova/exec');
@@ -196,11 +196,11 @@ class Voxeet_ {
     }
     openSession(userInfo) {
         return new Promise((resolve, reject) => {
-            exec(resolve, reject, SERVICE, 'openSession', [userInfo.json()]);
+            exec(resolve, reject, SERVICE, 'connect', [userInfo.json()]);
         });
     }
     closeSession() {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'closeSession', []));
+        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'disconnect', []));
     }
     //method to refresh tokens, used internally
     onAccessTokenOk(accessToken) {

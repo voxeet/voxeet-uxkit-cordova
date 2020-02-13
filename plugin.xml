@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Voxeet ConferenceKit Cordova
-  Copyright (C) 2018
+  VoxeetUXKit Cordova
+  Copyright (C) 2020
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
       id="cordova-plugin-voxeet"
-      version="1.3.18">
+      version="1.3.20">
     <name>Voxeet</name>
     <description>Cordova Voxeet Plugin</description>
     <license>Apache 2.0 License</license>
     <keywords>cordova,voxeet</keywords>
-    <repo>https://github.com/voxeet/voxeet-cordova-conferencekit.git</repo>
-    <issue>https://github.com/voxeet/voxeet-cordova-conferencekit/issues</issue>
+    <repo>https://github.com/voxeet/voxeet-uxkit-cordova.git</repo>
+    <issue>https://github.com/voxeet/voxeet-uxkit-cordova/issues</issue>
 
     <js-module src="www/VoxeetSDK.js" name="VoxeetSDK">
         <clobbers target="VoxeetSDK" />
@@ -139,9 +139,9 @@
         <header-file src="src/ios/CDVVoxeet.h" />
         <source-file src="src/ios/CDVVoxeet.m" />
 
-        <framework src="src/ios/Carthage/Build/iOS/VoxeetConferenceKit.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/iOS/VoxeetUXKit.framework" custom="true" embed="true" />
         <framework src="src/ios/Carthage/Build/iOS/VoxeetSDK.framework" custom="true" embed="true" />
         <framework src="src/ios/Carthage/Build/iOS/WebRTC.framework" custom="true" embed="true" />
-        <framework src="src/ios/Carthage/Build/iOS/Kingfisher.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/iOS/SDWebImage.framework" custom="true" embed="true" />
     </platform>
 </plugin>
