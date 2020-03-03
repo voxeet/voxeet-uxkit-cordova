@@ -1,7 +1,7 @@
 #import "CDVVoxeet.h"
 #import <Cordova/CDV.h>
 #import <VoxeetSDK/VoxeetSDK.h>
-#import <VoxeetConferenceKit/VoxeetConferenceKit.h>
+#import <VoxeetUXKit/VoxeetUXKit.h>
 
 @interface CDVVoxeet()
 
@@ -56,7 +56,7 @@
     [VoxeetSDK.shared initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret];
     [VoxeetUXKit.shared initialize];
     
-    VoxeetSDK.shared.pushNotification.type = VTPushNotificationTypeCallKit;
+    VoxeetSDK.shared.notification.type = VTNotificationTypeCallKit;
 }
 
 - (void)initializeToken:(CDVInvokedUrlCommand *)command {
@@ -72,7 +72,7 @@
         }];
         [VoxeetUXKit.shared initialize];
         
-        VoxeetSDK.shared.pushNotification.type = VTPushNotificationTypeCallKit;
+        VoxeetSDK.shared.notification.type = VTNotificationTypeCallKit;
         
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
@@ -80,10 +80,13 @@
 
 - (void)connect:(CDVInvokedUrlCommand *)command {
     NSDictionary *participant = [command.arguments objectAtIndex:0];
-    VTUser *user = [[VTUser alloc] initWithExternalID:[participant objectForKey:@"externalId"] name:[participant objectForKey:@"name"] avatarURL:[participant objectForKey:@"avatarUrl"]];
+    VTParticipantInfo *participantInfo = [[VTParticipantInfo alloc]
+                                          initWithExternalID:[participant objectForKey:@"externalId"]
+                                          name:[participant objectForKey:@"name"]
+                                          avatarURL:[participant objectForKey:@"avatarUrl"]];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.session connectWithUser:user completion:^(NSError *error) {
+        [VoxeetSDK.shared.session openWithInfo:participantInfo completion:^(NSError *error) {
             if (error == nil) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {
@@ -95,7 +98,7 @@
 
 - (void)disconnect:(CDVInvokedUrlCommand *)command {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.session disconnectWithCompletion:^(NSError *error) {
+        [VoxeetSDK.shared.session closeWithCompletion:^(NSError *error) {
             if (error == nil) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {
@@ -181,12 +184,14 @@
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.conference inviteWithConferenceID:conferenceID externalIDs:userIDs completion:^(NSError *error) {
-            if (error == nil) {
-                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
-            } else {
-                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
-            }
+        [VoxeetSDK.shared.conference fetchWithConferenceID:conferenceID completion:^(VTConference *conference) {
+            [VoxeetSDK.shared.notification inviteWithConference:conference externalIDs:userIDs completion:^(NSError *error) {
+                if (error == nil) {
+                    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+                } else {
+                    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
+                }
+            }];
         }];
     });
 }
@@ -195,7 +200,7 @@
     NSString *message = [command.arguments objectAtIndex:0];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.conference broadcastWithMessage:message completion:^(NSError *error) {
+        [VoxeetSDK.shared.command sendWithMessage:message completion:^(NSError *error) {
             if (error == nil) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {
@@ -215,12 +220,12 @@
 }
 
 - (void)setUIConfiguration:(CDVInvokedUrlCommand *)command {
-    NSString *jsonStr = [command.arguments objectAtIndex:0];
-    NSError *jsonError;
-    NSData *jsonData = [jsonStr dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData
-                                                         options:NSJSONReadingMutableContainers
-                                                           error:&jsonError];
+//    NSString *jsonStr = [command.arguments objectAtIndex:0];
+//    NSError *jsonError;
+//    NSData *jsonData = [jsonStr dataUsingEncoding:NSUTF8StringEncoding];
+//    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData
+//                                                         options:NSJSONReadingMutableContainers
+//                                                           error:&jsonError];
 }
 
 - (void)defaultBuiltInSpeaker:(CDVInvokedUrlCommand *)command {
@@ -266,7 +271,7 @@
 }
 
 - (void)isTelecomMode:(CDVInvokedUrlCommand *)command {
-    BOOL isTelecom = VoxeetConferenceKit.shared.telecom;
+    BOOL isTelecom = VoxeetUXKit.shared.telecom;
     
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isTelecom] callbackId:command.callbackId];
 }
@@ -275,8 +280,7 @@
     //    BOOL isDefaultFrontFacing = [[command.arguments objectAtIndex:0] boolValue];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        //        [VoxeetSDK.shared.conference startVideoWithUserID:nil isDefaultFrontFacing:isDefaultFrontFacing completion:^(NSError *error) {
-        [VoxeetSDK.shared.conference startVideoWithUserID:VoxeetSDK.shared.session.user.id completion:^(NSError *error) {
+        [VoxeetSDK.shared.conference startVideoWithParticipant:nil completion:^(NSError *error) {
             if (error == nil) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {
@@ -288,8 +292,7 @@
 
 - (void)stopVideo:(CDVInvokedUrlCommand *)command {
     dispatch_async(dispatch_get_main_queue(), ^{
-        //        [VoxeetSDK.shared.conference stopVideoWithUserID:nil completion:^(NSError *error) {
-        [VoxeetSDK.shared.conference stopVideoWithUserID:VoxeetSDK.shared.session.user.id completion:^(NSError *error) {
+        [VoxeetSDK.shared.conference stopVideoWithParticipant:nil completion:^(NSError *error) {
             if (error == nil) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {
@@ -301,7 +304,7 @@
 
 - (void)switchCamera:(CDVInvokedUrlCommand *)command {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.conference switchCameraWithCompletion:^{
+        [VoxeetSDK.shared.mediaDevice switchCameraWithCompletion:^{
             [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
         }];
     });
@@ -313,7 +316,7 @@
 
 - (void)startRecording:(CDVInvokedUrlCommand *)command {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.conference startRecordingWithFireInterval:0 completion:^(NSError *error) {
+        [VoxeetSDK.shared.recording startWithFireInterval:0 completion:^(NSError *error) {
             if (error == nil) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {
@@ -326,7 +329,7 @@
 
 - (void)stopRecording:(CDVInvokedUrlCommand *)command {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.conference stopRecordingWithCompletion:^(NSError *error) {
+        [VoxeetSDK.shared.recording stopWithCompletion:^(NSError *error) {
             if (error == nil) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {
@@ -414,33 +417,6 @@
 - (void)stopConference:(CDVInvokedUrlCommand *)command { /* Deprecated */
     dispatch_async(dispatch_get_main_queue(), ^{
         [VoxeetSDK.shared.conference leaveWithCompletion:^(NSError *error) {
-            if (error == nil) {
-                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
-            } else {
-                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
-            }
-        }];
-    });
-}
-
-- (void)openSession:(CDVInvokedUrlCommand *)command { /* Deprecated */
-    NSDictionary *participant = [command.arguments objectAtIndex:0];
-    VTUser *user = [[VTUser alloc] initWithExternalID:[participant objectForKey:@"externalId"] name:[participant objectForKey:@"name"] avatarURL:[participant objectForKey:@"avatarUrl"]];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.session connectWithUser:user completion:^(NSError *error) {
-            if (error == nil) {
-                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
-            } else {
-                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
-            }
-        }];
-    });
-}
-
-- (void)closeSession:(CDVInvokedUrlCommand *)command { /* Deprecated */
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared.session disconnectWithCompletion:^(NSError *error) {
             if (error == nil) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
             } else {

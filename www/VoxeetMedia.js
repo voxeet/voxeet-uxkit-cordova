@@ -1,8 +1,8 @@
 "use strict";
 /*
  *
- * Voxeet ConferenceKit Cordova
- * Copyright (C) 2018
+ * VoxeetUXKit Cordova
+ * Copyright (C) 2020
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 */
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
- * This class enable interaction with Voxeet ConferenceKit
+ * This class enable interaction with VoxeetUXKit
  * @constructor
  */
 const exec = require('cordova/exec');

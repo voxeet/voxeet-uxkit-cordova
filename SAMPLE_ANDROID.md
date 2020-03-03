@@ -51,7 +51,7 @@ Then edit the `config.xml` to put the below configuration : (you must do it per 
 From the terminal, run the following commands :
 
 ```
-cordova plugin add https://github.com/voxeet/voxeet-cordova-conferencekit
+cordova plugin add https://github.com/voxeet/voxeet-uxkit-cordova
 ```
 
 ## Add Firebase

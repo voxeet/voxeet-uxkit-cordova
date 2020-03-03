@@ -2,7 +2,7 @@ Voxeet Cordova Plugin
 
 # cordova-plugin-voxeet
 
-This plugin is bridging the Voxeet's Toolkit/ConferenceKit calls. You can interacting with the plugin after the Cordova's deviceReady event.
+This plugin is bridging the VoxeetUXKit library. You can interacting with the plugin after the Cordova's deviceReady event.
 
 It is mandatory that you added:
   - the iOS platform `cordova platform add ios`
@@ -10,11 +10,15 @@ It is mandatory that you added:
 
 ## Installation
 
-    `cordova plugin add cordova-plugin-voxeet`
+```bash
+cordova plugin add cordova-plugin-voxeet
+```
 
 **Note:** in some cases, it is needed to initialize the SDK beforehand. Especially in cases a plugin used by the application is delaying the `onDeviceReady` event.
 
-    `cordova plugin add cordova-plugin-voxeet --variable VOXEET_CORDOVA_CONSUMER_KEY="your key" --variable VOXEET_CORDOVA_CONSUMER_SECRET="your secret"`
+```bash
+cordova plugin add cordova-plugin-voxeet --variable VOXEET_CORDOVA_CONSUMER_KEY="your key" --variable VOXEET_CORDOVA_CONSUMER_SECRET="your secret"
+```
 
 
 ### iOS
@@ -22,7 +26,7 @@ It is mandatory that you added:
 - after `cordova platform add ios` in the project root folder
 - set `ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES` in Xcode build settings to true
 
-To enable VoIP notification, follow https://github.com/voxeet/voxeet-ios-conferencekit#project-setup
+To enable VoIP notification, follow https://github.com/voxeet/voxeet-uxkit-ios#2-project-setup
 
 ### Android
 
@@ -54,7 +58,7 @@ The project is now exporting various elements to help integrate calls into your 
 
 Before using the `Voxeet` singleton, you must use projection to have access to it :
 
-```
+```javascript
 const { Voxeet, UserType } = VoxeetSDK;
 ```
 
@@ -69,8 +73,8 @@ You can use the Voxeet and UserInfo classes using the following :
 
 ### Initialize
 
-```
-Voxeet.initialize(<consumer_key>: string , <secret_key>: string)
+```javascript
+Voxeet.initialize(<consumer_key>: string, <secret_key>: string)
 .then(() => {
   //if the initialization is ok
 })
@@ -81,8 +85,8 @@ Voxeet.initialize(<consumer_key>: string , <secret_key>: string)
 
 ### Initialize with OAuth2
 
-```
-Voxeet.initializeWithRefresh(accessToken: string , refreshToken: () => Promise<boolean>)
+```javascript
+Voxeet.initializeWithRefresh(accessToken: string, refreshToken: () => Promise<boolean>)
 
 //the refresh token callback to be used
 const refreshToken = () => {
@@ -110,7 +114,7 @@ refreshToken()
 
 ### Connect/disconnect a session
 
-```
+```javascript
 var user = new UserInfo(<externalId>: string, <name>: string, <avatarUrl>: string);
 
 Voxeet.connect(user)
@@ -122,7 +126,7 @@ Voxeet.connect(user)
 });
 ```
 
-```
+```javascript
 Voxeet.disconnect()
 .then(() => {
   //if the session is disconnected
@@ -136,7 +140,7 @@ Voxeet.disconnect()
 
 You can create a conference with a custom alias (optional). You can also invite others to join the current conference by using the `invite` method.
 
-```
+```javascript
 var user1 = new UserInfo(<externalId>: string, <name>: string, <avatarUrl>: string);
 var user2 = new UserInfo(<externalId>: string, <name>: string, <avatarUrl>: string);
 var user3 = new UserInfo(<externalId>: string, <name>: string, <avatarUrl>: string);
@@ -153,10 +157,10 @@ Voxeet.create({conferenceAlias: 'YOUR_CONFERENCE_ALIAS'})
 
 An other example if you don't want to invite anyone and a conference alias isn't needed.
 
-```
+```javascript
 Voxeet.create({})
 .then(result => Promise.all([
-  Voxeet.join(result.conferenceId),
+  Voxeet.join(result.conferenceId)
 ]))
 .catch(err => {
   //in case of error
@@ -165,7 +169,7 @@ Voxeet.create({})
 
 You can also stop a given conference using the following method which will leave the conference.
 
-```
+```javascript
 Voxeet.leave()
 .then(() => {
   //call made and everything is ok
@@ -177,7 +181,7 @@ Voxeet.leave()
 
 ### Broadcast a message
 
-```
+```javascript
 Voxeet.sendBroadcastMessage('YOUR_MESSAGE')
 .then(() => {
   //message sent
@@ -191,25 +195,25 @@ Voxeet.sendBroadcastMessage('YOUR_MESSAGE')
 
 By default, conference appears maximized. If false, the conference will appear minimized.
 
-```
+```javascript
 Voxeet.appearMaximized(true)
 ```
 
 By default, conference starts on the built in receiver. If true, it will start on the built in speaker.
 
-```
+```javascript
 Voxeet.defaultBuiltInSpeaker(true)
 ```
 
 By default, conference starts without video. If true, it will enable the video at conference start.
 
-```
+```javascript
 Voxeet.defaultVideo(true)
 ```
 
 ## Cordova example
 
-```
+```javascript
 var user1 = new UserInfo('0', 'Benoit', 'https://cdn.voxeet.com/images/team-benoit-senard.png');
 var user2 = new UserInfo('1', 'Stephane', 'https://cdn.voxeet.com/images/team-stephane-giraudie.png');
 var user3 = new UserInfo('2', 'Thomas', 'https://cdn.voxeet.com/images/team-thomas.png');
@@ -235,8 +239,8 @@ Voxeet.initialize('YOUR_CONSUMER_KEY', 'YOUR_CONSUMER_SECRET')
 
 To start a webinar or broadcast mode conference, 
 ### Conference creation
-```
-const options:  = {
+```javascript
+const options: = {
   alias: "some_alias",
   params: {
     liveRecording: true
@@ -249,7 +253,7 @@ const promise = Voxeet.create(options);
 
 ### Joining it
 
-```
+```javascript
 const promise = Voxeet.broadcast(conferenceId);
 //resolving
 ```
@@ -287,7 +291,7 @@ If this is not set, a caught-exception will be set in the logs.
 ## License
 
 ```
-   Copyright 2019 - Voxeet
+   Copyright 2020 - Voxeet
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

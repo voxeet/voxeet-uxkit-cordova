@@ -1,3 +1,3 @@
-github "onevcat/Kingfisher" "7452c2efe07716d60d78bcb26bca5ad079d0b186"
-github "voxeet/voxeet-ios-conferencekit" "1.2.5"
-binary "https://voxeet-cdn.s3.amazonaws.com/sdk/ios/release/VoxeetSDK.json" "1.4.9"
+binary "https://voxeet-cdn.s3.amazonaws.com/sdk/ios/release/VoxeetSDK.json" "2.0.0"
+github "SDWebImage/SDWebImage" "5.5.2"
+github "voxeet/voxeet-uxkit-ios" "1.3.0"
