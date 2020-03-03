@@ -5,14 +5,14 @@ import android.app.Application;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.voxeet.sdk.VoxeetSdk;
+import com.voxeet.VoxeetSDK;
 import com.voxeet.sdk.events.sdk.ConferenceStatusUpdatedEvent;
 import com.voxeet.sdk.json.ConferenceDestroyedPush;
 import com.voxeet.sdk.services.SessionService;
-import com.voxeet.toolkit.controllers.VoxeetToolkit;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
-import com.voxeet.toolkit.providers.rootview.DefaultRootViewProvider;
+import com.voxeet.uxkit.controllers.VoxeetToolkit;
+import com.voxeet.uxkit.providers.rootview.DefaultRootViewProvider;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -53,8 +53,8 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
 
         if (!CordovaIncomingCallActivity.class.equals(activity.getClass())) {
 
-            if (null != VoxeetSdk.instance() && !EventBus.getDefault().isRegistered(this)) {
-                VoxeetSdk.instance().register(this);
+            if (null != VoxeetSDK.instance() && !EventBus.getDefault().isRegistered(this)) {
+                VoxeetSDK.instance().register(this);
             }
 
             if (!EventBus.getDefault().isRegistered(this)) {
@@ -63,7 +63,7 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
 
             CordovaIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
             if (null != checker && checker.isBundleValid()) {
-                SessionService session = VoxeetSdk.session();
+                SessionService session = VoxeetSDK.session();
                 if (null != session && session.isSocketOpen()) {
                     checker.onAccept();
                     CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;

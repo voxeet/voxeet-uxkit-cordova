@@ -16,11 +16,11 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.voxeet.VoxeetSDK;
 import com.voxeet.audio.utils.Constants;
 import com.voxeet.promise.solve.ErrorPromise;
 import com.voxeet.promise.solve.PromiseExec;
 import com.voxeet.promise.solve.Solver;
-import com.voxeet.sdk.VoxeetSdk;
 import com.voxeet.sdk.events.sdk.ConferenceStatusUpdatedEvent;
 import com.voxeet.sdk.json.ConferenceDestroyedPush;
 import com.voxeet.sdk.media.audio.SoundManager;
@@ -29,13 +29,14 @@ import com.voxeet.sdk.services.AudioService;
 import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.utils.AndroidManifest;
 import com.voxeet.sdk.utils.AudioType;
-import com.voxeet.toolkit.R;
 import com.voxeet.toolkit.VoxeetCordova;
-import com.voxeet.toolkit.views.internal.rounded.RoundedImageView;
+import com.voxeet.uxkit.views.internal.rounded.RoundedImageView;
+import com.voxeet.uxkit.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 
 public class CordovaIncomingCallActivity extends AppCompatActivity implements CordovaIncomingBundleChecker.IExtraBundleFillerListener {
 
@@ -131,8 +132,8 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
             e.printStackTrace();
         }
         if (mIncomingBundleChecker.isBundleValid()) {
-            if (null != VoxeetSdk.instance()) {
-                mEventBus = VoxeetSdk.instance().getEventBus();
+            if (null != VoxeetSDK.instance()) {
+                mEventBus = VoxeetSDK.instance().getEventBus();
                 try {
                     if (null != mEventBus && !mEventBus.isRegistered(this))
                         mEventBus.register(this);
@@ -245,7 +246,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     }
 
     protected void onDecline() {
-        ConferenceService service = VoxeetSdk.conference();
+        ConferenceService service = VoxeetSDK.conference();
         if (getConferenceId() != null && null != service) {
             service.decline(getConferenceId())
                     .then(new PromiseExec<Boolean, Object>() {
@@ -306,7 +307,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     }
 
     private boolean canDirectlyUseJoin() {
-        return null != VoxeetSdk.session() && null != VoxeetPreferences.getSavedUserInfo();
+        return null != VoxeetSDK.session() && null != VoxeetPreferences.getSavedUserInfo();
     }
 
     /**

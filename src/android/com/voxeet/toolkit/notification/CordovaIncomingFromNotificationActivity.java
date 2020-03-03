@@ -10,12 +10,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
-import com.voxeet.sdk.VoxeetSdk;
+import com.voxeet.VoxeetSDK;
 import com.voxeet.sdk.preferences.VoxeetPreferences;
 import com.voxeet.sdk.services.AudioService;
 import com.voxeet.sdk.utils.Validate;
 import com.voxeet.toolkit.VoxeetCordova;
-import com.voxeet.toolkit.incoming.IncomingNotification;
+import com.voxeet.uxkit.incoming.IncomingNotification;
 
 /**
  * Empty class to receive incoming notification and forward onto the proper activity
@@ -108,7 +108,7 @@ public class CordovaIncomingFromNotificationActivity extends AppCompatActivity i
 
 
     private boolean canDirectlyUseJoin() {
-        return null != VoxeetSdk.session() && null != VoxeetPreferences.getSavedUserInfo() && Validate.hasMicrophonePermissions(this);
+        return null != VoxeetSDK.session() && null != VoxeetPreferences.getSavedUserInfo() && Validate.hasMicrophonePermissions(this);
     }
 
     @Nullable

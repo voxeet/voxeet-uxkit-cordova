@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.voxeet.sdk.VoxeetSdk;
+import com.voxeet.VoxeetSDK;
 import com.voxeet.sdk.json.ParticipantInfo;
 import com.voxeet.sdk.push.center.management.Constants;
 import com.voxeet.sdk.services.ConferenceService;
@@ -74,7 +74,7 @@ public class CordovaIncomingBundleChecker {
                     getAvatarUrl());
 
             Log.d(TAG, "onAccept: joining conference from ConrdovaIncomingBundleChecker");
-            ConferenceService service = VoxeetSdk.conference();
+            ConferenceService service = VoxeetSDK.conference();
             if (null == service) return;
 
             service.join(mConferenceId /*, info*/) //TODO reinstantiate inviter ?

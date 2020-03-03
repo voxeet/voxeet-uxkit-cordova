@@ -11,10 +11,6 @@ import android.view.WindowManager;
 import com.voxeet.sdk.push.center.management.Constants;
 import com.voxeet.sdk.utils.AndroidManifest;
 
-/**
- * Created by kevinleperf on 26/11/2018.
- */
-
 public class CallUtils {
     public final static String BUNDLE_EXTRA_BUNDLE = "BUNDLE_EXTRA_BUNDLE";
     public final static String METADATA_CALL_ACCEPTED_OR_DECLINED = "voxeet_incoming_accepted_class";

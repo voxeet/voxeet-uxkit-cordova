@@ -4,9 +4,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.voxeet.VoxeetSDK;
 import com.voxeet.promise.Promise;
 import com.voxeet.promise.solve.ThenVoid;
-import com.voxeet.sdk.VoxeetSdk;
 import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.services.MediaDeviceService;
 
@@ -66,7 +66,7 @@ public class VoxeetMediaCordova extends CordovaPlugin {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                ConferenceService service = VoxeetSdk.conference();
+                ConferenceService service = VoxeetSDK.conference();
                 if (null == service) {
                     cb.error("NOT INITIALIZED");
                     return;
@@ -80,7 +80,7 @@ public class VoxeetMediaCordova extends CordovaPlugin {
 
     private void stopVideo(final CallbackContext cb) {
         mHandler.post(() -> {
-            ConferenceService service = VoxeetSdk.conference();
+            ConferenceService service = VoxeetSDK.conference();
             if (null == service) {
                 cb.error("NOT INITIALIZED");
                 return;
@@ -95,7 +95,7 @@ public class VoxeetMediaCordova extends CordovaPlugin {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                MediaDeviceService service = VoxeetSdk.mediaDevice();
+                MediaDeviceService service = VoxeetSDK.mediaDevice();
                 if (null == service) {
                     cb.error("NOT INITIALIZED");
                     return;

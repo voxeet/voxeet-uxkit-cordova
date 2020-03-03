@@ -6,9 +6,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.voxeet.promise.Promise;
-import com.voxeet.promise.solve.ErrorPromise;
-import com.voxeet.promise.solve.PromiseExec;
-import com.voxeet.promise.solve.Solver;
 import com.voxeet.promise.solve.ThenPromise;
 import com.voxeet.promise.solve.ThenVoid;
 import com.voxeet.sdk.VoxeetSdk;
@@ -16,7 +13,7 @@ import com.voxeet.sdk.json.ParticipantInfo;
 import com.voxeet.sdk.preferences.VoxeetPreferences;
 import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.services.SessionService;
-import com.voxeet.toolkit.activities.notification.IncomingBundleChecker;
+import com.voxeet.uxkit.activities.notification.IncomingBundleChecker;
 
 public class RNBundleChecker extends IncomingBundleChecker {
     private static final String TAG = RNBundleChecker.class.getSimpleName();
