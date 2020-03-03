@@ -38,6 +38,7 @@ import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.services.MediaDeviceService;
 import com.voxeet.sdk.services.RecordingService;
 import com.voxeet.sdk.services.SessionService;
+import com.voxeet.sdk.services.telemetry.SdkEnvironment;
 import com.voxeet.sdk.utils.Validate;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
@@ -79,6 +80,11 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 
 public class VoxeetCordova extends CordovaPlugin {
+
+    private static final String VERSION = "1.3.23";
+
+
+
 
     private static final String VOXEET_CORDOVA_CONSUMER_KEY = "VOXEET_CORDOVA_CONSUMER_KEY";
     private static final String VOXEET_CORDOVA_CONSUMER_SECRET = "VOXEET_CORDOVA_CONSUMER_SECRET";
@@ -615,6 +621,8 @@ public class VoxeetCordova extends CordovaPlugin {
             service.ConferenceConfigurations.TelecomWaitingForParticipantTimeout = -1; //no timeout by default in the cordova impl
 
         VoxeetCordova.initNotificationCenter();
+
+        VoxeetSDK.telemetry().registerEnvironment(SdkEnvironment.CORDOVA, VERSION);
 
         Application application = (Application) activity.getApplicationContext();
 
