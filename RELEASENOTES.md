@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.21 (March 3rd, 2020)
+- inject Android sound management
+
 ### 1.3.20 (February 12th, 2020)
 - bump iOS SDK to 2.0.0
 
