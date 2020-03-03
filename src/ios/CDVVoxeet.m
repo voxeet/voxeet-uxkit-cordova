@@ -57,6 +57,7 @@
     [VoxeetUXKit.shared initialize];
     
     VoxeetSDK.shared.notification.type = VTNotificationTypeCallKit;
+    VoxeetSDK.shared.telemetry.platform = VTTelemetryPlatformCordova;
 }
 
 - (void)initializeToken:(CDVInvokedUrlCommand *)command {
@@ -73,6 +74,7 @@
         [VoxeetUXKit.shared initialize];
         
         VoxeetSDK.shared.notification.type = VTNotificationTypeCallKit;
+        VoxeetSDK.shared.telemetry.platform = VTTelemetryPlatformCordova;
         
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
@@ -177,15 +179,20 @@
 - (void)invite:(CDVInvokedUrlCommand *)command {
     NSString *conferenceID = [command.arguments objectAtIndex:0];
     NSArray *participants = [command.arguments objectAtIndex:1];
-    NSMutableArray *userIDs = [[NSMutableArray alloc] init];
+    NSMutableArray<VTParticipantInfo *> *participantInfos = [[NSMutableArray alloc] init];
     
     for (NSDictionary *participant in participants) {
-        [userIDs addObject:[participant objectForKey:@"externalId"]];
+        NSString *externalID = [participant objectForKey:@"externalId"];
+        NSString *name = [participant objectForKey:@"name"];
+        NSString *avatarURL = [participant objectForKey:@"avatarUrl"];
+        
+        VTParticipantInfo *participantInfo = [[VTParticipantInfo alloc] initWithExternalID:externalID name:name avatarURL:avatarURL];
+        [participantInfos addObject:participantInfo];
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [VoxeetSDK.shared.conference fetchWithConferenceID:conferenceID completion:^(VTConference *conference) {
-            [VoxeetSDK.shared.notification inviteWithConference:conference externalIDs:userIDs completion:^(NSError *error) {
+            [VoxeetSDK.shared.notification inviteWithConference:conference participantInfos:participantInfos completion:^(NSError *error) {
                 if (error == nil) {
                     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
                 } else {
