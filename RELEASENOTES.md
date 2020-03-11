@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.23 (March 11th, 2020)
+- Fix crash in toolkit pre-initialization
+
 ### 1.3.22 (March 3td, 2020)
 - bump iOS SDK to 2.1.0
 

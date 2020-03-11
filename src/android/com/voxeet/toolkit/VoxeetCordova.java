@@ -38,6 +38,7 @@ import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.services.MediaDeviceService;
 import com.voxeet.sdk.services.RecordingService;
 import com.voxeet.sdk.services.SessionService;
+import com.voxeet.sdk.services.TelemetryService;
 import com.voxeet.sdk.services.telemetry.SdkEnvironment;
 import com.voxeet.sdk.utils.Validate;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
@@ -622,7 +623,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
         VoxeetCordova.initNotificationCenter();
 
-        VoxeetSDK.telemetry().registerEnvironment(SdkEnvironment.CORDOVA, VERSION);
+        TelemetryService.register(SdkEnvironment.CORDOVA, VERSION);
 
         Application application = (Application) activity.getApplicationContext();
 
