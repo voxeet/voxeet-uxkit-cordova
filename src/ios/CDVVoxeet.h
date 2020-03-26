@@ -45,5 +45,7 @@
 
 - (void)startConference:(CDVInvokedUrlCommand *)command;
 - (void)stopConference:(CDVInvokedUrlCommand *)command;
+- (void)openSession:(CDVInvokedUrlCommand *)command;
+- (void)closeSession:(CDVInvokedUrlCommand *)command;
 
 @end

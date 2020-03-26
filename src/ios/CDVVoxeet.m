@@ -433,4 +433,12 @@
     });
 }
 
+- (void)openSession:(CDVInvokedUrlCommand *)command { /* Deprecated */
+    [self connect:command];
+}
+
+- (void)closeSession:(CDVInvokedUrlCommand *)command { /* Deprecated */
+    [self disconnect:command];
+}
+
 @end
