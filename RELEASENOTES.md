@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.25 (March 30th, 2020)
+- bump iOS SDK to 2.2.0
+
 ### 1.3.24 (March 26th, 2020)
 - bump iOS SDK to 2.1.1 to support Swift 5.2
 
