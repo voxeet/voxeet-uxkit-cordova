@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.26 (March 30th, 2020)
+- implement new iOS classes for CallKit 
+
 ### 1.3.25 (March 30th, 2020)
 - bump iOS SDK to 2.2.0
 

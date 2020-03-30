@@ -56,7 +56,7 @@
     [VoxeetSDK.shared initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret];
     [VoxeetUXKit.shared initialize];
     
-    VoxeetSDK.shared.notification.type = VTNotificationTypeCallKit;
+    VoxeetSDK.shared.notification.push.type = VTNotificationPushTypeCallKit;
     VoxeetSDK.shared.telemetry.platform = VTTelemetryPlatformCordova;
 }
 
@@ -73,7 +73,7 @@
         }];
         [VoxeetUXKit.shared initialize];
         
-        VoxeetSDK.shared.notification.type = VTNotificationTypeCallKit;
+        VoxeetSDK.shared.notification.push.type = VTNotificationPushTypeCallKit;
         VoxeetSDK.shared.telemetry.platform = VTTelemetryPlatformCordova;
         
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
