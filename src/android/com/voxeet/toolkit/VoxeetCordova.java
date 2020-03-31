@@ -27,11 +27,12 @@ import com.voxeet.sdk.json.ParticipantInfo;
 import com.voxeet.sdk.json.internal.MetadataHolder;
 import com.voxeet.sdk.json.internal.ParamsHolder;
 import com.voxeet.sdk.preferences.VoxeetPreferences;
-import com.voxeet.sdk.push.center.NotificationCenterFactory;
+import com.voxeet.sdk.push.center.NotificationCenter;
 import com.voxeet.sdk.push.center.invitation.InvitationBundle;
 import com.voxeet.sdk.push.center.management.EnforcedNotificationMode;
 import com.voxeet.sdk.push.center.management.NotificationMode;
 import com.voxeet.sdk.push.center.management.VersionFilter;
+import com.voxeet.sdk.push.center.subscription.register.SubscribeInvitation;
 import com.voxeet.sdk.services.AudioService;
 import com.voxeet.sdk.services.CommandService;
 import com.voxeet.sdk.services.ConferenceService;
@@ -123,7 +124,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
     public static void initNotificationCenter() {
         //set Android Q as the minimum version no more supported by the full screen mode
-        NotificationCenterFactory.instance
+        NotificationCenter.instance
                 .register(NotificationMode.FULLSCREEN_INCOMING_CALL, new VersionFilter(VersionFilter.ALL, 29))
                 //register notification only mode
                 .register(NotificationMode.OVERHEAD_INCOMING_CALL, new CordovaIncomingNotification())
@@ -623,6 +624,12 @@ public class VoxeetCordova extends CordovaPlugin {
 
         VoxeetCordova.initNotificationCenter();
 
+        try {
+            VoxeetSDK.notification().subscribe(new SubscribeInvitation()).execute();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         TelemetryService.register(SdkEnvironment.CORDOVA, VERSION);
 
         Application application = (Application) activity.getApplicationContext();
@@ -753,8 +760,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
                     InvitationBundle invitationBundle = new InvitationBundle(bundle.createExtraBundle());
 
-                    NotificationCenterFactory.instance.onInvitationReceived(cordova.getActivity(), invitationBundle.asMap(),
-                            Build.MANUFACTURER, Build.VERSION.SDK_INT);
+                    NotificationCenter.instance.onInvitationReceived(cordova.getActivity(), invitationBundle);
                 } else if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT) {
                     CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT.onAccept();
                 } else if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE) {

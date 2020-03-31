@@ -30,8 +30,8 @@ import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.utils.AndroidManifest;
 import com.voxeet.sdk.utils.AudioType;
 import com.voxeet.toolkit.VoxeetCordova;
-import com.voxeet.uxkit.R;
 import com.voxeet.uxkit.views.internal.rounded.RoundedImageView;
+import com.voxeet.uxkit.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
