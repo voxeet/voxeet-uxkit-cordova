@@ -1,5 +1,10 @@
 # Release Notes
 
+### 1.3.27 (March 31th, 2020)
+- Android use of the 2.2.0 SDK
+- fix with creation and join's issues where network calls could prevent message forwarding
+- less verbose logs for production envs
+
 ### 1.3.26 (March 30th, 2020)
 - implement new iOS classes for CallKit 
 
