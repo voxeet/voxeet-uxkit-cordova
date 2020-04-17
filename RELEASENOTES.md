@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.28 (April 17th, 2020)
+- bump iOS SDK to 2.2.1 to support Swift 5.2.2
+
 ### 1.3.27 (March 31th, 2020)
 - Android use of the 2.2.0 SDK
 - fix with creation and join's issues where network calls could prevent message forwarding
