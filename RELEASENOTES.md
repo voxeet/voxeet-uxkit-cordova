@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.30 (May 18th, 2020)
+- Android use of the 2.3.1 native SDK
+
 ### 1.3.29 (May 13th, 2020)
 - iOS, implement new screen share broadcasting feature
 
