@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.voxeet.VoxeetSDK;
 import com.voxeet.promise.Promise;
 import com.voxeet.promise.solve.ThenPromise;
 import com.voxeet.promise.solve.ThenVoid;
-import com.voxeet.sdk.VoxeetSdk;
 import com.voxeet.sdk.json.ParticipantInfo;
 import com.voxeet.sdk.preferences.VoxeetPreferences;
 import com.voxeet.sdk.services.ConferenceService;
@@ -31,8 +31,8 @@ public class RNBundleChecker extends IncomingBundleChecker {
                     getExternalUserId(),
                     getAvatarUrl());
 
-            SessionService service = VoxeetSdk.session();
-            ConferenceService conferenceService = VoxeetSdk.conference();
+            SessionService service = VoxeetSDK.session();
+            ConferenceService conferenceService = VoxeetSDK.conference();
 
             Log.d(TAG, "onDecline: mConferenceId := " + getConferenceId());
             //join the conference
