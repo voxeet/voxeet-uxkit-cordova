@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.29 (May 13th, 2020)
+- iOS, implement new screen share broadcasting feature
+
 ### 1.3.28 (April 17th, 2020)
 - bump iOS SDK to 2.2.1 to support Swift 5.2.2
 
