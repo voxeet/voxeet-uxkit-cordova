@@ -101,19 +101,22 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
             }
         });
 
+        int timeout = AndroidManifest.readMetadataInt(this, DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY,
+                DEFAULT_VOXEET_INCOMING_CALL_DURATION_VALUE);
         mHandler = new Handler();
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 try {
-                    if (null != mHandler)
+                    if (null != mHandler) {
+                        Log.d(TAG, "run: timedout... leaving screen. Timeout was := " + timeout);
                         finish();
+                    }
                 } catch (Exception e) {
 
                 }
             }
-        }, AndroidManifest.readMetadataInt(this, DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY,
-                DEFAULT_VOXEET_INCOMING_CALL_DURATION_VALUE));
+        }, timeout);
     }
 
     @Override
@@ -219,6 +222,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(ConferenceDestroyedPush event) {
         if (mIncomingBundleChecker.isSameConference(event.conferenceId)) {
+            Log.d(TAG, "onEvent: conference destroyed, leaving");
             finish();
         }
     }
@@ -233,6 +237,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
             case JOINING:
             case JOINED:
                 if (mIncomingBundleChecker.isSameConference(event.conference.getId())) {
+                    Log.d(TAG, "onEvent: conference has been joined or is joining");
                     finish();
                 }
                 break;
@@ -252,12 +257,14 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
                     .then(new PromiseExec<Boolean, Object>() {
                         @Override
                         public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
+                            Log.d(TAG, "onCall: declining... leaving incoming screen");
                             finish();
                         }
                     })
                     .error(new ErrorPromise() {
                         @Override
                         public void onError(Throwable error) {
+                            Log.e(TAG, "onCall: declining... leaving incoming screen", error);
                             finish();
                         }
                     });
@@ -270,6 +277,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
             startActivity(intent);
 
             //and finishing this one - before the prejoined event
+            Log.d(TAG, "onDecline: leaving right now the incoming screen");
             finish();
             overridePendingTransition(0, 0);
         }
@@ -301,6 +309,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
             startActivity(intent);
 
             //and finishing this one - before the prejoined event
+            Log.d(TAG, "onAcceptWithPermission: permission accepted, leaving screen and starting main");
             finish();
             overridePendingTransition(0, 0);
         }
