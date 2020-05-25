@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.31 (May 25th, 2020)
+- bump iOS SDK to 2.3.1 to support Swift 5.2.4
+
 ### 1.3.30 (May 18th, 2020)
 - Android use of the 2.3.1 native SDK
 

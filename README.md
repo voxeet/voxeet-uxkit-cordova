@@ -2,6 +2,6 @@
 
 ## Documentation
 
-A full documentation can be found here: [https://voxeet.com/documentation/uxkit/cordova](https://voxeet.com/documentation/uxkit/cordova).
+A full documentation can be found here: https://dolby.io/developers/interactivity-apis/client-ux-kit/uxkit-voxeet-cordova.
 
 © Voxeet, 2020
