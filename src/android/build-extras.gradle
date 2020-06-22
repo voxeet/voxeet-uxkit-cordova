@@ -47,12 +47,12 @@ new XmlSlurper().parse(file('../app/src/main/res/xml/config.xml')).preference.ea
 
 dependencies {
     compile 'com.android.support:multidex:1.0.3'
-    compile ('com.voxeet.sdk:uxkit:2.3.1') {
+    compile ('com.voxeet.sdk:uxkit:2.4.0') {
         transitive = true
     }
 
     if(push) {
-        compile ('com.voxeet.sdk:uxkit-firebase:2.3.1')
+        compile ('com.voxeet.sdk:uxkit-firebase:2.4.0')
     }
 }
 
