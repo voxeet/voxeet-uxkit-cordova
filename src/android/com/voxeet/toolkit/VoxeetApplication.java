@@ -23,18 +23,19 @@ public class VoxeetApplication extends MultiDexApplication {
         Log.d("VoxeetApplication", "onCreate called");
         VoxeetToolkit.initialize(this, EventBus.getDefault());
 
-        ROOT_VIEW_PROVIDER = new CordovaRootViewProvider(this, VoxeetToolkit.getInstance());
+        ROOT_VIEW_PROVIDER = new CordovaRootViewProvider(this, VoxeetToolkit.instance());
         VoxeetToolkit.instance().setProvider(ROOT_VIEW_PROVIDER);
 
         VoxeetToolkit.instance().enableOverlay(true);
 
-        //force a default voxeet preferences manager
-        //in sdk mode, no issues
+        // force a default voxeet preferences manager
+        // in sdk mode, no issues
         VoxeetPreferences.init(this, new VoxeetEnvironmentHolder(this));
 
         VoxeetCordova.initNotificationCenter();
-        //change the overlay used by default
-        VoxeetToolkit.getInstance().getConferenceToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
-        VoxeetToolkit.getInstance().getReplayMessageToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
+
+        // change the overlay used by default
+        VoxeetToolkit.instance().getConferenceToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
+        VoxeetToolkit.instance().getReplayMessageToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
     }
 }
