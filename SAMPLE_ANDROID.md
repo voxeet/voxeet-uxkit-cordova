@@ -1,7 +1,7 @@
 # Requirements
 
 - Install Cordova tools: https://cordova.apache.org/docs/en/8.x/guide/cli/index.html
-- Configure your app at [https://dolby.io/dashboard](The developer portal) Voxeet CustomerKey @ CustomerSecret
+- Configure your app in the [Dolby.io dashboard](https://dolby.io/dashboard) and copy the CustomerKey and CustomerSecret
 - Choose a package name for example: `com.voxeet.cordova.receiver`
 - Firebase configuration:
   - Create a project
