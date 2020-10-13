@@ -13,17 +13,17 @@
 
 ## Initialize a minimalistic application
 
-From a terminal, run :
+From a terminal, run the following command for the receiver:
 ```
 cordova create receiver com.voxeet.cordova.receiver CordovaReceiver
 ```
 
-And for the Caller:
+And for the sender:
 ```
 cordova create sender com.voxeet.cordova.sender CordovaSender
 ```
 
-**Note : The below configurations must be done for each project !**
+**Note: The configurations below must be done for each project!**
 
 ## Add Android platform
 
@@ -56,7 +56,7 @@ cordova plugin add https://github.com/voxeet/voxeet-uxkit-cordova
 
 ## Add Firebase
 
-Run the command :
+Run the command:
 ```
 cordova plugin add phonegap-plugin-push
 ```
