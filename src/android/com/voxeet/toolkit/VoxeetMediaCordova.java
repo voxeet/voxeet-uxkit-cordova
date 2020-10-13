@@ -113,8 +113,8 @@ public class VoxeetMediaCordova extends CordovaPlugin {
             @Override
             public void run() {
                 boolean enabled = false;
-                if (null != VoxeetSdk.getInstance()) {
-                    enabled = VoxeetSdk.getInstance().getMediaService().getCameraInformationProvider().isDefaultFrontFacing();
+                if (null != VoxeetSdk.instance()) {
+                    enabled = VoxeetSdk.instance().getMediaService().getCameraInformationProvider().isDefaultFrontFacing();
                 }
 
                 cb.sendPluginResult(new PluginResult(PluginResult.Status.OK, enabled));
@@ -129,8 +129,8 @@ public class VoxeetMediaCordova extends CordovaPlugin {
             @Override
             public void run() {
                 boolean enabled = false;
-                if (null != VoxeetSdk.getInstance()) {
-                    enabled = VoxeetSdk.getInstance().getMediaService().isFrontCamera();
+                if (null != VoxeetSdk.instance()) {
+                    enabled = VoxeetSdk.instance().getMediaService().isFrontCamera();
                 }
 
                 cb.sendPluginResult(new PluginResult(PluginResult.Status.OK, enabled));

@@ -227,7 +227,7 @@ public class VoxeetCordova extends CordovaPlugin {
                 if (index >= 0
                         && index < grantResults.length
                         && grantResults[index] == PackageManager.PERMISSION_GRANTED
-                        && null != VoxeetSDK.getInstance() && null != current) {
+                        && null != VoxeetSDK.instance() && null != current) {
                     join(current.getConfId(), current.getCb());
                 } else if (null != current) {
                     current.getCb().error("microphone permission rejected");
@@ -994,7 +994,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void appearMaximized(final Boolean enabled) {
-        if (null == VoxeetToolkit.getInstance()) {
+        if (null == VoxeetToolkit.instance()) {
             return;
         }
 
@@ -1096,7 +1096,7 @@ public class VoxeetCordova extends CordovaPlugin {
         if (null != event.getPermission()) {
             switch (event.getPermission()) {
                 case CAMERA:
-                    //Validate.requestMandatoryPermissions(VoxeetToolkit.getInstance().getCurrentActivity(),
+                    //Validate.requestMandatoryPermissions(VoxeetToolkit.instance().getCurrentActivity(),
                     //        new String[]{Manifest.permission.CAMERA},
                     //        PermissionRefusedEvent.RESULT_CAMERA);
 

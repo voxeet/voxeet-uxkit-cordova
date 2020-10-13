@@ -245,10 +245,7 @@ class Voxeet_ {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []));
     }
 
-    /*
-     *  Deprecated methods
-     */
-
+    /** @deprecated */
     startConference(conferenceId: string, participants: Array<UserInfo>): Promise<any> {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
@@ -256,16 +253,19 @@ class Voxeet_ {
         });
     }
 
+    /** @deprecated */
     stopConference(): Promise<any> {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'stopConference', []));
     }
 
+    /** @deprecated use connect instead */
     openSession(userInfo: UserInfo): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'openSession', [userInfo.json()]);
         });
     }
 
+    /** @deprecated use disconnect instead */
     closeSession(): Promise<any> {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'closeSession', []));
     }

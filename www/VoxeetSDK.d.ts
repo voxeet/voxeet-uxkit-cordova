@@ -72,9 +72,13 @@ declare class Voxeet_ {
     screenAutoLock(enabled: boolean): Promise<any>;
     isUserLoggedIn(): Promise<boolean>;
     checkForAwaitingConference(): Promise<any>;
+    /** @deprecated */
     startConference(conferenceId: string, participants: Array<UserInfo>): Promise<any>;
+    /** @deprecated */
     stopConference(): Promise<any>;
+    /** @deprecated use connect instead */
     openSession(userInfo: UserInfo): Promise<any>;
+    /** @deprecated use disconnect instead */
     closeSession(): Promise<any>;
     onAccessTokenOk(accessToken: string): Promise<{}>;
     onAccessTokenKo(errorMessage: string): Promise<{}>;
