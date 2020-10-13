@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.33 (Oct 13th, 2020)
+- bump iOS SDK to 2.4.1 to support Swift 5.3
+
 ### 1.3.32 (June 23rd, 2020)
 - Android & iOS, integrate 2.4.0
 
