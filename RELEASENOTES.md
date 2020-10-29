@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.3.35 (Oct 29th, 2020)
+- copy Carthage temporary script
+
 ### 1.3.34 (Oct 29th, 2020)
 - bump iOS SDK to 3.0.0
 
