@@ -143,5 +143,6 @@
         <framework src="src/ios/Carthage/Build/iOS/VoxeetSDK.framework" custom="true" embed="true" />
         <framework src="src/ios/Carthage/Build/iOS/WebRTC.framework" custom="true" embed="true" />
         <framework src="src/ios/Carthage/Build/iOS/SDWebImage.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/iOS/dvclient.framework" custom="true" embed="true" />
     </platform>
 </plugin>
