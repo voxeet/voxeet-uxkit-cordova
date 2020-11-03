@@ -1,5 +1,10 @@
 # Release Notes
 
+### 1.4.0 (Novembre, 3rd)
+- update Android's SDK to 3.0.0
+- various fixes added via the UXKit 3.0.0
+- Android notifications are now using overhead
+
 ### 1.3.35 (Oct 29th, 2020)
 - copy Carthage temporary script
 
