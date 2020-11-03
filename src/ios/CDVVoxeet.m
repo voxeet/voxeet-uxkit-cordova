@@ -129,7 +129,10 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [VoxeetSDK.shared.conference createWithOptions:conferenceOptions success:^(VTConference *conference) {
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{@"conferenceId": conference.id, @"conferenceAlias": conference.alias}] callbackId:command.callbackId];
+            NSDictionary *result = @{@"conferenceId": conference.id,
+                                     @"conferenceAlias": conference.alias,
+                                     @"isNew": [NSNumber numberWithBool:conference.isNew]};
+            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result] callbackId:command.callbackId];
         } fail:^(NSError *error) {
             [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
         }];
@@ -148,7 +151,8 @@
         options.constraints.video = VoxeetSDK.shared.conference.defaultVideo;
         [VoxeetSDK.shared.conference fetchWithConferenceID:conferenceID completion:^(VTConference *conference) {
             [VoxeetSDK.shared.conference joinWithConference:conference options:options success:^(VTConference *conference2) {
-                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{@"conferenceId": conference2.id, @"conferenceAlias": conference2.alias}] callbackId:command.callbackId];
+                NSDictionary *result = @{@"conferenceId": conference2.id, @"conferenceAlias": conference2.alias};
+                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result] callbackId:command.callbackId];
             } fail:^(NSError *error) {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
             }];
