@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.4.1 (Novembre, 12th)
+- reimplement listener mode on iOS
+
 ### 1.4.0 (Novembre, 3rd)
 - update Android's SDK to 3.0.0
 - various fixes added via the UXKit 3.0.0

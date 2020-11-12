@@ -141,21 +141,41 @@
 
 - (void)join:(CDVInvokedUrlCommand *)command {
     NSString *conferenceID = [command.arguments objectAtIndex:0];
-    NSDictionary<NSString *,id> *options = nil;
+    BOOL isListener = NO;
+    BOOL defaultVideo = VoxeetSDK.shared.conference.defaultVideo; /* Monkey patch with listener mode */
     if ([command.arguments count] > 1) {
-        options = [command.arguments objectAtIndex:1];
+        NSDictionary<NSString *, id> *options = [command.arguments objectAtIndex:1];
+        NSDictionary *user = [options valueForKey:@"user"];
+        if (user != nil) {
+            NSString *type = [user valueForKey:@"type"];
+            if (type != nil && [type isEqual:@"listener"]) {
+                isListener = YES;
+            }
+        }
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        VTJoinOptions *options = [[VTJoinOptions alloc] init];
-        options.constraints.video = VoxeetSDK.shared.conference.defaultVideo;
         [VoxeetSDK.shared.conference fetchWithConferenceID:conferenceID completion:^(VTConference *conference) {
-            [VoxeetSDK.shared.conference joinWithConference:conference options:options success:^(VTConference *conference2) {
-                NSDictionary *result = @{@"conferenceId": conference2.id, @"conferenceAlias": conference2.alias};
-                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result] callbackId:command.callbackId];
-            } fail:^(NSError *error) {
-                [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
-            }];
+            if (!isListener) {
+                VTJoinOptions *options = [[VTJoinOptions alloc] init];
+                options.constraints.video = VoxeetSDK.shared.conference.defaultVideo;
+                [VoxeetSDK.shared.conference joinWithConference:conference options:options success:^(VTConference *conference2) {
+                    NSDictionary *result = @{@"conferenceId": conference2.id, @"conferenceAlias": conference2.alias};
+                    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result] callbackId:command.callbackId];
+                } fail:^(NSError *error) {
+                    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
+                }];
+            } else {
+                VoxeetSDK.shared.conference.defaultVideo = NO;
+                [VoxeetSDK.shared.conference listenWithConference:conference success:^(VTConference *conference2) {
+                    VoxeetSDK.shared.conference.defaultVideo = defaultVideo;
+                    NSDictionary *result = @{@"conferenceId": conference2.id, @"conferenceAlias": conference2.alias};
+                    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result] callbackId:command.callbackId];
+                } fail:^(NSError *error) {
+                    VoxeetSDK.shared.conference.defaultVideo = defaultVideo;
+                    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:error.description] callbackId:command.callbackId];
+                }];
+            }
         }];
     });
 }
