@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.4.2 (Novembre, 16th)
+- bump iOS SDK to 3.0.1 to support Swift 5.3.1
+
 ### 1.4.1 (Novembre, 12th)
 - reimplement listener mode on iOS
 
