@@ -48,6 +48,11 @@ new XmlSlurper().parse(file('../app/src/main/res/xml/config.xml')).preference.ea
 
 dependencies {
     compile 'com.android.support:multidex:1.0.3'
+
+    compile ('com.voxeet.sdk:sdk:3.0.1') {
+        transitive = true
+    }
+
     compile ('com.voxeet.sdk:uxkit:3.0.0') {
         transitive = true
     }
