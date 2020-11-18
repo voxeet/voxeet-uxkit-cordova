@@ -1,12 +1,15 @@
 # Release Notes
 
-### 1.4.2 (Novembre, 16th)
+### 1.4.3 (Nov 18th, 2020)
+- Android, remove code forcing use of incoming call activity even in Android 10+ (Non disturbing mode)
+
+### 1.4.2 (Nov 16th, 2020)
 - bump iOS SDK to 3.0.1 to support Swift 5.3.1
 
-### 1.4.1 (Novembre, 12th)
+### 1.4.1 (Nov 12th, 2020)
 - reimplement listener mode on iOS
 
-### 1.4.0 (Novembre, 3rd)
+### 1.4.0 (Nov 3rd, 2020)
 - update Android's SDK to 3.0.0
 - various fixes added via the UXKit 3.0.0
 - Android notifications are now using overhead

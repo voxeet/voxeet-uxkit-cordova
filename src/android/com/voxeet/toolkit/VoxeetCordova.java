@@ -129,7 +129,7 @@ public class VoxeetCordova extends CordovaPlugin {
                 //register notification only mode
                 .register(NotificationMode.OVERHEAD_INCOMING_CALL, new CordovaIncomingNotification())
                 //register full screen mode
-                .register(NotificationMode.FULLSCREEN_INCOMING_CALL, new CordovaIncomingNotification()) //new IncomingFullScreen(CordovaIncomingCallActivity.class))
+                .register(NotificationMode.FULLSCREEN_INCOMING_CALL, new IncomingFullScreen(CordovaIncomingCallActivity.class))
                 //activate fullscreen -> notification mode only
                 .setEnforcedNotificationMode(EnforcedNotificationMode.MIXED_INCOMING_CALL);
     }
