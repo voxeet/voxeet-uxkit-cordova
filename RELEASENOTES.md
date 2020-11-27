@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.4.4 (Nov 30th, 2020)
+- bump iOS SDK to 3.0.2
+
 ### 1.4.3 (Nov 18th, 2020)
 - Android, remove code forcing use of incoming call activity even in Android 10+ (Non disturbing mode)
 
