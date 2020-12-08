@@ -5,22 +5,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.voxeet.VoxeetSDK;
 import com.voxeet.audio.utils.Constants;
-import com.voxeet.promise.solve.ErrorPromise;
-import com.voxeet.promise.solve.PromiseExec;
-import com.voxeet.promise.solve.Solver;
 import com.voxeet.sdk.events.sdk.ConferenceStatusUpdatedEvent;
 import com.voxeet.sdk.json.ConferenceDestroyedPush;
 import com.voxeet.sdk.media.audio.SoundManager;
@@ -30,8 +25,8 @@ import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.utils.AndroidManifest;
 import com.voxeet.sdk.utils.AudioType;
 import com.voxeet.toolkit.VoxeetCordova;
-import com.voxeet.uxkit.views.internal.rounded.RoundedImageView;
 import com.voxeet.uxkit.R;
+import com.voxeet.uxkit.views.internal.rounded.RoundedImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -87,34 +82,21 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
         mAcceptTextView = (TextView) findViewById(R.id.voxeet_incoming_accept);
         mDeclineTextView = (TextView) findViewById(R.id.voxeet_incoming_decline);
 
-        mDeclineTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onDecline();
-            }
-        });
+        mDeclineTextView.setOnClickListener(view -> onDecline());
 
-        mAcceptTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onAccept();
-            }
-        });
+        mAcceptTextView.setOnClickListener(view -> onAccept());
 
         int timeout = AndroidManifest.readMetadataInt(this, DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY,
                 DEFAULT_VOXEET_INCOMING_CALL_DURATION_VALUE);
         mHandler = new Handler();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (null != mHandler) {
-                        Log.d(TAG, "run: timedout... leaving screen. Timeout was := " + timeout);
-                        finish();
-                    }
-                } catch (Exception e) {
-
+        mHandler.postDelayed(() -> {
+            try {
+                if (null != mHandler) {
+                    Log.d(TAG, "run: timedout... leaving screen. Timeout was := " + timeout);
+                    finish();
                 }
+            } catch (Exception e) {
+
             }
         }, timeout);
     }
@@ -135,14 +117,12 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
             e.printStackTrace();
         }
         if (mIncomingBundleChecker.isBundleValid()) {
-            if (null != VoxeetSDK.instance()) {
-                mEventBus = VoxeetSDK.instance().getEventBus();
-                try {
-                    if (null != mEventBus && !mEventBus.isRegistered(this))
-                        mEventBus.register(this);
-                } catch (Exception e) {
+            mEventBus = VoxeetSDK.instance().getEventBus();
+            try {
+                if (null != mEventBus && !mEventBus.isRegistered(this))
+                    mEventBus.register(this);
+            } catch (Exception e) {
 
-                }
             }
 
             mUsername.setText(mIncomingBundleChecker.getUserName());
@@ -252,21 +232,15 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
 
     protected void onDecline() {
         ConferenceService service = VoxeetSDK.conference();
-        if (getConferenceId() != null && null != service) {
+        if (getConferenceId() != null && VoxeetSDK.instance().isInitialized()) {
             service.decline(getConferenceId())
-                    .then(new PromiseExec<Boolean, Object>() {
-                        @Override
-                        public void onCall(@Nullable Boolean result, @NonNull Solver<Object> solver) {
-                            Log.d(TAG, "onCall: declining... leaving incoming screen");
-                            finish();
-                        }
+                    .then((result, solver) -> {
+                        Log.d(TAG, "onCall: declining... leaving incoming screen");
+                        finish();
                     })
-                    .error(new ErrorPromise() {
-                        @Override
-                        public void onError(Throwable error) {
-                            Log.e(TAG, "onCall: declining... leaving incoming screen", error);
-                            finish();
-                        }
+                    .error(error -> {
+                        Log.e(TAG, "onCall: declining... leaving incoming screen", error);
+                        finish();
                     });
         } else {
             CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = new RNBundleChecker(getIntent(), null);
@@ -316,7 +290,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     }
 
     private boolean canDirectlyUseJoin() {
-        return null != VoxeetSDK.session() && null != VoxeetPreferences.getSavedUserInfo();
+        return VoxeetSDK.instance().isInitialized() && null != VoxeetPreferences.getSavedUserInfo();
     }
 
     /**

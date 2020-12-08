@@ -74,13 +74,13 @@ public class CordovaIncomingBundleChecker {
                     getAvatarUrl());
 
             Log.d(TAG, "onAccept: joining conference from ConrdovaIncomingBundleChecker");
-            ConferenceService service = VoxeetSDK.conference();
-            if (null == service) return;
+            if (!VoxeetSDK.instance().isInitialized()) return;
 
+            ConferenceService service = VoxeetSDK.conference();
             service.join(mConferenceId /*, info*/) //TODO reinstantiate inviter ?
                     .then((result) -> {
                         //possible callback to set ?
-                        if (VoxeetCordova.startVideoOnJoin && null != service) {
+                        if (VoxeetCordova.startVideoOnJoin) {
                             service.startVideo()
                                     .then((result1) -> {
                                         //video started ?

@@ -1,5 +1,11 @@
 # Release Notes
 
+### 1.4.6-BETA1 (Dec)
+- use UXKit Beta2
+- pre initialize SDK
+- fix media device empty list
+- improve video rendering (fix video distortion)
+
 ### 1.4.5 (Nov 30th, 2020)
 - bump Android SDK to 3.0.2
 
