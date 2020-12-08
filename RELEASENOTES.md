@@ -1,5 +1,34 @@
 # Release Notes
 
+### 1.4.5 (Nov 30th, 2020)
+- bump Android SDK to 3.0.2
+
+### 1.4.4 (Nov 30th, 2020)
+- bump iOS SDK to 3.0.2
+
+### 1.4.3 (Nov 18th, 2020)
+- Android, remove code forcing use of incoming call activity even in Android 10+ (Non disturbing mode)
+
+### 1.4.2 (Nov 16th, 2020)
+- bump iOS SDK to 3.0.1 to support Swift 5.3.1
+
+### 1.4.1 (Nov 12th, 2020)
+- reimplement listener mode on iOS
+
+### 1.4.0 (Nov 3rd, 2020)
+- update Android's SDK to 3.0.0
+- various fixes added via the UXKit 3.0.0
+- Android notifications are now using overhead
+
+### 1.3.35 (Oct 29th, 2020)
+- copy Carthage temporary script
+
+### 1.3.34 (Oct 29th, 2020)
+- bump iOS SDK to 3.0.0
+
+### 1.3.33 (Oct 13th, 2020)
+- bump iOS SDK to 2.4.1 to support Swift 5.3
+
 ### 1.3.32 (June 23rd, 2020)
 - Android & iOS, integrate 2.4.0
 

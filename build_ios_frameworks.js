@@ -15,7 +15,12 @@ module.exports = function(context) {
   }
   
   if (!skip && fs.existsSync(dir)) {
-    exec(`carthage update --platform ios --project-directory ${dir}/src/ios`, exec_callback);
+    // Waiting for Carthage / Xcode 12 fix
+    // exec(`carthage update --platform ios --project-directory ${dir}/src/ios`, exec_callback);
+    // Temporary fix
+    console.log("INSTALL CARTHAGE DEPENDENCIES WITH PATCH");
+    exec(`chmod +x ${dir}/carthage.sh`);
+    exec(`${dir}/carthage.sh update --platform ios --no-use-binaries --project-directory ${dir}/src/ios`, exec_callback);
   } else {
     console.log("skipping script installation...");
     deferral.resolve();

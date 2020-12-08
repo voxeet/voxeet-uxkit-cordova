@@ -12,6 +12,7 @@ buildscript {
 }
 
 repositories {
+    maven { url "https://android-sdk.voxeet.com/release" }
     google()
     jcenter()
     mavenLocal()
@@ -47,12 +48,13 @@ new XmlSlurper().parse(file('../app/src/main/res/xml/config.xml')).preference.ea
 
 dependencies {
     compile 'com.android.support:multidex:1.0.3'
-    compile ('com.voxeet.sdk:uxkit:2.4.0') {
+
+    compile ('com.voxeet.sdk:uxkit:3.0.2') {
         transitive = true
     }
 
     if(push) {
-        compile ('com.voxeet.sdk:uxkit-firebase:2.4.0')
+        compile ('com.voxeet.sdk:uxkit-firebase:3.0.2')
     }
 }
 

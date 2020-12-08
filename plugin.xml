@@ -18,7 +18,7 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
       id="cordova-plugin-voxeet"
-      version="1.3.32">
+      version="1.4.5">
     <name>Voxeet</name>
     <description>Cordova Voxeet Plugin</description>
     <license>Apache 2.0 License</license>
@@ -143,5 +143,6 @@
         <framework src="src/ios/Carthage/Build/iOS/VoxeetSDK.framework" custom="true" embed="true" />
         <framework src="src/ios/Carthage/Build/iOS/WebRTC.framework" custom="true" embed="true" />
         <framework src="src/ios/Carthage/Build/iOS/SDWebImage.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/iOS/dvclient.framework" custom="true" embed="true" />
     </platform>
 </plugin>
