@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.4.6 (Dec 15th, 2020)
+- bump iOS SDK to 3.0.3
+
 ### 1.4.5 (Nov 30th, 2020)
 - bump Android SDK to 3.0.2
 
