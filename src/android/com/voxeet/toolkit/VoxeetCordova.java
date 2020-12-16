@@ -917,7 +917,9 @@ public class VoxeetCordova extends CordovaPlugin {
             //if (enabled) route = AudioRoute.ROUTE_SPEAKER;
 
             VoxeetPreferences.setDefaultBuiltInSpeakerOn(enabled);
-            //service.setAudioRoute(route);
+
+            //set the contextual information which will be used by the UXKit when he join event will be fired
+            VoxeetToolkit.instance().getConferenceToolkit().Configuration.Contextual.default_speaker_on = enabled;
         });
     }
 

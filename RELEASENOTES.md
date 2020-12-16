@@ -1,6 +1,6 @@
 # Release Notes
 
-### 1.4.7 (Dec, 16th, 2020)
+### 1.4.7-BETA2 (Dec, 16th, 2020)
  - use UXKit's Contextual configuration for default speaker mode
 
 ### 1.4.6 (Dec 15th, 2020)
