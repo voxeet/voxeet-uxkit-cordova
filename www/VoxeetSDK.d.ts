@@ -44,13 +44,21 @@ export interface RefreshCallback {
 export interface TokenRefreshCallback {
     (): Promise<string>;
 }
+export interface ConferenceStatusUpdated {
+    state: string;
+    conferenceAlias: string;
+    conferenceId: string;
+}
+export interface ConferenceStatusUpdatedEventCallback {
+    (): Promise<ConferenceStatusUpdated>;
+}
 declare class Voxeet_ {
     VoxeetMedia: VoxeetMedia;
     refreshAccessTokenCallback: RefreshCallback | null;
     refreshToken: TokenRefreshCallback | undefined;
     constructor();
     initialize(consumerKey: string, consumerSecret: string): Promise<any>;
-    initializeToken(accessToken: string | undefined, refreshToken: TokenRefreshCallback): Promise<{}>;
+    initializeToken(accessToken: string | undefined, refreshToken: TokenRefreshCallback): Promise<unknown>;
     connect(userInfo: UserInfo): Promise<any>;
     disconnect(): Promise<any>;
     create(options: CreateOptions): Promise<any>;
@@ -61,17 +69,18 @@ declare class Voxeet_ {
     sendBroadcastMessage(message: string): Promise<any>;
     setAudio3DEnabled(enabled: boolean): Promise<any>;
     isAudio3DEnabled(): Promise<boolean>;
-    setUIConfiguration(configuration: Configuration): Promise<{}>;
+    setUIConfiguration(configuration: Configuration): Promise<unknown>;
     setTelecomMode(enabled: boolean): Promise<any>;
     isTelecomMode(): Promise<boolean>;
     appearMaximized(enabled: boolean): Promise<any>;
     defaultBuiltInSpeaker(enabled: boolean): Promise<any>;
     defaultVideo(enabled: boolean): Promise<any>;
-    startRecording(): Promise<{}>;
-    stopRecording(): Promise<{}>;
+    startRecording(): Promise<unknown>;
+    stopRecording(): Promise<unknown>;
     screenAutoLock(enabled: boolean): Promise<any>;
     isUserLoggedIn(): Promise<boolean>;
     checkForAwaitingConference(): Promise<any>;
+    onConferenceStatusUpdatedEvent(callback: ConferenceStatusUpdatedEventCallback): Promise<unknown>;
     /** @deprecated */
     startConference(conferenceId: string, participants: Array<UserInfo>): Promise<any>;
     /** @deprecated */
@@ -80,7 +89,7 @@ declare class Voxeet_ {
     openSession(userInfo: UserInfo): Promise<any>;
     /** @deprecated use disconnect instead */
     closeSession(): Promise<any>;
-    onAccessTokenOk(accessToken: string): Promise<{}>;
-    onAccessTokenKo(errorMessage: string): Promise<{}>;
+    onAccessTokenOk(accessToken: string): Promise<unknown>;
+    onAccessTokenKo(errorMessage: string): Promise<unknown>;
 }
 export declare const Voxeet: Voxeet_;
