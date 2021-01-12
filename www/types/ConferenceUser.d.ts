@@ -1,7 +1,4 @@
-/**
- * Describes UserInfo
- */
-declare class UserInfo {
+export default class ConferenceUser {
     name: string;
     externalId: string;
     avatarUrl: string | undefined;
@@ -12,4 +9,3 @@ declare class UserInfo {
         avatarUrl: string | undefined;
     };
 }
-export = UserInfo;

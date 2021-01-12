@@ -18,7 +18,6 @@ import org.json.JSONException;
 /**
  * Voxeet's Media layer implementation for Cordova
  */
-
 public class VoxeetMediaCordova extends CordovaPlugin {
 
     private static final String TAG = VoxeetMediaCordova.class.getSimpleName();

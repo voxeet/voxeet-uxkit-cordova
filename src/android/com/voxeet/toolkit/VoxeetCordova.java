@@ -312,7 +312,6 @@ public class VoxeetCordova extends CordovaPlugin {
                     try {
                         JSONObject parameters = args.getJSONObject(0);
 
-
                         String confAlias = parameters.getString("alias");
                         JSONObject object = null;
                         if (!parameters.isNull("metadata")) {
@@ -565,7 +564,6 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     @Nullable
-
     private void defaultVideo(boolean startVideo) {
         startVideoOnJoin = startVideo;
         VoxeetPreferences.setDefaultVideoOn(startVideo);
@@ -808,7 +806,6 @@ public class VoxeetCordova extends CordovaPlugin {
 
         service.create(conferenceAlias, holder, pholder)
                 .then((result) -> {
-                    //TODO add isNew
                     JSONObject object = new JSONObject();
                     try {
                         object.put("conferenceId", result.conferenceId);
