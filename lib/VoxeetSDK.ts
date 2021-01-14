@@ -1,5 +1,5 @@
 import VoxeetMedia from "./VoxeetMedia";
-import ConferenceUser from "./types/ConferenceUser";
+import UserInfo from "./types/UserInfo";
 import { default as Configuration } from "./types/Configurations";
 import { CreateOptions, CreateResult } from './types/CreateConference';
 import { JoinOptions } from './types/JoinConference';
@@ -66,7 +66,7 @@ class Voxeet_ {
      * Opens a new session.
      * @param userInfo Participant information
      */
-    connect(userInfo: ConferenceUser): Promise<string> {
+    connect(userInfo: UserInfo): Promise<string> {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'connect', [userInfo.json()]);
         });
@@ -126,7 +126,7 @@ class Voxeet_ {
      * @param conferenceId Id of the conference to invite the participant to
      * @param participants List of participants to invite
      */
-    invite(conferenceId: string, participants: Array<ConferenceUser>): Promise<any> {
+    invite(conferenceId: string, participants: Array<UserInfo>): Promise<string> {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'invite', [conferenceId, array]);
@@ -137,10 +137,10 @@ class Voxeet_ {
      * Sends a broadcast message to the participants of the conference.
      * @param message Message to send to the other participants
      */
-    sendBroadcastMessage(message: string): Promise<any> {
+    sendBroadcastMessage(message: string): Promise<void> {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'sendBroadcastMessage', [message]);
-            resolve(null);
+            resolve();
         });
     }
 
@@ -275,7 +275,7 @@ class Voxeet_ {
     }
 
     /** @deprecated Use join() instead. */
-    startConference(conferenceId: string, participants: Array<ConferenceUser>): Promise<any> {
+    startConference(conferenceId: string, participants: Array<UserInfo>): Promise<any> {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'startConference', [conferenceId, array]);
@@ -290,7 +290,7 @@ class Voxeet_ {
     }
 
     /** @deprecated use connect instead. */
-    openSession(userInfo: ConferenceUser): Promise<any> {
+    openSession(userInfo: UserInfo): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'openSession', [userInfo.json()]);
         });
