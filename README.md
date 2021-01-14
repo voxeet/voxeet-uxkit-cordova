@@ -22,7 +22,9 @@ cordova plugin add cordova-plugin-voxeet
 **Note:** in some cases, it is needed to initialize the SDK beforehand. Especially in cases when the plugin used by the application delays the `onDeviceReady` event. In this situation, install the UXKit for Cordova using this command:
 
 ```bash
-cordova plugin add cordova-plugin-voxeet --variable VOXEET_CORDOVA_CONSUMER_KEY="consumerKey" --variable VOXEET_CORDOVA_CONSUMER_SECRET="consumerSecret"
+cordova plugin add cordova-plugin-voxeet \
+    --variable VOXEET_CORDOVA_CONSUMER_KEY="consumerKey" \
+    --variable VOXEET_CORDOVA_CONSUMER_SECRET="consumerSecret"
 ```
 
 > **Note:** Wait for the `deviceReady` event before you interact with the plugin.
@@ -223,8 +225,16 @@ Voxeet.leave()
 
 **Broadcast a message**
 
+Send a message to the participants of the conference. The message can be a simple string or a json message.
+
 ```javascript
-Voxeet.sendBroadcastMessage("YOUR_MESSAGE")
+var message = "YOUR MESSAGE";
+
+// Example of a json message
+var obj = { action: "message", content: "Hello world" };
+var message = JSON.stringify(obj);
+
+Voxeet.sendBroadcastMessage(message)
     .then(() => {
         // The message was sent to the participants of the conference
     })
