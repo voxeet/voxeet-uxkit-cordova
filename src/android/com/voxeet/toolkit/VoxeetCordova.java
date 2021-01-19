@@ -510,27 +510,27 @@ public class VoxeetCordova extends CordovaPlugin {
         Users cusers = configuration.Users;
         if (null != actionBar) {
             if (actionBar.has("displayMute"))
-                cactionBar.displayMute = bool(object, "displayMute");
+                cactionBar.displayMute = bool(actionBar, "displayMute");
             if (actionBar.has("displaySpeaker"))
-                cactionBar.displaySpeaker = bool(object, "displaySpeaker");
+                cactionBar.displaySpeaker = bool(actionBar, "displaySpeaker");
             if (actionBar.has("displayCamera"))
-                cactionBar.displayCamera = bool(object, "displayCamera");
+                cactionBar.displayCamera = bool(actionBar, "displayCamera");
             if (actionBar.has("displayScreenShare"))
-                cactionBar.displayScreenShare = bool(object, "displayScreenShare");
+                cactionBar.displayScreenShare = bool(actionBar, "displayScreenShare");
             if (actionBar.has("displayLeave"))
-                cactionBar.displayLeave = bool(object, "displayLeave");
+                cactionBar.displayLeave = bool(actionBar, "displayLeave");
         }
         if (null != overlay) {
-            if (object.has("backgroundMaximizedColor"))
-                coverlay.background_maximized_color = integer(object, "backgroundMaximizedColor");
-            if (actionBar.has("backgroundMinimizedColor"))
-                coverlay.background_minimized_color = integer(object, "backgroundMinimizedColor");
+            if (overlay.has("backgroundMaximizedColor"))
+                coverlay.background_maximized_color = integer(overlay, "backgroundMaximizedColor");
+            if (overlay.has("backgroundMinimizedColor"))
+                coverlay.background_minimized_color = integer(overlay, "backgroundMinimizedColor");
         }
         if (null != users) {
-            if (object.has("speakingUserColor"))
-                cusers.speaking_user_color = integer(object, "speakingUserColor");
-            if (actionBar.has("selectedUserColor"))
-                cusers.selected_user_color = integer(object, "selectedUserColor");
+            if (users.has("speakingUserColor"))
+                cusers.speaking_user_color = integer(users, "speakingUserColor");
+            if (users.has("selectedUserColor"))
+                cusers.selected_user_color = integer(users, "selectedUserColor");
         }
     }
 
