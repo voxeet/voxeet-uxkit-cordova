@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Voxeet = exports.UserType = exports.Codec = exports.Mode = exports.RTCPMode = void 0;
 const VoxeetMedia_1 = __importDefault(require("./VoxeetMedia"));
 /*
  *
@@ -49,8 +50,6 @@ var UserType;
     UserType["USER"] = "user";
     UserType["LISTENER"] = "listener";
 })(UserType = exports.UserType || (exports.UserType = {}));
-;
-;
 class Voxeet_ {
     constructor() {
         this.refreshAccessTokenCallback = null;
@@ -182,25 +181,31 @@ class Voxeet_ {
     checkForAwaitingConference() {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []));
     }
-    /*
-     *  Deprecated methods
-     */
+    onConferenceStatusUpdatedEvent(callback) {
+        return new Promise((resolve, reject) => {
+            exec(callback, (err) => { }, SERVICE, 'onConferenceStatusUpdatedEvent', []);
+        });
+    }
+    /** @deprecated */
     startConference(conferenceId, participants) {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'startConference', [conferenceId, array]);
         });
     }
+    /** @deprecated */
     stopConference() {
         return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'stopConference', []));
     }
+    /** @deprecated use connect instead */
     openSession(userInfo) {
         return new Promise((resolve, reject) => {
-            exec(resolve, reject, SERVICE, 'connect', [userInfo.json()]);
+            exec(resolve, reject, SERVICE, 'openSession', [userInfo.json()]);
         });
     }
+    /** @deprecated use disconnect instead */
     closeSession() {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'disconnect', []));
+        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'closeSession', []));
     }
     //method to refresh tokens, used internally
     onAccessTokenOk(accessToken) {
