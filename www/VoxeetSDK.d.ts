@@ -1,5 +1,5 @@
 import VoxeetMedia from "./VoxeetMedia";
-import ConferenceUser from "./types/ConferenceUser";
+import UserInfo from "./types/UserInfo";
 import { default as Configuration } from "./types/Configurations";
 import { CreateOptions, CreateResult } from './types/CreateConference';
 import { JoinOptions } from './types/JoinConference';
@@ -8,6 +8,14 @@ export interface RefreshCallback {
 }
 export interface TokenRefreshCallback {
     (): Promise<string>;
+}
+export interface ConferenceStatusUpdated {
+    state: string;
+    conferenceAlias: string;
+    conferenceId: string;
+}
+export interface ConferenceStatusUpdatedEventCallback {
+    (): Promise<ConferenceStatusUpdated>;
 }
 declare class Voxeet_ {
     VoxeetMedia: VoxeetMedia;
@@ -30,7 +38,7 @@ declare class Voxeet_ {
      * Opens a new session.
      * @param userInfo Participant information
      */
-    connect(userInfo: ConferenceUser): Promise<string>;
+    connect(userInfo: UserInfo): Promise<string>;
     /**
      * Closes the current session.
      */
@@ -60,12 +68,12 @@ declare class Voxeet_ {
      * @param conferenceId Id of the conference to invite the participant to
      * @param participants List of participants to invite
      */
-    invite(conferenceId: string, participants: Array<ConferenceUser>): Promise<any>;
+    invite(conferenceId: string, participants: Array<UserInfo>): Promise<string>;
     /**
      * Sends a broadcast message to the participants of the conference.
      * @param message Message to send to the other participants
      */
-    sendBroadcastMessage(message: string): Promise<any>;
+    sendBroadcastMessage(message: string): Promise<void>;
     /**
      * Sets if you want to enable audio 3D.
      * @param enabled True to enable audio 3D
@@ -125,12 +133,13 @@ declare class Voxeet_ {
      * Checks if a conference is awaiting. Android only.
      */
     checkForAwaitingConference(): Promise<any>;
+    onConferenceStatusUpdatedEvent(callback: ConferenceStatusUpdatedEventCallback): Promise<unknown>;
     /** @deprecated Use join() instead. */
-    startConference(conferenceId: string, participants: Array<ConferenceUser>): Promise<any>;
+    startConference(conferenceId: string, participants: Array<UserInfo>): Promise<any>;
     /** @deprecated Use leave() instead. */
     stopConference(): Promise<any>;
     /** @deprecated use connect instead. */
-    openSession(userInfo: ConferenceUser): Promise<any>;
+    openSession(userInfo: UserInfo): Promise<any>;
     /** @deprecated use disconnect instead. */
     closeSession(): Promise<any>;
     /** Internal method used to refresh tokens. */

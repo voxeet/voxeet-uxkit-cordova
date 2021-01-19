@@ -403,6 +403,10 @@
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
 
+- (void)onConferenceStatusUpdatedEvent:(CDVInvokedUrlCommand *)command { /* Android compatibility */
+    
+}
+
 /*
  *  MARK: Deprecated methods
  */

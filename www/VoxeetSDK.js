@@ -10,8 +10,6 @@ const VoxeetMedia_1 = __importDefault(require("./VoxeetMedia"));
  */
 const exec = require('cordova/exec');
 const SERVICE = 'Voxeet';
-;
-;
 class Voxeet_ {
     constructor() {
         this.refreshAccessTokenCallback = null;
@@ -118,7 +116,7 @@ class Voxeet_ {
     sendBroadcastMessage(message) {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'sendBroadcastMessage', [message]);
-            resolve(null);
+            resolve();
         });
     }
     /**
@@ -236,6 +234,11 @@ class Voxeet_ {
     checkForAwaitingConference() {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []);
+        });
+    }
+    onConferenceStatusUpdatedEvent(callback) {
+        return new Promise((resolve, reject) => {
+            exec(callback, (err) => { }, SERVICE, 'onConferenceStatusUpdatedEvent', []);
         });
     }
     /** @deprecated Use join() instead. */

@@ -12,11 +12,21 @@ const SERVICE: string = 'Voxeet';
 
 export interface RefreshCallback {
     (): void;
-};
+}
 
 export interface TokenRefreshCallback {
     (): Promise<string>
-};
+}
+
+export interface ConferenceStatusUpdated {
+    state: string;
+    conferenceAlias: string;
+    conferenceId: string;
+}
+
+export interface ConferenceStatusUpdatedEventCallback {
+    (): Promise<ConferenceStatusUpdated>
+}
 
 class Voxeet_ {
 
@@ -271,6 +281,12 @@ class Voxeet_ {
     checkForAwaitingConference(): Promise<any> {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []);
+        });
+    }
+
+    onConferenceStatusUpdatedEvent(callback: ConferenceStatusUpdatedEventCallback) {
+        return new Promise((resolve, reject) => {
+            exec(callback, (err: Error) => {}, SERVICE, 'onConferenceStatusUpdatedEvent', []);
         });
     }
 

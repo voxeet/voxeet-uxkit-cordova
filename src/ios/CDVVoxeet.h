@@ -40,6 +40,7 @@
 - (void)screenAutoLock:(CDVInvokedUrlCommand *)command;
 - (void)isUserLoggedIn:(CDVInvokedUrlCommand *)command;
 - (void)checkForAwaitingConference:(CDVInvokedUrlCommand *)command;
+- (void)onConferenceStatusUpdatedEvent:(CDVInvokedUrlCommand *)command;
 
 /* MARK: Deprecated methods */
 

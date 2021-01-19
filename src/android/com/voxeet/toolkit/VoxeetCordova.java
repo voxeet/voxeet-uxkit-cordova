@@ -112,6 +112,7 @@ public class VoxeetCordova extends CordovaPlugin {
     private ReentrantLock lockAwaitingToken = new ReentrantLock();
     private List<TokenCallback> mAwaitingTokenCallback;
     private CallbackContext refreshAccessTokenCallbackInstance;
+    private CallbackContext onConferenceStatusUpdatedEventCallback;
     private MicrophonePermissionWait waitMicrophonePermission;
     private CordovaWebView mWebView;
 
@@ -488,6 +489,9 @@ public class VoxeetCordova extends CordovaPlugin {
                     break;
                 case "sendBroadcastMessage":
                     sendBroadcastMessage(args.getString(0), callbackContext);
+                    break;
+                case "onConferenceStatusUpdatedEvent":
+                    onConferenceStatusUpdatedEventCallback = callbackContext;
                     break;
                 default:
                     return false;
@@ -1245,6 +1249,23 @@ public class VoxeetCordova extends CordovaPlugin {
             default:
         }
         setVolumeMusic();
+
+        if (onConferenceStatusUpdatedEventCallback != null) {
+            try {
+                JSONObject jObject = new JSONObject()
+                        .put("state", event.state.toString())
+                        .put("conferenceAlias", event.conferenceAlias);
+                if (event.conference != null) {
+                    jObject.put("conferenceId", event.conference.getId());
+                }
+
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, jObject);
+                pluginResult.setKeepCallback(true);
+                onConferenceStatusUpdatedEventCallback.sendPluginResult(pluginResult);
+            } catch (Exception ex) {
+                Log.e(TAG, "onEvent: ConferenceJoinedSuccessEvent", ex);
+            }
+        }
     }
 
     private void setVolumeVoiceCall() {
