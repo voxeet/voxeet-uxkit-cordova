@@ -3,53 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Voxeet = exports.UserType = exports.Codec = exports.Mode = exports.RTCPMode = void 0;
+exports.Voxeet = void 0;
 const VoxeetMedia_1 = __importDefault(require("./VoxeetMedia"));
-/*
- *
- * VoxeetUXKit Cordova
- * Copyright (C) 2020
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
-
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
-
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
-*/
 /**
  * This class enable interaction with VoxeetUXKit
- * @constructor
  */
 const exec = require('cordova/exec');
 const SERVICE = 'Voxeet';
-var RTCPMode;
-(function (RTCPMode) {
-    RTCPMode["WORST"] = "worst";
-    RTCPMode["BEST"] = "best";
-})(RTCPMode = exports.RTCPMode || (exports.RTCPMode = {}));
-var Mode;
-(function (Mode) {
-    Mode["STANDARD"] = "standard";
-    Mode["PUSH"] = "push";
-})(Mode = exports.Mode || (exports.Mode = {}));
-var Codec;
-(function (Codec) {
-    Codec["VP8"] = "VP8";
-    Codec["H264"] = "H264";
-})(Codec = exports.Codec || (exports.Codec = {}));
-var UserType;
-(function (UserType) {
-    UserType["USER"] = "user";
-    UserType["LISTENER"] = "listener";
-})(UserType = exports.UserType || (exports.UserType = {}));
 class Voxeet_ {
     constructor() {
         this.refreshAccessTokenCallback = null;
@@ -63,11 +23,21 @@ class Voxeet_ {
             });
         };
     }
+    /**
+     * Initializes the SDK using the customer key and secret.
+     * @param consumerKey Consumer Key
+     * @param consumerSecret Consumer Secret
+     */
     initialize(consumerKey, consumerSecret) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'initialize', [consumerKey, consumerSecret]);
         });
     }
+    /**
+     * Initializes the SDK with an access token that is provided by the customer backend communicating with Voxeet servers.
+     * @param accessToken Access token
+     * @param refreshToken Callback to get a new access token after it expires
+     */
     initializeToken(accessToken, refreshToken) {
         return new Promise((resolve, reject) => {
             this.refreshToken = refreshToken;
@@ -75,144 +45,234 @@ class Voxeet_ {
             exec(resolve, reject, SERVICE, 'initializeToken', [accessToken]);
         });
     }
+    /**
+     * Opens a new session.
+     * @param userInfo Participant information
+     */
     connect(userInfo) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'connect', [userInfo.json()]);
         });
     }
+    /**
+     * Closes the current session.
+     */
     disconnect() {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'disconnect', []);
         });
     }
+    /**
+     * Creates a conference.
+     * @param options Options to use to create the conference
+     */
     create(options) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'create', [options]);
         });
     }
+    /**
+     * Joins the conference.
+     * @param conferenceId Id of the conference to join
+     * @param options Options to use to join the conference
+     */
     join(conferenceId, options = {}) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'join', [conferenceId, options]);
         });
     }
+    /**
+     * Joins the conference in the broadcaster mode which allows transmitting audio and video.
+     * @param conferenceId Id of the conference to join
+     */
     broadcast(conferenceId) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'broadcast', [conferenceId]);
         });
     }
+    /**
+     * Leaves the conference.
+     */
     leave() {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'leave', []);
         });
     }
+    /**
+     * Invite a participant to the conference.
+     * @param conferenceId Id of the conference to invite the participant to
+     * @param participants List of participants to invite
+     */
     invite(conferenceId, participants) {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'invite', [conferenceId, array]);
         });
     }
+    /**
+     * Sends a broadcast message to the participants of the conference.
+     * @param message Message to send to the other participants
+     */
     sendBroadcastMessage(message) {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'sendBroadcastMessage', [message]);
             resolve();
         });
     }
+    /**
+     * Sets if you want to enable audio 3D.
+     * @param enabled True to enable audio 3D
+     */
     setAudio3DEnabled(enabled) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'setAudio3DEnabled', [enabled]);
         });
     }
+    /**
+     * Is audio 3D enabled.
+     */
     isAudio3DEnabled() {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'isAudio3DEnabled', []));
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'isAudio3DEnabled', []);
+        });
     }
+    /**
+     * Sets the UI configuration.
+     * @param configuration UI configuration
+     */
     setUIConfiguration(configuration) {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'setUIConfiguration', [configuration]));
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'setUIConfiguration', [configuration]);
+        });
     }
+    /**
+     * Sets if you want to enable the Telecom mode or not.
+     * @param enabled True to enable the Telecom mode
+     */
     setTelecomMode(enabled) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'setTelecomMode', [enabled]);
         });
     }
+    /**
+     * Is telecom mode enabled.
+     */
     isTelecomMode() {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'isTelecomMode', []));
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'isTelecomMode', []);
+        });
     }
+    /**
+     * Sets if you want the UXKit to appear maximized or not.
+     * @param maximized True to have the UXKit to appear maximized
+     */
     appearMaximized(enabled) {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'appearMaximized', [enabled]);
             resolve();
         });
     }
+    /**
+     * Use the built in speaker by default.
+     * @param enable True to use the built in speaker by default
+     */
     defaultBuiltInSpeaker(enabled) {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'defaultBuiltInSpeaker', [enabled]);
             resolve();
         });
     }
+    /**
+     * Sets the video on by default.
+     * @param enable True to turn on the video by default
+     */
     defaultVideo(enabled) {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'defaultVideo', [enabled]);
             resolve();
         });
     }
+    /**
+     * Starts recording the conference.
+     */
     startRecording() {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'startRecording', []);
-            resolve();
+            resolve(null);
         });
     }
+    /**
+     * Stops recording the conference.
+     */
     stopRecording() {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'stopRecording', []);
-            resolve();
+            resolve(null);
         });
     }
-    /*
-     *  Android methods
+    /**
+     * Activates or disable the screen auto lock. Android only.
+     * @param activate True to activate the screen auto lock
      */
     screenAutoLock(enabled) {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'screenAutoLock', [enabled]);
-            resolve();
+            resolve(null);
         });
     }
+    /**
+     * @deprecated Android only.
+     */
     isUserLoggedIn() {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'isUserLoggedIn', []));
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'isUserLoggedIn', []);
+        });
     }
+    /**
+     * Checks if a conference is awaiting. Android only.
+     */
     checkForAwaitingConference() {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []));
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []);
+        });
     }
     onConferenceStatusUpdatedEvent(callback) {
         return new Promise((resolve, reject) => {
             exec(callback, (err) => { }, SERVICE, 'onConferenceStatusUpdatedEvent', []);
         });
     }
-    /** @deprecated */
+    /** @deprecated Use join() instead. */
     startConference(conferenceId, participants) {
         const array = participants ? participants.map(e => e.json()) : null;
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'startConference', [conferenceId, array]);
         });
     }
-    /** @deprecated */
+    /** @deprecated Use leave() instead. */
     stopConference() {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'stopConference', []));
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'stopConference', []);
+        });
     }
-    /** @deprecated use connect instead */
+    /** @deprecated use connect instead. */
     openSession(userInfo) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'openSession', [userInfo.json()]);
         });
     }
-    /** @deprecated use disconnect instead */
+    /** @deprecated use disconnect instead. */
     closeSession() {
-        return new Promise((resolve, reject) => exec(resolve, reject, SERVICE, 'closeSession', []));
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'closeSession', []);
+        });
     }
-    //method to refresh tokens, used internally
+    /** Internal method used to refresh tokens. */
     onAccessTokenOk(accessToken) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'onAccessTokenOk', [accessToken]);
         });
     }
+    /** Internal method. */
     onAccessTokenKo(errorMessage) {
         return new Promise((resolve, reject) => {
             exec(resolve, reject, SERVICE, 'onAccessTokenKo', [errorMessage]);
@@ -220,5 +280,4 @@ class Voxeet_ {
     }
 }
 exports.Voxeet = new Voxeet_();
-//export default new Voxeet(); // will be available through Voxeet not voxeet -> fake 'singleton'
 //# sourceMappingURL=VoxeetSDK.js.map

@@ -1,11 +1,265 @@
 # Voxeet UXKit Cordova
 
-## SDK 3.0 License agreement
+## SDK License agreement
 
-Before using the latest version of the react-native plugin, please review and accept the [Dolby Software License Agreement](https://github.com/voxeet/voxeet-sdk-android/blob/main/LICENSE).
+Before using the UXKit for Cordova, please review and accept the [Dolby Software License Agreement](SDK_LICENSE.md).
 
-## Documentation
+## Installation
 
-A full documentation can be found here: https://dolby.io/developers/interactivity-apis/client-ux-kit/uxkit-voxeet-cordova.
+Before the installation, add the iOS and/or Android platforms to your Cordova application. Open a terminal in the `src-cordova` folder and run the following commands:
 
-© Voxeet, 2020
+```bash
+cordova platform add ios
+cordova platform add android
+```
+
+Install the UXKit for Cordova using the following command:
+
+```bash
+cordova plugin add cordova-plugin-voxeet
+```
+
+**Note:** in some cases, it is needed to initialize the SDK beforehand. Especially in cases when the plugin used by the application delays the `onDeviceReady` event. In this situation, install the UXKit for Cordova using this command:
+
+```bash
+cordova plugin add cordova-plugin-voxeet \
+    --variable VOXEET_CORDOVA_CONSUMER_KEY="consumerKey" \
+    --variable VOXEET_CORDOVA_CONSUMER_SECRET="consumerSecret"
+```
+
+> **Note:** Wait for the `deviceReady` event before you interact with the plugin.
+
+### Installation on iOS
+
+1. Make sure that the cordova platform add ios is in the project root folder.
+1. In Xcode, set the value of the ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES build settings to true.
+1. To enable VoIP notification, follow the [Swift UXKit guide](https://dolby.io/developers/interactivity-apis/client-ux-kit/uxkit-voxeet-swift).
+
+### Installation on Android
+
+Edit the `AndroidManifest.xml` file and put the following xml node in the :
+
+```xml
+<meta-data
+    android:name="voxeet_incoming_accepted_class"
+    android:value="fully.qualified.package.name.to.the.default.cordova.activity" />
+```
+
+To enable the push notifications in your Android application, add the following preference at the end of the `config.xml` file:
+
+```xml
+<widget>
+    <!-- Add this line at the end of the file -->
+    <preference name="VOXEET_CORDOVA_USE_PUSH" value="true" />
+</widget>
+```
+
+Previously given as an option, due to new mechanisms preventing standard behaviour, **Android Q** and later, needs the following modification done in the config.xml file. If this is not set, a caught-exception will be set in the logs.
+
+```xml
+<config-file parent="./application" target="AndroidManifest.xml">
+    <meta-data
+        android:name="voxeet_incoming_accepted_class"
+        android:value="fully.qualified.package.name.to.the.default.cordova.activity" />
+</config-file>
+```
+
+If this is not set, a caught-exception will be set in the logs.
+
+## Implementation
+
+After the installation, the project exports all the elements to integrate them into your application.
+
+Use the following code to have access the Voxeet singleton.
+
+```javascript
+const { Voxeet, UserInfo } = VoxeetSDK;
+```
+
+The `Voxeet` class is a singleton that enables interaction with the UXKit. The `UserInfo` class allows you to manipulate participants.
+
+### Initialization
+
+**Initialize the Voxeet UXKit with an Access Token**
+
+```javascript
+const tokenUrl = 'https://your-url/token';
+
+// Request the initial access token
+fetch(tokenUrl)
+    // Parse the response into a JSON object {"access_token": "value"}
+    .then(data => data.json())
+    .then(json => {
+        Voxeet.initializeToken(
+            // Initial access token
+            json.access_token,
+            // Callback to refresh the access token
+            () => fetch(tokenUrl)
+                .then(data => data.json().access_token)
+                .catch(err => {
+                    // There was an error
+                    console.log(err);
+                })
+        )
+        .then(() => {
+            // Initialization is OK
+        })
+        .catch(err => {
+            // There was an error
+            console.log(err);
+        });
+    })
+    .catch(err => {
+        // There was an error
+        console.log(err);
+    });
+```
+
+**Initialize the Voxeet UXKit using the Consumer Key and Consumer Secret**
+
+> **WARNING:** It is best practice to use the `Voxeet.initializeToken` function to initialize the SDK.  
+> Please read the documentation at:  
+> https://dolby.io/developers/interactivity-apis/client-sdk/initializing
+
+```javascript
+const consumerKey = "CONSUMER_KEY";
+const consumerSecret = "CONSUMER_SECRET";
+
+Voxeet.initialize(consumerKey, consumerSecret)
+    .then(() => {
+        // Initialization is ok
+    })
+    .catch(err => {
+        // There was an error
+        console.log(err);
+    });
+```
+
+**Connect a session**
+
+```javascript
+// Create a UserInfo object
+const avatarUrl = "https://gravatar.com/avatar/" + Math.floor(Math.random() * 1000000) + "?s=200&d=identicon";
+var user = new UserInfo("externalId", "Guest 01", avatarUrl);
+
+Voxeet.connect(user)
+    .then(() => {
+        // The session is connected
+    })
+    .catch(err => {
+        // There was an error
+        console.log(err);
+    });
+```
+
+**Disconnect a session**
+
+```javascript
+Voxeet.disconnect()
+    .then(() => {
+        // The session is disconnected
+    })
+    .catch(err => {
+        // There was an error
+        console.log(err);
+    });
+```
+
+**Create and join a conference**]
+
+```javascript
+// Create the conference 'conference_alias' with Dolby Voice on
+const createOptions = {
+    alias: 'conference_alias',
+    params: {
+        dolbyVoice: true
+    }
+};
+
+Voxeet.create(createOptions)
+    .then(conf => {
+        Voxeet.join(conf.conferenceId)
+            .then(() => {
+                // You've joined the conference
+            })
+            .catch(err => {
+                // There was an error
+                console.log(err);
+            });
+    })
+    .catch(err => {
+        // There was an error
+        console.log(err);
+    });
+```
+
+**Invite users to a conference**
+
+```javascript
+const user1 = new UserInfo("external_user_01", "Guest 01");
+const user2 = new UserInfo("external_user_02", "Guest 02");
+const user3 = new UserInfo("external_user_03", "Guest 03");
+
+Voxeet.invite(conferenceId, [user1, user2, user3])
+    .then(() => {
+        // The users have been invited
+    })
+    .catch(err => {
+        // There was an error
+        console.log(err);
+    });
+```
+
+**Leave the conference**
+
+```javascript
+Voxeet.leave()
+    .then(() => {
+        // You have left the conference
+    })
+    .catch(err => {
+        // There was an error
+        console.log(err);
+    });
+```
+
+**Broadcast a message**
+
+Send a message to the participants of the conference. The message can be a simple string or a json message.
+
+```javascript
+var message = "YOUR MESSAGE";
+
+// Example of a json message
+var obj = { action: "message", content: "Hello world" };
+var message = JSON.stringify(obj);
+
+Voxeet.sendBroadcastMessage(message)
+    .then(() => {
+        // The message was sent to the participants of the conference
+    })
+    .catch(err => {
+        // There was an error
+        console.log(err);
+    });
+```
+
+**Useful methods**
+
+To maximize or minimize a conference, use the `appearMaximized`. By default, the conference appears maximized. Change the value to false if you wish to minimize it.
+
+```javascript
+await Voxeet.appearMaximized(false);
+```
+
+To start a conference using a built-in receiver or a built-in receiver speaker, use the defaultBuiltInSpeaker (as in the example below). By default, the conference starts using a built-in receiver. Change the value to true if you wish to use built-in speaker.
+
+```javascript
+await Voxeet.defaultBuiltInSpeaker(true);
+```
+
+To enable a video, use the defaultVideo (as in the example below). By default, the conference starts without a video. Change the value to true if you wish to enable video conferencing.
+
+```javascript
+await Voxeet.defaultVideo(true);
+```
