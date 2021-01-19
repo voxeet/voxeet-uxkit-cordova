@@ -41,7 +41,7 @@
     "react-test-renderer": "16.2.0",
     "tslib": "^1.9.3",
     "typescript": "^2.5.2",
-    "eslint": "^3.19.0",
+    "eslint": "^7.11.0",
     "eslint-config-semistandard": "^11.0.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.3.0",
