@@ -22,6 +22,8 @@
 - (void)startVideo:(CDVInvokedUrlCommand *)command;
 - (void)stopVideo:(CDVInvokedUrlCommand *)command;
 - (void)switchCamera:(CDVInvokedUrlCommand *)command;
+- (void)minimize:(CDVInvokedUrlCommand *)command;
+- (void)maximize:(CDVInvokedUrlCommand *)command;
 
 /* MARK: Recording */
 

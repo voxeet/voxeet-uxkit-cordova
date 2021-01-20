@@ -464,6 +464,12 @@ public class VoxeetCordova extends CordovaPlugin {
                 case "stopRecording":
                     stopRecording(callbackContext);
                     break;
+                case "minimize":
+                    minimize(callbackContext);
+                    break;
+                case "maximize":
+                    maximize(callbackContext);
+                    break;
                 case "setAudio3DEnabled":
                     setAudio3DEnabled(args.getBoolean(0));
                     callbackContext.success();
@@ -956,6 +962,16 @@ public class VoxeetCordova extends CordovaPlugin {
                         cb.error("Error while stop recording");
                     }
                 }));
+    }
+
+    private void minimize(final CallbackContext cb) {
+        VoxeetToolkit.instance().getConferenceToolkit().minimize();
+        if (cb != null) cb.success();
+    }
+
+    private void maximize(final CallbackContext cb) {
+        VoxeetToolkit.instance().getConferenceToolkit().maximize();
+        if (cb != null) cb.success();
     }
 
     private void sendBroadcastMessage(final String message, final CallbackContext cb) {

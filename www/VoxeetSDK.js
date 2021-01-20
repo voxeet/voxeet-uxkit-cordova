@@ -211,6 +211,22 @@ class Voxeet_ {
         });
     }
     /**
+     * Minimize the overlay.
+     */
+    minimize() {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'minimize', []);
+        });
+    }
+    /**
+     * Maximize the overlay.
+     */
+    maximize() {
+        return new Promise((resolve, reject) => {
+            exec(resolve, reject, SERVICE, 'maximize', []);
+        });
+    }
+    /**
      * Activates or disable the screen auto lock. Android only.
      * @param activate True to activate the screen auto lock
      */
@@ -236,6 +252,10 @@ class Voxeet_ {
             exec(resolve, reject, SERVICE, 'checkForAwaitingConference', []);
         });
     }
+    /**
+     * Get notified when the conference status changes.
+     * @param callback function to call when the conference status changes.
+     */
     onConferenceStatusUpdatedEvent(callback) {
         return new Promise((resolve, reject) => {
             exec(callback, (err) => { }, SERVICE, 'onConferenceStatusUpdatedEvent', []);
