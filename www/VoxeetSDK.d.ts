@@ -121,6 +121,14 @@ declare class Voxeet_ {
      */
     stopRecording(): Promise<unknown>;
     /**
+     * Minimize the overlay.
+     */
+    minimize(): Promise<void>;
+    /**
+     * Maximize the overlay.
+     */
+    maximize(): Promise<void>;
+    /**
      * Activates or disable the screen auto lock. Android only.
      * @param activate True to activate the screen auto lock
      */
@@ -133,6 +141,10 @@ declare class Voxeet_ {
      * Checks if a conference is awaiting. Android only.
      */
     checkForAwaitingConference(): Promise<any>;
+    /**
+     * Get notified when the conference status changes.
+     * @param callback function to call when the conference status changes.
+     */
     onConferenceStatusUpdatedEvent(callback: ConferenceStatusUpdatedEventCallback): Promise<unknown>;
     /** @deprecated Use join() instead. */
     startConference(conferenceId: string, participants: Array<UserInfo>): Promise<any>;

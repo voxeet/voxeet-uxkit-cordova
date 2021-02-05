@@ -333,6 +333,21 @@
     });
 }
 
+
+- (void)minimize:(CDVInvokedUrlCommand *)command {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        VoxeetUXKit.shared.conferenceController.minimize();
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    });
+}
+
+- (void)maximize:(CDVInvokedUrlCommand *)command {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        VoxeetUXKit.shared.conferenceController.maximize();
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    });
+}
+
 /*
  *  MARK: Recording
  */
