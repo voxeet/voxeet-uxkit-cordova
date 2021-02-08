@@ -263,3 +263,9 @@ To enable a video, use the defaultVideo (as in the example below). By default, t
 ```javascript
 await Voxeet.defaultVideo(true);
 ```
+
+## Documentation
+
+A full documentation can be found here: https://dolby.io/developers/interactivity-apis/client-ux-kit/uxkit-voxeet-cordova.
+
+© Voxeet, 2021
