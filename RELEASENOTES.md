@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.4.7 (Feb 9th, 2021)
+- bump iOS UXKit to 1.4.1 for minimize/maximize methods
+
 ### 1.4.6 (Dec 15th, 2020)
 - bump iOS SDK to 3.0.3
 
