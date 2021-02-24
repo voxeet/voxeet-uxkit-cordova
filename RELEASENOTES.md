@@ -1,7 +1,20 @@
 # Release Notes
 
+### 1.4.7 (Feb 9th, 2021)
+- bump Android UXKit for minimize/maximize methods
+- bump iOS UXKit to 1.4.1 for minimize/maximize methods
+
+### 1.4.7-BETA2 (Dec, 16th, 2020)
+ - use UXKit's Contextual configuration for default speaker mode
+
 ### 1.4.6 (Dec 15th, 2020)
 - bump iOS SDK to 3.0.3
+
+### 1.4.6-BETA1 (Dec)
+- use UXKit Beta2
+- pre initialize SDK
+- fix media device empty list
+- improve video rendering (fix video distortion)
 
 ### 1.4.5 (Nov 30th, 2020)
 - bump Android SDK to 3.0.2

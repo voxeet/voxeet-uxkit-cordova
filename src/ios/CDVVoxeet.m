@@ -34,6 +34,9 @@
         _consumerSecret = consumerSecretPref;
         [self initializeWithConsumerKey:_consumerKey consumerSecret:_consumerSecret];
     }
+    
+    // Observers.
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(conferenceStatusUpdated:) name:@"VTConferenceStatusUpdated" object:nil];
 }
 
 - (void)initialize:(CDVInvokedUrlCommand *)command {
@@ -78,6 +81,10 @@
         
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)connect:(CDVInvokedUrlCommand *)command {
@@ -333,6 +340,20 @@
     });
 }
 
+- (void)minimize:(CDVInvokedUrlCommand *)command {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [VoxeetUXKit.shared.conferenceController minimize];
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    });
+}
+
+- (void)maximize:(CDVInvokedUrlCommand *)command {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [VoxeetUXKit.shared.conferenceController maximize];
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+    });
+}
+
 /*
  *  MARK: Recording
  */
@@ -347,7 +368,6 @@
             }
         }];
     });
-    
 }
 
 - (void)stopRecording:(CDVInvokedUrlCommand *)command {
@@ -401,6 +421,14 @@
 
 - (void)checkForAwaitingConference:(CDVInvokedUrlCommand *)command { /* Android compatibility */
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+}
+
+/*
+ *  MARK: Observers
+ */
+
+- (void)conferenceStatusUpdated:(NSNotification *)notification {
+//    NSNumber *status = notification.userInfo[@"status"];
 }
 
 /*

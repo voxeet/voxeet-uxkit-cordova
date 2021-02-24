@@ -18,7 +18,7 @@ module.exports = function(context) {
     // Waiting for Carthage / Xcode 12 fix
     // exec(`carthage update --platform ios --project-directory ${dir}/src/ios`, exec_callback);
     // Temporary fix
-    console.log("INSTALL CARTHAGE DEPENDENCIES WITH PATCH");
+    console.log("Installing Carthage dependencies... (this operation can take few minutes)");
     exec(`chmod +x ${dir}/carthage.sh`);
     exec(`${dir}/carthage.sh update --platform ios --no-use-binaries --project-directory ${dir}/src/ios`, exec_callback);
   } else {
