@@ -7,8 +7,6 @@ import android.util.Log;
 import com.voxeet.VoxeetSDK;
 import com.voxeet.promise.Promise;
 import com.voxeet.promise.solve.ThenVoid;
-import com.voxeet.sdk.services.ConferenceService;
-import com.voxeet.sdk.services.MediaDeviceService;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -62,48 +60,21 @@ public class VoxeetMediaCordova extends CordovaPlugin {
     }
 
     private void startVideo(final boolean front, final CallbackContext cb) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                ConferenceService service = VoxeetSDK.conference();
-                if (null == service) {
-                    cb.error("NOT INITIALIZED");
-                    return;
-                }
-                service.startVideo(front)
-                        .then((ThenVoid<Boolean>) (result) -> cb.success())
-                        .error(error -> cb.error("Error while starting video"));
-            }
-        });
+        mHandler.post(() -> VoxeetSDK.conference().startVideo(front)
+                .then((ThenVoid<Boolean>) (result) -> cb.success())
+                .error(error -> cb.error("Error while starting video")));
     }
 
     private void stopVideo(final CallbackContext cb) {
-        mHandler.post(() -> {
-            ConferenceService service = VoxeetSDK.conference();
-            if (null == service) {
-                cb.error("NOT INITIALIZED");
-                return;
-            }
-            service.stopVideo()
-                    .then((ThenVoid<Boolean>) (result) -> cb.success())
-                    .error(error -> cb.error("Error while stopping video"));
-        });
+        mHandler.post(() -> VoxeetSDK.conference().stopVideo()
+                .then((ThenVoid<Boolean>) (result) -> cb.success())
+                .error(error -> cb.error("Error while stopping video")));
     }
 
     private void switchCamera(final CallbackContext cb) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                MediaDeviceService service = VoxeetSDK.mediaDevice();
-                if (null == service) {
-                    cb.error("NOT INITIALIZED");
-                    return;
-                }
-                service.switchCamera()
-                        .then((ThenVoid<Boolean>) (result) -> cb.success())
-                        .error(error -> cb.error("Error while switching camera"));
-            }
-        });
+        mHandler.post(() -> VoxeetSDK.mediaDevice().switchCamera()
+                .then((ThenVoid<Boolean>) (result) -> cb.success())
+                .error(error -> cb.error("Error while switching camera")));
     }
 
     /*

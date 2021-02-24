@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import com.voxeet.VoxeetSDK;
 import com.voxeet.sdk.events.sdk.ConferenceStatusUpdatedEvent;
 import com.voxeet.sdk.json.ConferenceDestroyedPush;
-import com.voxeet.sdk.services.SessionService;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
 import com.voxeet.uxkit.controllers.VoxeetToolkit;
@@ -53,7 +52,7 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
 
         if (!CordovaIncomingCallActivity.class.equals(activity.getClass())) {
 
-            if (null != VoxeetSDK.instance() && !EventBus.getDefault().isRegistered(this)) {
+            if (!EventBus.getDefault().isRegistered(this)) {
                 VoxeetSDK.instance().register(this);
             }
 
@@ -63,8 +62,7 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
 
             CordovaIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
             if (null != checker && checker.isBundleValid()) {
-                SessionService session = VoxeetSDK.session();
-                if (null != session && session.isSocketOpen()) {
+                if (VoxeetSDK.session().isSocketOpen()) {
                     checker.onAccept();
                     CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                 }
@@ -79,7 +77,7 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
     }
 
     @Override
-    public void onActivityPaused(Activity activity) {
+    public void onActivityPaused(@NonNull Activity activity) {
         super.onActivityPaused(activity);
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);

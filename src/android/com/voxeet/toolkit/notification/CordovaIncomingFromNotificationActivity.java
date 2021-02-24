@@ -108,7 +108,7 @@ public class CordovaIncomingFromNotificationActivity extends AppCompatActivity i
 
 
     private boolean canDirectlyUseJoin() {
-        return null != VoxeetSDK.session() && null != VoxeetPreferences.getSavedUserInfo() && Validate.hasMicrophonePermissions(this);
+        return VoxeetSDK.instance().isInitialized() && null != VoxeetPreferences.getSavedUserInfo() && Validate.hasMicrophonePermissions(this);
     }
 
     @Nullable

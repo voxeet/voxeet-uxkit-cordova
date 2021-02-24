@@ -39,7 +39,7 @@ public class RNBundleChecker extends IncomingBundleChecker {
             final Promise<Boolean> decline = conferenceService.decline(getConferenceId());
             //only when error() is called
 
-            if (null != service && !service.isSocketOpen()) {
+            if (!service.isSocketOpen()) {
                 ParticipantInfo userInfo = VoxeetPreferences.getSavedUserInfo();
 
                 if (null != userInfo) {
