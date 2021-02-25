@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.4.8 (Feb 25th, 2021)
+- Hotfix Android version issue not matching the expected UXKit's version
+
 ### 1.4.7 (Feb 9th, 2021)
 - bump Android UXKit for minimize/maximize methods
 - bump iOS UXKit to 1.4.1 for minimize/maximize methods
