@@ -1,19 +1,20 @@
 package com.voxeet.toolkit;
 
+import android.support.annotation.Nullable;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
-import com.voxeet.sdk.core.VoxeetEnvironmentHolder;
-import com.voxeet.sdk.core.preferences.VoxeetPreferences;
-import com.voxeet.toolkit.controllers.VoxeetToolkit;
-import com.voxeet.toolkit.implementation.overlays.OverlayState;
-import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
+import com.voxeet.sdk.preferences.VoxeetPreferences;
+import com.voxeet.sdk.utils.VoxeetEnvironmentHolder;
+import com.voxeet.uxkit.controllers.VoxeetToolkit;
+import com.voxeet.uxkit.implementation.overlays.OverlayState;
 
 import org.greenrobot.eventbus.EventBus;
 
 public class VoxeetApplication extends MultiDexApplication {
 
-    private CordovaRootViewProvider mCordovaRootViewProvider;
+    @Nullable
+    public static CordovaRootViewProvider ROOT_VIEW_PROVIDER;
 
     @Override
     public void onCreate() {
@@ -22,19 +23,19 @@ public class VoxeetApplication extends MultiDexApplication {
         Log.d("VoxeetApplication", "onCreate called");
         VoxeetToolkit.initialize(this, EventBus.getDefault());
 
-        mCordovaRootViewProvider = new CordovaRootViewProvider(this, VoxeetToolkit.getInstance());
-        VoxeetToolkit.getInstance().setProvider(mCordovaRootViewProvider);
+        ROOT_VIEW_PROVIDER = new CordovaRootViewProvider(this, VoxeetToolkit.instance());
+        VoxeetToolkit.instance().setProvider(ROOT_VIEW_PROVIDER);
 
-        VoxeetToolkit.getInstance().enableOverlay(true);
+        VoxeetToolkit.instance().enableOverlay(true);
 
-        //force a default voxeet preferences manager
-        //in sdk mode, no issues
+        // force a default voxeet preferences manager
+        // in sdk mode, no issues
         VoxeetPreferences.init(this, new VoxeetEnvironmentHolder(this));
-        //deprecated but we can only use it using the cordova plugin - for now
-        VoxeetPreferences.setDefaultActivity(CordovaIncomingCallActivity.class.getCanonicalName());
 
-        //change the overlay used by default
-        VoxeetToolkit.getInstance().getConferenceToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
-        VoxeetToolkit.getInstance().getReplayMessageToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
+        VoxeetCordova.initNotificationCenter();
+
+        // change the overlay used by default
+        VoxeetToolkit.instance().getConferenceToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
+        VoxeetToolkit.instance().getReplayMessageToolkit().setDefaultOverlayState(OverlayState.EXPANDED);
     }
 }

@@ -8,16 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
-import com.voxeet.sdk.factories.VoxeetIntentFactory;
+import com.voxeet.sdk.push.center.management.Constants;
 import com.voxeet.sdk.utils.AndroidManifest;
-
-/**
- * Created by kevinleperf on 26/11/2018.
- */
 
 public class CallUtils {
     public final static String BUNDLE_EXTRA_BUNDLE = "BUNDLE_EXTRA_BUNDLE";
-    public final static String METADATA_CALL_ACCEPTED_OR_DECLINED = "rn_voxeet_incoming_call_accepted_or_declined";
+    public final static String METADATA_CALL_ACCEPTED_OR_DECLINED = "voxeet_incoming_accepted_class";
 
     @Nullable
     public static Class createClassToCall(@NonNull Context context) {
@@ -43,7 +39,6 @@ public class CallUtils {
 
     public static void addFlags(Intent intent) {
         intent.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         );
@@ -72,11 +67,11 @@ public class CallUtils {
 
         intent.putExtra(BUNDLE_EXTRA_BUNDLE, extraBundle);
 
-        intent.putExtra(VoxeetIntentFactory.CONF_ID, conferenceId)
-                .putExtra(VoxeetIntentFactory.INVITER_NAME, userName)
-                .putExtra(VoxeetIntentFactory.INVITER_ID, userId)
-                .putExtra(VoxeetIntentFactory.INVITER_EXTERNAL_ID, externalUserId)
-                .putExtra(VoxeetIntentFactory.INVITER_URL, avatarUrl);
+        intent.putExtra(Constants.CONF_ID, conferenceId)
+                .putExtra(Constants.INVITER_NAME, userName)
+                .putExtra(Constants.INVITER_ID, userId)
+                .putExtra(Constants.INVITER_EXTERNAL_ID, externalUserId)
+                .putExtra(Constants.INVITER_URL, avatarUrl);
 
         //deprecated
         intent.putExtra("join", isAccepted);

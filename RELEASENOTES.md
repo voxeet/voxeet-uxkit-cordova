@@ -1,5 +1,201 @@
 # Release Notes
 
+### 1.4.7 (Feb 9th, 2021)
+- bump Android UXKit for minimize/maximize methods
+- bump iOS UXKit to 1.4.1 for minimize/maximize methods
+
+### 1.4.7-BETA2 (Dec, 16th, 2020)
+ - use UXKit's Contextual configuration for default speaker mode
+
+### 1.4.6 (Dec 15th, 2020)
+- bump iOS SDK to 3.0.3
+
+### 1.4.6-BETA1 (Dec)
+- use UXKit Beta2
+- pre initialize SDK
+- fix media device empty list
+- improve video rendering (fix video distortion)
+
+### 1.4.5 (Nov 30th, 2020)
+- bump Android SDK to 3.0.2
+
+### 1.4.4 (Nov 30th, 2020)
+- bump iOS SDK to 3.0.2
+
+### 1.4.3 (Nov 18th, 2020)
+- Android, remove code forcing use of incoming call activity even in Android 10+ (Non disturbing mode)
+
+### 1.4.2 (Nov 16th, 2020)
+- bump iOS SDK to 3.0.1 to support Swift 5.3.1
+
+### 1.4.1 (Nov 12th, 2020)
+- reimplement listener mode on iOS
+
+### 1.4.0 (Nov 3rd, 2020)
+- update Android's SDK to 3.0.0
+- various fixes added via the UXKit 3.0.0
+- Android notifications are now using overhead
+
+### 1.3.35 (Oct 29th, 2020)
+- copy Carthage temporary script
+
+### 1.3.34 (Oct 29th, 2020)
+- bump iOS SDK to 3.0.0
+
+### 1.3.33 (Oct 13th, 2020)
+- bump iOS SDK to 2.4.1 to support Swift 5.3
+
+### 1.3.32 (June 23rd, 2020)
+- Android & iOS, integrate 2.4.0
+
+### 1.3.31 (May 25th, 2020)
+- bump iOS SDK to 2.3.1 to support Swift 5.2.4
+
+### 1.3.30 (May 18th, 2020)
+- Android use of the 2.3.1 native SDK
+
+### 1.3.29 (May 13th, 2020)
+- iOS, implement new screen share broadcasting feature
+
+### 1.3.28 (April 17th, 2020)
+- bump iOS SDK to 2.2.1 to support Swift 5.2.2
+
+### 1.3.27 (March 31th, 2020)
+- Android use of the 2.2.0 SDK
+- fix with creation and join's issues where network calls could prevent message forwarding
+- less verbose logs for production envs
+
+### 1.3.26 (March 30th, 2020)
+- implement new iOS classes for CallKit 
+
+### 1.3.25 (March 30th, 2020)
+- bump iOS SDK to 2.2.0
+
+### 1.3.24 (March 26th, 2020)
+- bump iOS SDK to 2.1.1 to support Swift 5.2
+
+### 1.3.23 (March 11th, 2020)
+- Fix crash in toolkit pre-initialization
+
+### 1.3.22 (March 3rd, 2020)
+- bump iOS SDK to 2.1.0
+
+### 1.3.21 (March 3rd, 2020)
+- inject Android sound management
+
+### 1.3.20 (February 12th, 2020)
+- bump iOS SDK to 2.0.0
+
+### 1.3.18 (December 20th, 2019)
+- missing elements for media and keyguard
+
+### 1.3.17 (December 17th, 2019)
+- use Carthage binary instead of github for VoxeetSDK dependency
+
+### 1.3.16 (December 12th, 2019)
+- remove remaining Firebase's service following deprecation 
+
+### 1.3.15 (December 12th, 2019)
+- bump iOS SDK to 1.4.9 to support Swift 5.1.3
+
+### 1.3.14 (December 11th, 2019)
+- use Android sdk version with 1.8 support
+- CordovaFirebaseMessagingService is now a dummy service for compat wit failed install (refer to auto )
+- set blacklist of Android 10 for fullscreen notification
+- Voice mode release will not take over the media but will still switch to media mode
+- add Nexus 7 support
+- add hisi codec support
+
+### 1.3.13 (November 24th, 2019)
+- Android's media library with embedded native library
+- Android's main SDK and toolkit upgrade
+- use of toolkit-firebase instead of previous push library when push notification are enabled
+
+### 1.3.12 (November 19th, 2019)
+- bump iOS SDK to 1.4.8 to support Swift 5.1.2
+- Android, remove dismiss keyguard on incoming calls
+- add 1.3.13 as well (file movement)
+
+### 1.3.11 (October 30th, 2019)
+- if the current app is opened on Android 10, start the incoming call
+
+### 1.3.10 (October 29~30th, 2019)
+- update notification management with proxy (for now)
+- 1.3.9 should not be used (issue with the package)
+
+### 1.3.8 (October 28th, 2019)
+- use sdk and uxkit embedding new push center management
+
+### 1.3.7 (October 24th, 2019)
+- Android, mic permission of accept calls
+- Improve events forwarding onto proper element
+- add INTERACT_ACROSS_USERS permission following evolution into new Samsung's Android 8 build (breaking change from old INTERACT_ACROSS_USERS_FULL prior to those builds)
+
+### 1.3.6 (October 23th, 2019)
+- Android, improved incoming call for metadata + parameters conjunction
+
+### 1.3.5 (October 21th, 2019)
+- Android, accept incoming calls for empty avatar urls
+
+### 1.3.4 (October 18th, 2019)
+- Android, improve initialize with possibility of statically init the SDK before hand
+
+### 1.3.3 (October 18th, 2019)
+- Android, on accepted incoming call, if the sdk is already initialized and an user was known, also connect the call
+
+### 1.3.2 (October 17th, 2019)
+- Android, use suggested google play services built in
+- renaming of the stream method into music for more context and accuracy
+- replace possible unaccurate and mixed state of the onResume/onPause for call/music discrepancy
+
+### 1.3.1 (October 17th, 2019)
+- copy intercom way of using config.xml inside build.gradle
+
+### 1.3 (October 16th, 2019)
+- plugin variable properly used to initialize the SDK on Cordova's warmup
+
+### 1.2.18 (October 16th, 2019)
+- Protect iOS initialize method to handle both config.xml and js init at the same time
+
+### 1.2.17 (October 16th, 2019)
+- Android & iOS, use initialize with onload
+
+### 1.2.16 (October 14th, 2019)
+- iOS, bump version and dependencies
+
+### 1.2.15 (October 8th, 2019)
+- iOS, crash fixed in stop video for iOS 13
+- Android use improved internal SDK revision with light support
+- Android, less push configuration required (favor of metadata only)
+- Android, multiple init won't collide and reject promise (similar to iOS behaviour)
+
+### 1.2.16 (October 14th, 2019)
+- bump iOS Voxeet SDKs to fix crash issues
+
+### 1.2.15 (October 8th, 2019)
+- use updated sdk (video stream etc...)/register event for push in invite
+
+### 1.2.14 (October 1st, 2019)
+- bump iOS Voxeet SDKs for Swift 5.1
+
+### 1.2.13 (September 17th, 2019)
+  - bump revision to reflect unsent service file for Android
+
+### 1.2.12 (September 11th, 2019)
+  - Android, add plugin.xml info such as standard push notification helper
+  - add as well default messaging service
+
+### 1.2.11 (August 22th, 2019)
+  - reset the script to be used in the uploaded package
+
+### 1.2.10 (August 22th, 2019)
+  - iOS install script releasing hold on promise
+  - set the shell script in the uploaded package for quick retro compat
+
+### 1.2.9 (August 21th, 2019)
+  - Android, updated SDK to reflect fix for push notification not internally propagated
+  - Android, change Cordova's implementation according to the new SDK version
+
 ### 1.2.0 (May 21th, 2019)
   - lock ios versions
   - add getter for audio and telecom mode

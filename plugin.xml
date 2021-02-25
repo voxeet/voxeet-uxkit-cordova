@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Voxeet ConferenceKit Cordova
-  Copyright (C) 2018
+  VoxeetUXKit Cordova
+  Copyright (C) 2020
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
       id="cordova-plugin-voxeet"
-      version="1.2.6">
+      version="1.4.7">
     <name>Voxeet</name>
     <description>Cordova Voxeet Plugin</description>
     <license>Apache 2.0 License</license>
     <keywords>cordova,voxeet</keywords>
-    <repo>https://github.com/voxeet/voxeet-cordova-conferencekit.git</repo>
-    <issue>https://github.com/voxeet/voxeet-cordova-conferencekit/issues</issue>
+    <repo>https://github.com/voxeet/voxeet-uxkit-cordova.git</repo>
+    <issue>https://github.com/voxeet/voxeet-uxkit-cordova/issues</issue>
 
     <js-module src="www/VoxeetSDK.js" name="VoxeetSDK">
         <clobbers target="VoxeetSDK" />
@@ -34,9 +34,12 @@
         <clobbers target="VoxeetMedia" />
     </js-module>
 
-    <js-module src="www/UserInfo.js" name="UserInfo">
+    <js-module src="www/types/UserInfo.js" name="UserInfo">
         <clobbers target="UserInfo" />
     </js-module>
+
+    <preference name="VOXEET_CORDOVA_CONSUMER_KEY" default="null" />
+    <preference name="VOXEET_CORDOVA_CONSUMER_SECRET" default="null" />
 
     <!-- android -->
     <platform name="android">
@@ -45,27 +48,42 @@
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
             <uses-permission android:name="android.permission.WAKE_LOCK" />
             <uses-permission android:name="android.permission.BLUETOOTH" />
+            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
             <uses-permission android:name="android.permission.RECORD_AUDIO" />
             <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
+            <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" />
             <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
             <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
             <uses-permission android:name="android.permission.READ_PHONE_STATE" />
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
             <uses-permission android:name="android.permission.CAMERA" />
+            <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+            <permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+            <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <activity android:label="Incoming Call" android:name="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            <activity android:label="Incoming Call" android:name="com.voxeet.toolkit.notification.CordovaIncomingFromNotificationActivity" android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            
+            <meta-data
+                android:name="voxeet_incoming_class"
+                android:value="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" />
+        </config-file>
+        <config-file target="res/values/strings.xml" parent="/resources">
+            <string name="voxeet_consumer_key">$VOXEET_CORDOVA_CONSUMER_KEY</string>
+            <string name="voxeet_consumer_secret">$VOXEET_CORDOVA_CONSUMER_SECRET</string>
         </config-file>
 
         <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="Voxeet" >
-                <param name="android-package" value="com.voxeet.toolkit.VoxeetCordova"/>
+                <param name="android-package" value="com.voxeet.toolkit.VoxeetCordova" />
+                <param name="onload" value="true" />
             </feature>
             <feature name="VoxeetMedia" >
-                <param name="android-package" value="com.voxeet.toolkit.VoxeetMediaCordova"/>
+                <param name="android-package" value="com.voxeet.toolkit.VoxeetMediaCordova" />
             </feature>
         </config-file>
 
@@ -73,6 +91,9 @@
         <source-file src="src/android/com/voxeet/toolkit/VoxeetCordova.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/VoxeetMediaCordova.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/CordovaRootViewProvider.java" target-dir="src/com/voxeet/toolkit" />
+
+        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingFromNotificationActivity.java" target-dir="src/com/voxeet/toolkit/notification" />
+        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingNotification.java" target-dir="src/com/voxeet/toolkit/notification" />
 
         <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingBundleChecker.java" target-dir="src/com/voxeet/toolkit/notification" />
         <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingCallActivity.java" target-dir="src/com/voxeet/toolkit/notification" />
@@ -84,11 +105,12 @@
 
     <!-- ios -->
     <platform name="ios">
-        <hook type="before_plugin_install" src="build_ios_frameworks.sh"/>
+        <hook type="before_plugin_install" src="build_ios_frameworks.js" />
 
         <config-file target="config.xml" parent="/*">
             <feature name="Voxeet">
                 <param name="ios-package" value="CDVVoxeet" />
+                <param name="onload" value="true" />
             </feature>
             <feature name="VoxeetMedia">
                 <param name="ios-package" value="CDVVoxeet" />
@@ -101,20 +123,26 @@
                 <string>voip</string>
             </array>
         </config-file>
-
         <config-file platform="ios" target="*-Info.plist" parent="NSMicrophoneUsageDescription">
             <string>Microphone permission is needed</string>
         </config-file>
         <config-file platform="ios" target="*-Info.plist" parent="NSCameraUsageDescription">
             <string>Camera permission is needed</string>
         </config-file>
+        <config-file platform="ios" target="*-Info.plist" parent="VOXEET_CORDOVA_CONSUMER_KEY">
+            <string>$VOXEET_CORDOVA_CONSUMER_KEY</string>
+        </config-file>
+        <config-file platform="ios" target="*-Info.plist" parent="VOXEET_CORDOVA_CONSUMER_SECRET">
+            <string>$VOXEET_CORDOVA_CONSUMER_SECRET</string>
+        </config-file>
 
         <header-file src="src/ios/CDVVoxeet.h" />
         <source-file src="src/ios/CDVVoxeet.m" />
 
-        <framework src="src/ios/Carthage/Build/iOS/VoxeetConferenceKit.framework" custom="true" embed="true"/>
-        <framework src="src/ios/Carthage/Build/iOS/VoxeetSDK.framework" custom="true" embed="true"/>
-        <framework src="src/ios/Carthage/Build/iOS/WebRTC.framework" custom="true" embed="true"/>
-        <framework src="src/ios/Carthage/Build/iOS/Kingfisher.framework" custom="true" embed="true"/>
+        <framework src="src/ios/Carthage/Build/iOS/VoxeetUXKit.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/iOS/VoxeetSDK.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/iOS/WebRTC.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/iOS/SDWebImage.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/iOS/dvclient.framework" custom="true" embed="true" />
     </platform>
 </plugin>

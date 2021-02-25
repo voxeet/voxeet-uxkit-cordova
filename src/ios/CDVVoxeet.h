@@ -4,15 +4,12 @@
 
 - (void)initialize:(CDVInvokedUrlCommand *)command;
 - (void)initializeToken:(CDVInvokedUrlCommand *)command;
-- (void)refreshAccessTokenCallback:(CDVInvokedUrlCommand *)command;
-- (void)onAccessTokenOk:(CDVInvokedUrlCommand *)command;
-- (void)onAccessTokenKo:(CDVInvokedUrlCommand *)command;
 - (void)connect:(CDVInvokedUrlCommand *)command;
 - (void)disconnect:(CDVInvokedUrlCommand *)command;
 - (void)create:(CDVInvokedUrlCommand *)command;
 - (void)join:(CDVInvokedUrlCommand *)command;
-- (void)invite:(CDVInvokedUrlCommand *)command;
 - (void)leave:(CDVInvokedUrlCommand *)command;
+- (void)invite:(CDVInvokedUrlCommand *)command;
 - (void)sendBroadcastMessage:(CDVInvokedUrlCommand *)command;
 - (void)appearMaximized:(CDVInvokedUrlCommand *)command;
 - (void)setUIConfiguration:(CDVInvokedUrlCommand *)command;
@@ -25,14 +22,32 @@
 - (void)startVideo:(CDVInvokedUrlCommand *)command;
 - (void)stopVideo:(CDVInvokedUrlCommand *)command;
 - (void)switchCamera:(CDVInvokedUrlCommand *)command;
+- (void)minimize:(CDVInvokedUrlCommand *)command;
+- (void)maximize:(CDVInvokedUrlCommand *)command;
+
+/* MARK: Recording */
+
+- (void)startRecording:(CDVInvokedUrlCommand *)command;
+- (void)stopRecording:(CDVInvokedUrlCommand *)command;
+
+/* MARK: Oauth2 helpers */
+
+- (void)refreshAccessTokenCallback:(CDVInvokedUrlCommand *)command;
+- (void)onAccessTokenOk:(CDVInvokedUrlCommand *)command;
+- (void)onAccessTokenKo:(CDVInvokedUrlCommand *)command;
+
+/* MARK: Android compatibility methods */
+
+- (void)broadcast:(CDVInvokedUrlCommand *)command;
 - (void)screenAutoLock:(CDVInvokedUrlCommand *)command;
 - (void)isUserLoggedIn:(CDVInvokedUrlCommand *)command;
 - (void)checkForAwaitingConference:(CDVInvokedUrlCommand *)command;
+
+/* MARK: Deprecated methods */
+
 - (void)startConference:(CDVInvokedUrlCommand *)command;
 - (void)stopConference:(CDVInvokedUrlCommand *)command;
 - (void)openSession:(CDVInvokedUrlCommand *)command;
 - (void)closeSession:(CDVInvokedUrlCommand *)command;
-- (void)startRecording:(CDVInvokedUrlCommand *)command;
-- (void)stopRecording:(CDVInvokedUrlCommand *)command;
 
 @end
