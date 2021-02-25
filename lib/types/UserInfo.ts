@@ -1,4 +1,4 @@
-export default class UserInfo {
+export class UserInfo {
 
     public name: string;
     public externalId: string;
@@ -17,5 +17,7 @@ export default class UserInfo {
             avatarUrl: this.avatarUrl
         };
     }
-    
 }
+
+//@deprecated we will use a non default form in the future
+export default UserInfo;

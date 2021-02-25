@@ -1,4 +1,4 @@
-export default class VoxeetMedia {
+export declare class VoxeetMedia {
     constructor();
     /**
      * Starts the video.

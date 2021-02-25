@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-voxeet",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "description": "Cordova Voxeet Plugin",
   "cordova": {
     "id": "cordova-plugin-voxeet",
@@ -36,7 +36,7 @@
     "cordova": ">=7.0.0"
   },
   "devDependencies": {
-    "@types/node": "^14.14.20",
+    "@types/node": "^14.14.31",
     "eslint": "^3.19.0",
     "eslint-config-semistandard": "^11.0.0",
     "eslint-config-standard": "^10.2.1",
@@ -47,5 +47,18 @@
     "jshint": "^2.6.0",
     "tslib": "^1.9.3",
     "typescript": "^2.5.2"
-  }
+  },
+  "files": [
+    "package.json",
+    "build_ios_frameworks.js",
+    "build_ios_framework.sh",
+    "www/",
+    "carthage.sh",
+    "voxeet_application.js",
+    "README.md",
+    "plugin.xml",
+    "RELEASENOTES.md",
+    "SAMPLE_ANDROID.md",
+    "NOTICE"
+  ]
 }

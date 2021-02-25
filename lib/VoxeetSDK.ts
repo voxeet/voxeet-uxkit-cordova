@@ -4,6 +4,8 @@ import { default as Configuration } from "./types/Configurations";
 import { CreateOptions, CreateResult } from './types/CreateConference';
 import { JoinOptions } from './types/JoinConference';
 
+export * from "./types";
+
 /**
  * This class enable interaction with VoxeetUXKit
  */

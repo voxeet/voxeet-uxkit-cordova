@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserInfo = void 0;
 class UserInfo {
     constructor(externalId, name, avatarUrl) {
         this.name = name;
@@ -14,5 +15,7 @@ class UserInfo {
         };
     }
 }
+exports.UserInfo = UserInfo;
+//@deprecated we will use a non default form in the future
 exports.default = UserInfo;
 //# sourceMappingURL=UserInfo.js.map

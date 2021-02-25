@@ -1,10 +1,13 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Voxeet = void 0;
-const VoxeetMedia_1 = __importDefault(require("./VoxeetMedia"));
+exports.Voxeet = exports.UserInfo = exports.UserType = exports.VoxeetMedia = void 0;
+var VoxeetMedia_1 = require("./VoxeetMedia");
+Object.defineProperty(exports, "VoxeetMedia", { enumerable: true, get: function () { return VoxeetMedia_1.VoxeetMedia; } });
+var JoinConference_1 = require("./types/JoinConference");
+Object.defineProperty(exports, "UserType", { enumerable: true, get: function () { return JoinConference_1.UserType; } });
+var types_1 = require("./types");
+Object.defineProperty(exports, "UserInfo", { enumerable: true, get: function () { return types_1.UserInfo; } });
+const VoxeetMedia_2 = require("./VoxeetMedia");
 /**
  * This class enable interaction with VoxeetUXKit
  */
@@ -13,7 +16,7 @@ const SERVICE = 'Voxeet';
 class Voxeet_ {
     constructor() {
         this.refreshAccessTokenCallback = null;
-        this.VoxeetMedia = new VoxeetMedia_1.default();
+        this.VoxeetMedia = new VoxeetMedia_2.VoxeetMedia();
         this.refreshAccessTokenCallback = () => {
             this.refreshToken && this.refreshToken()
                 .then(accessToken => this.onAccessTokenOk(accessToken))
@@ -300,4 +303,5 @@ class Voxeet_ {
     }
 }
 exports.Voxeet = new Voxeet_();
+exports.default = exports.Voxeet;
 //# sourceMappingURL=VoxeetSDK.js.map

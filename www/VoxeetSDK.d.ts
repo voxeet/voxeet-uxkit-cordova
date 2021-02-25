@@ -1,8 +1,11 @@
-import VoxeetMedia from "./VoxeetMedia";
-import UserInfo from "./types/UserInfo";
-import { default as Configuration } from "./types/Configurations";
+export { VoxeetMedia } from "./VoxeetMedia";
+export { CreateOptions, CreateResult } from './types/CreateConference';
+export { JoinOptions, JoinUserInfo, UserType } from './types/JoinConference';
+export { UserInfo, Configuration } from "./types";
+import { VoxeetMedia } from "./VoxeetMedia";
 import { CreateOptions, CreateResult } from './types/CreateConference';
 import { JoinOptions } from './types/JoinConference';
+import { UserInfo, Configuration } from "./types";
 export interface RefreshCallback {
     (): void;
 }
@@ -160,4 +163,4 @@ declare class Voxeet_ {
     onAccessTokenKo(errorMessage: string): Promise<unknown>;
 }
 export declare const Voxeet: Voxeet_;
-export {};
+export default Voxeet;

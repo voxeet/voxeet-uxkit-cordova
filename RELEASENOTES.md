@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.4.9 (Feb 25th, 2021)
+- delivery rework to include npm-centric bundle management
+
 ### 1.4.8 (Feb 25th, 2021)
 - Hotfix Android version issue not matching the expected UXKit's version
 

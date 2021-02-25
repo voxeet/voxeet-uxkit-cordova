@@ -1,4 +1,4 @@
-export default class UserInfo {
+export declare class UserInfo {
     name: string;
     externalId: string;
     avatarUrl: string | undefined;
@@ -9,3 +9,4 @@ export default class UserInfo {
         avatarUrl: string | undefined;
     };
 }
+export default UserInfo;
