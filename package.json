@@ -27,8 +27,8 @@
   "scripts": {
     "test": "npm run eslint",
     "eslint": "node node_modules/eslint/bin/eslint www && node node_modules/eslint/bin/eslint src && node node_modules/eslint/bin/eslint tests",
-    "build-library": "./buildProject.sh && Echo Build completed!",
-    "publish-library": "npm run build-library && cd build/dist && npm publish && echo Package published!"
+    "build-library": "rm -rf www ; tsc ; echo Build completed!",
+    "publish-library": "npm run build-library && npm publish && echo Package published!"
   },
   "author": "Voxeet",
   "license": "MIT",
@@ -52,6 +52,7 @@
     "package.json",
     "build_ios_frameworks.js",
     "build_ios_framework.sh",
+    "src/",
     "www/",
     "carthage.sh",
     "voxeet_application.js",

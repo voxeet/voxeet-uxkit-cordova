@@ -1,10 +1,12 @@
-import VoxeetMedia from "./VoxeetMedia";
-import UserInfo from "./types/UserInfo";
-import { default as Configuration } from "./types/Configurations";
-import { CreateOptions, CreateResult } from './types/CreateConference';
-import { JoinOptions } from './types/JoinConference';
+export { VoxeetMedia }  from "./VoxeetMedia";
+export { CreateOptions, CreateResult } from './types/CreateConference';
+export { JoinOptions, JoinUserInfo, UserType } from './types/JoinConference';
+export { UserInfo, Configuration} from "./types";
 
-export * from "./types";
+import { VoxeetMedia } from "./VoxeetMedia";
+import { CreateOptions, CreateResult } from './types/CreateConference';
+import { JoinOptions, JoinUserInfo, UserType } from './types/JoinConference';
+import { UserInfo, Configuration} from "./types";
 
 /**
  * This class enable interaction with VoxeetUXKit
@@ -359,3 +361,5 @@ class Voxeet_ {
 }
 
 export const Voxeet = new Voxeet_();
+
+export default Voxeet;
