@@ -73,10 +73,10 @@ After the installation, the project exports all the elements to integrate them i
 Use the following code to have access the Voxeet singleton.
 
 ```javascript
-const { Voxeet, UserInfo } = VoxeetSDK;
+const { VoxeetSDK, UserInfo } = VoxeetCordova;
 ```
 
-The `Voxeet` class is a singleton that enables interaction with the UXKit. The `UserInfo` class allows you to manipulate participants.
+The `VoxeetSDK` object is a singleton that enables interaction with the UXKit. The `UserInfo` class allows you to manipulate participants.
 
 ### Initialization
 
@@ -90,7 +90,7 @@ fetch(tokenUrl)
     // Parse the response into a JSON object {"access_token": "value"}
     .then(data => data.json())
     .then(json => {
-        Voxeet.initializeToken(
+        VoxeetSDK.initializeToken(
             // Initial access token
             json.access_token,
             // Callback to refresh the access token
@@ -117,7 +117,7 @@ fetch(tokenUrl)
 
 **Initialize the Voxeet UXKit using the Consumer Key and Consumer Secret**
 
-> **WARNING:** It is best practice to use the `Voxeet.initializeToken` function to initialize the SDK.  
+> **WARNING:** It is best practice to use the `VoxeetSDK.initializeToken` function to initialize the SDK.  
 > Please read the documentation at:  
 > https://dolby.io/developers/interactivity-apis/client-sdk/initializing
 
@@ -125,7 +125,7 @@ fetch(tokenUrl)
 const consumerKey = "CONSUMER_KEY";
 const consumerSecret = "CONSUMER_SECRET";
 
-Voxeet.initialize(consumerKey, consumerSecret)
+VoxeetSDK.initialize(consumerKey, consumerSecret)
     .then(() => {
         // Initialization is ok
     })
@@ -142,7 +142,7 @@ Voxeet.initialize(consumerKey, consumerSecret)
 const avatarUrl = "https://gravatar.com/avatar/" + Math.floor(Math.random() * 1000000) + "?s=200&d=identicon";
 var user = new UserInfo("externalId", "Guest 01", avatarUrl);
 
-Voxeet.connect(user)
+VoxeetSDK.connect(user)
     .then(() => {
         // The session is connected
     })
@@ -155,7 +155,7 @@ Voxeet.connect(user)
 **Disconnect a session**
 
 ```javascript
-Voxeet.disconnect()
+VoxeetSDK.disconnect()
     .then(() => {
         // The session is disconnected
     })
@@ -176,9 +176,9 @@ const createOptions = {
     }
 };
 
-Voxeet.create(createOptions)
+VoxeetSDK.create(createOptions)
     .then(conf => {
-        Voxeet.join(conf.conferenceId)
+        VoxeetSDK.join(conf.conferenceId)
             .then(() => {
                 // You've joined the conference
             })
@@ -200,7 +200,7 @@ const user1 = new UserInfo("external_user_01", "Guest 01");
 const user2 = new UserInfo("external_user_02", "Guest 02");
 const user3 = new UserInfo("external_user_03", "Guest 03");
 
-Voxeet.invite(conferenceId, [user1, user2, user3])
+VoxeetSDK.invite(conferenceId, [user1, user2, user3])
     .then(() => {
         // The users have been invited
     })
@@ -213,7 +213,7 @@ Voxeet.invite(conferenceId, [user1, user2, user3])
 **Leave the conference**
 
 ```javascript
-Voxeet.leave()
+VoxeetSDK.leave()
     .then(() => {
         // You have left the conference
     })
@@ -234,7 +234,7 @@ var message = "YOUR MESSAGE";
 var obj = { action: "message", content: "Hello world" };
 var message = JSON.stringify(obj);
 
-Voxeet.sendBroadcastMessage(message)
+VoxeetSDK.sendBroadcastMessage(message)
     .then(() => {
         // The message was sent to the participants of the conference
     })
@@ -249,19 +249,19 @@ Voxeet.sendBroadcastMessage(message)
 To maximize or minimize a conference, use the `appearMaximized`. By default, the conference appears maximized. Change the value to false if you wish to minimize it.
 
 ```javascript
-await Voxeet.appearMaximized(false);
+await VoxeetSDK.appearMaximized(false);
 ```
 
 To start a conference using a built-in receiver or a built-in receiver speaker, use the defaultBuiltInSpeaker (as in the example below). By default, the conference starts using a built-in receiver. Change the value to true if you wish to use built-in speaker.
 
 ```javascript
-await Voxeet.defaultBuiltInSpeaker(true);
+await VoxeetSDK.defaultBuiltInSpeaker(true);
 ```
 
 To enable a video, use the defaultVideo (as in the example below). By default, the conference starts without a video. Change the value to true if you wish to enable video conferencing.
 
 ```javascript
-await Voxeet.defaultVideo(true);
+await VoxeetSDK.defaultVideo(true);
 ```
 
 ## Documentation

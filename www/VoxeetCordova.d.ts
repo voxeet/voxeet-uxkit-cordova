@@ -1,8 +1,13 @@
-import VoxeetMedia from "./VoxeetMedia";
-import UserInfo from "./types/UserInfo";
-import { default as Configuration } from "./types/Configurations";
+export { VoxeetMedia } from "./VoxeetMedia";
+export { CreateOptions, CreateResult } from './types/CreateConference';
+export { JoinOptions, JoinUserInfo, UserType } from './types/JoinConference';
+export { Configuration } from "./types";
+import { VoxeetMedia } from "./VoxeetMedia";
 import { CreateOptions, CreateResult } from './types/CreateConference';
 import { JoinOptions } from './types/JoinConference';
+import { Configuration } from "./types";
+export { UserInfo } from "./UserInfo";
+import { UserInfo } from "./UserInfo";
 export interface RefreshCallback {
     (): void;
 }
@@ -17,7 +22,7 @@ export interface ConferenceStatusUpdated {
 export interface ConferenceStatusUpdatedEventCallback {
     (): Promise<ConferenceStatusUpdated>;
 }
-declare class Voxeet_ {
+declare class Voxeet {
     VoxeetMedia: VoxeetMedia;
     refreshAccessTokenCallback: RefreshCallback | null;
     refreshToken: TokenRefreshCallback | undefined;
@@ -115,11 +120,11 @@ declare class Voxeet_ {
     /**
      * Starts recording the conference.
      */
-    startRecording(): Promise<unknown>;
+    startRecording(): Promise<void>;
     /**
      * Stops recording the conference.
      */
-    stopRecording(): Promise<unknown>;
+    stopRecording(): Promise<void>;
     /**
      * Minimize the overlay.
      */
@@ -159,5 +164,5 @@ declare class Voxeet_ {
     /** Internal method. */
     onAccessTokenKo(errorMessage: string): Promise<unknown>;
 }
-export declare const Voxeet: Voxeet_;
-export {};
+export declare const VoxeetSDK: Voxeet;
+export default VoxeetSDK;

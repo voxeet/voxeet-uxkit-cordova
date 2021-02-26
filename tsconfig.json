@@ -5,7 +5,7 @@
     "target": "es6",
     "module": "commonjs",
     "esModuleInterop": true,
-    "outDir": "../www",
+    "outDir": "www",
     "sourceMap": true,
     "experimentalDecorators": true,
     "lib": ["dom", "es2015", "es2016"],
@@ -18,7 +18,9 @@
     "noImplicitReturns": true,
     "skipLibCheck": true
   },
-  "include": [ "*", "**/*" ],
+  "files": [
+    "./lib/index.ts"
+  ],
   "exclude": [
     "build",
     "dist",

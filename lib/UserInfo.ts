@@ -1,12 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class UserInfo {
-    constructor(externalId, name, avatarUrl) {
+export class UserInfo {
+
+    public name: string;
+    public externalId: string;
+    public avatarUrl: string | undefined;
+
+    constructor (externalId: string, name: string, avatarUrl: string | undefined) {
         this.name = name;
         this.externalId = externalId;
         this.avatarUrl = avatarUrl;
     }
-    json() {
+
+    json () {
         return {
             name: this.name,
             externalId: this.externalId,
@@ -14,5 +18,3 @@ class UserInfo {
         };
     }
 }
-exports.default = UserInfo;
-//# sourceMappingURL=UserInfo.js.map

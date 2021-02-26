@@ -13,7 +13,7 @@ export interface Users {
     speakingUserColor?: number;
     selectedUserColor?: number;
 }
-export default interface Configuration {
+export interface Configuration {
     actionBar?: ActionBar;
     overlay?: Overlay;
     users?: Users;

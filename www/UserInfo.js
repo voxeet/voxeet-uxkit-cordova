@@ -1,21 +1,19 @@
-export default class UserInfo {
-
-    public name: string;
-    public externalId: string;
-    public avatarUrl: string | undefined;
-
-    constructor (externalId: string, name: string, avatarUrl: string | undefined) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserInfo = void 0;
+class UserInfo {
+    constructor(externalId, name, avatarUrl) {
         this.name = name;
         this.externalId = externalId;
         this.avatarUrl = avatarUrl;
     }
-
-    json () {
+    json() {
         return {
             name: this.name,
             externalId: this.externalId,
             avatarUrl: this.avatarUrl
         };
     }
-    
 }
+exports.UserInfo = UserInfo;
+//# sourceMappingURL=UserInfo.js.map
