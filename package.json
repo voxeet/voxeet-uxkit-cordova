@@ -28,7 +28,7 @@
     "test": "npm run eslint",
     "eslint": "node node_modules/eslint/bin/eslint www && node node_modules/eslint/bin/eslint src && node node_modules/eslint/bin/eslint tests",
     "build-library": "rm -rf www ; tsc ; echo Build completed!",
-    "publish-library": "npm run build-library && npm publish && echo Package published!"
+    "publish-library": "bash ./publish.sh && echo Package published!"
   },
   "author": "Voxeet",
   "license": "MIT",
