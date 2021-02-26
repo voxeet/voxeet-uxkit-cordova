@@ -1,5 +1,10 @@
 # Release Notes
 
+### 1.5.0 (Feb 26th, 2021)
+- Changing main object from the cordova injection from VoxeetSDK to VoxeetCordova
+- use `const { VoxeetSDK } = VoxeetCordova` or `const { VoxeetSDK } = window.VoxeetCordova`
+- `UserInfo` and all other configuration are part of the `VoxeetCordova` object
+
 ### 1.4.9 (Feb 25th, 2021)
 - delivery rework to include npm-centric bundle management
 
