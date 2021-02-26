@@ -18,6 +18,3 @@ export class UserInfo {
         };
     }
 }
-
-//@deprecated we will use a non default form in the future
-export default UserInfo;

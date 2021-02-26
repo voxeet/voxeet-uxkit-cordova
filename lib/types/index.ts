@@ -1,4 +1,3 @@
-export { UserInfo } from "./UserInfo";
 
 export { Configuration } from "./Configurations";
 

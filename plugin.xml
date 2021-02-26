@@ -27,8 +27,28 @@
     <issue>https://github.com/voxeet/voxeet-uxkit-cordova/issues</issue>
 
 
-    <js-module src="www/index.js" name="VoxeetSDK">
-        <clobbers target="VoxeetSDK" />
+    <js-module src="www/VoxeetCordova.js" name="VoxeetCordova">
+        <clobbers target="VoxeetCordova" />
+    </js-module>
+
+    <js-module src="www/VoxeetMedia.js" name="VoxeetMedia">
+        <clobbers target="VoxeetMedia" />
+    </js-module>
+
+    <js-module src="www/UserInfo.js" name="UserInfo">
+        <clobbers target="UserInfo" />
+    </js-module>
+
+    <js-module src="www/types/Configurations.js" name="types/Configurations">
+        <clobbers target="types_Configurations" />
+    </js-module>
+
+    <js-module src="www/types/JoinConference.js" name="types/JoinConference">
+        <clobbers target="types_JoinConference" />
+    </js-module>
+
+    <js-module src="www/types/CreateConference.js" name="types/CreateConference">
+        <clobbers target="types_CreateConference" />
     </js-module>
 
     <preference name="VOXEET_CORDOVA_CONSUMER_KEY" default="null" />

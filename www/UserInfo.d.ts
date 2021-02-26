@@ -9,4 +9,3 @@ export declare class UserInfo {
         avatarUrl: string | undefined;
     };
 }
-export default UserInfo;

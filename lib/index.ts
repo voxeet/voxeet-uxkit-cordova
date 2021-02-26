@@ -1,1 +1,1 @@
-export * from "./VoxeetSDK";
+export * from "./VoxeetCordova";

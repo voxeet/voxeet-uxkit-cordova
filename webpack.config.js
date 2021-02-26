@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require("webpack");
 
 module.exports = {
-    entry: './lib/index.ts',
+    entry: './lib/VoxeetSDK.ts',
     module: {
       rules: [
         {
@@ -14,6 +14,9 @@ module.exports = {
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
+    },
+    optimization: {
+        minimize: false
     },
     output: {
       filename: 'index.js',

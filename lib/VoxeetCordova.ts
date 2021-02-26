@@ -1,12 +1,17 @@
 export { VoxeetMedia }  from "./VoxeetMedia";
 export { CreateOptions, CreateResult } from './types/CreateConference';
 export { JoinOptions, JoinUserInfo, UserType } from './types/JoinConference';
-export { UserInfo, Configuration} from "./types";
+export { Configuration} from "./types";
+
+
 
 import { VoxeetMedia } from "./VoxeetMedia";
 import { CreateOptions, CreateResult } from './types/CreateConference';
 import { JoinOptions, JoinUserInfo, UserType } from './types/JoinConference';
-import { UserInfo, Configuration} from "./types";
+import { Configuration} from "./types";
+
+export { UserInfo } from "./UserInfo";
+import { UserInfo } from "./UserInfo";
 
 /**
  * This class enable interaction with VoxeetUXKit
@@ -32,7 +37,7 @@ export interface ConferenceStatusUpdatedEventCallback {
     (): Promise<ConferenceStatusUpdated>
 }
 
-class Voxeet_ {
+class Voxeet {
 
     public VoxeetMedia: VoxeetMedia;
 
@@ -360,6 +365,5 @@ class Voxeet_ {
     }
 }
 
-export const Voxeet = new Voxeet_();
-
-export default Voxeet;
+export const VoxeetSDK = new Voxeet();
+export default VoxeetSDK;
