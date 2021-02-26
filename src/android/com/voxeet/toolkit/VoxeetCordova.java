@@ -80,7 +80,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class VoxeetCordova extends CordovaPlugin {
 
-    private static final String VERSION = "1.4.8";
+    private static final String VERSION = "___CORDOVA_VERSION___";
 
 
     private static final String VOXEET_CORDOVA_CONSUMER_KEY = "VOXEET_CORDOVA_CONSUMER_KEY";
