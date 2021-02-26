@@ -242,20 +242,20 @@ class Voxeet_ {
     /**
      * Starts recording the conference.
      */
-    startRecording() {
+    startRecording(): Promise<void> {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'startRecording', []);
-            resolve(null);
+            resolve();
         });
     }
 
     /**
      * Stops recording the conference.
      */
-    stopRecording() {
+    stopRecording(): Promise<void> {
         return new Promise((resolve, reject) => {
             exec(null, null, SERVICE, 'stopRecording', []);
-            resolve(null);
+            resolve();
         });
     }
 

@@ -118,11 +118,11 @@ declare class Voxeet_ {
     /**
      * Starts recording the conference.
      */
-    startRecording(): Promise<unknown>;
+    startRecording(): Promise<void>;
     /**
      * Stops recording the conference.
      */
-    stopRecording(): Promise<unknown>;
+    stopRecording(): Promise<void>;
     /**
      * Minimize the overlay.
      */
