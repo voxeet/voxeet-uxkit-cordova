@@ -39,6 +39,10 @@
         <clobbers target="UserInfo" />
     </js-module>
 
+    <js-module src="www/types/ConferenceStatus.js" name="types/ConferenceStatus">
+        <clobbers target="types_ConferenceStatus" />
+    </js-module>
+
     <js-module src="www/types/Configurations.js" name="types/Configurations">
         <clobbers target="types_Configurations" />
     </js-module>
