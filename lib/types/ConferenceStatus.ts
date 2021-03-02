@@ -12,7 +12,7 @@ export enum ConferenceStatus {
 }
 
 export interface ConferenceStatusUpdated {
-    state: ConferenceStatus;
+    status: ConferenceStatus;
     conferenceAlias: string;
     conferenceId: string;
 }
@@ -35,10 +35,10 @@ function toConferenceStatus(str?: string): ConferenceStatus|null {
 }
 
 export function fromRawToConferenceStatus(raw: any): ConferenceStatusUpdated|null {
-    const state = toConferenceStatus(raw.state);
-    if(!state) return null;
+    const status = toConferenceStatus(raw.state);
+    if(!status) return null;
     return {
-        state: state,
+        status,
         conferenceAlias: <string>raw.conferenceAlias,
         conferenceId: <string>raw.conferenceId
     };

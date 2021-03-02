@@ -305,15 +305,15 @@ class Voxeet {
     /**
      * Get notified when the conference status changes.
      * @param callback function to call when the conference status changes.
+     * @returns @deprecated to match previous implementations, resolve a promise ; will be return void in the future
      */
     onConferenceStatusUpdatedEvent(callback: (event: ConferenceStatusUpdated) => void) {
-        return new Promise((resolve, reject) => {
-            exec((object: any) => {
-                const event = fromRawToConferenceStatus(object);
-                if(null != event) callback(event);
-                else console.log("invalid event received or not cross platform", object);
-            }, (err: Error) => {}, SERVICE, 'onConferenceStatusUpdatedEvent', []);
-        });
+        exec((object: any) => {
+            const event = fromRawToConferenceStatus(object);
+            if(null != event) callback(event);
+            else console.log("invalid event received or not cross platform", object);
+        }, (err: Error) => {}, SERVICE, 'onConferenceStatusUpdatedEvent', []);
+        return Promise.resolve(true);
     }
 
     /** @deprecated Use join() instead. */
