@@ -6,6 +6,7 @@ Object.defineProperty(exports, "VoxeetMedia", { enumerable: true, get: function 
 var JoinConference_1 = require("./types/JoinConference");
 Object.defineProperty(exports, "UserType", { enumerable: true, get: function () { return JoinConference_1.UserType; } });
 const VoxeetMedia_2 = require("./VoxeetMedia");
+const ConferenceStatus_1 = require("./types/ConferenceStatus");
 var UserInfo_1 = require("./UserInfo");
 Object.defineProperty(exports, "UserInfo", { enumerable: true, get: function () { return UserInfo_1.UserInfo; } });
 /**
@@ -258,11 +259,17 @@ class Voxeet {
     /**
      * Get notified when the conference status changes.
      * @param callback function to call when the conference status changes.
+     * @returns @deprecated to match previous implementations, resolve a promise ; will be return void in the future
      */
     onConferenceStatusUpdatedEvent(callback) {
-        return new Promise((resolve, reject) => {
-            exec(callback, (err) => { }, SERVICE, 'onConferenceStatusUpdatedEvent', []);
-        });
+        exec((object) => {
+            const event = ConferenceStatus_1.fromRawToConferenceStatus(object);
+            if (null != event)
+                callback(event);
+            else
+                console.log("invalid event received or not cross platform", object);
+        }, (err) => { }, SERVICE, 'onConferenceStatusUpdatedEvent', []);
+        return Promise.resolve(true);
     }
     /** @deprecated Use join() instead. */
     startConference(conferenceId, participants) {

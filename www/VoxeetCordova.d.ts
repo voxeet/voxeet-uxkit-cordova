@@ -5,6 +5,7 @@ export { Configuration } from "./types";
 import { VoxeetMedia } from "./VoxeetMedia";
 import { CreateOptions, CreateResult } from './types/CreateConference';
 import { JoinOptions } from './types/JoinConference';
+import { ConferenceStatusUpdated } from './types/ConferenceStatus';
 import { Configuration } from "./types";
 export { UserInfo } from "./UserInfo";
 import { UserInfo } from "./UserInfo";
@@ -13,14 +14,6 @@ export interface RefreshCallback {
 }
 export interface TokenRefreshCallback {
     (): Promise<string>;
-}
-export interface ConferenceStatusUpdated {
-    state: string;
-    conferenceAlias: string;
-    conferenceId: string;
-}
-export interface ConferenceStatusUpdatedEventCallback {
-    (): Promise<ConferenceStatusUpdated>;
 }
 declare class Voxeet {
     VoxeetMedia: VoxeetMedia;
@@ -149,8 +142,9 @@ declare class Voxeet {
     /**
      * Get notified when the conference status changes.
      * @param callback function to call when the conference status changes.
+     * @returns @deprecated to match previous implementations, resolve a promise ; will be return void in the future
      */
-    onConferenceStatusUpdatedEvent(callback: ConferenceStatusUpdatedEventCallback): Promise<unknown>;
+    onConferenceStatusUpdatedEvent(callback: (event: ConferenceStatusUpdated) => void): Promise<boolean>;
     /** @deprecated Use join() instead. */
     startConference(conferenceId: string, participants: Array<UserInfo>): Promise<any>;
     /** @deprecated Use leave() instead. */
