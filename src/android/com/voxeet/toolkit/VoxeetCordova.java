@@ -1172,7 +1172,7 @@ public class VoxeetCordova extends CordovaPlugin {
         if (onConferenceStatusUpdatedEventCallback != null) {
             try {
                 JSONObject jObject = new JSONObject()
-                        .put("state", event.state.toString())
+                        .put("status", event.state.toString())
                         .put("conferenceAlias", event.conferenceAlias);
                 if (event.conference != null) {
                     jObject.put("conferenceId", event.conference.getId());

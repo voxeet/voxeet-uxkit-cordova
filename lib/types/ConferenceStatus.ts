@@ -35,7 +35,7 @@ function toConferenceStatus(str?: string): ConferenceStatus|null {
 }
 
 export function fromRawToConferenceStatus(raw: any): ConferenceStatusUpdated|null {
-    const status = toConferenceStatus(raw.state);
+    const status = toConferenceStatus(raw.status);
     if(!status) return null;
     return {
         status,
