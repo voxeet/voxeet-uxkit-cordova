@@ -3,6 +3,7 @@
 ### 1.5.1 (Mar 2nd, 2021)
 - bump iOS SDK to 3.1.0 and iOS UXKit to 1.4.2
 - add `onConferenceStatusUpdatedEvent` event
+- remove 1.5.0 explicit cordova dependency for pure compatibility with forked-environment
 
 ### 1.5.0 (Feb 26th, 2021)
 - changing main object from the cordova injection from VoxeetSDK to VoxeetCordova
