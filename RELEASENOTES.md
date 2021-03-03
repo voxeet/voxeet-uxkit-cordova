@@ -1,7 +1,12 @@
 # Release Notes
 
+### 1.5.1 (Mar 2nd, 2021)
+- bump iOS SDK to 3.1.0 and iOS UXKit to 1.4.2
+- add `onConferenceStatusUpdatedEvent` event
+- remove 1.5.0 explicit cordova dependency for pure compatibility with forked-environment
+
 ### 1.5.0 (Feb 26th, 2021)
-- Changing main object from the cordova injection from VoxeetSDK to VoxeetCordova
+- changing main object from the cordova injection from VoxeetSDK to VoxeetCordova
 - use `const { VoxeetSDK } = VoxeetCordova` or `const { VoxeetSDK } = window.VoxeetCordova`
 - `UserInfo` and all other configuration are part of the `VoxeetCordova` object
 
@@ -9,7 +14,7 @@
 - delivery rework to include npm-centric bundle management
 
 ### 1.4.8 (Feb 25th, 2021)
-- Hotfix Android version issue not matching the expected UXKit's version
+- hotfix Android version issue not matching the expected UXKit's version
 
 ### 1.4.7 (Feb 9th, 2021)
 - bump Android UXKit for minimize/maximize methods

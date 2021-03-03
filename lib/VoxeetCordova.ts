@@ -8,6 +8,7 @@ export { Configuration} from "./types";
 import { VoxeetMedia } from "./VoxeetMedia";
 import { CreateOptions, CreateResult } from './types/CreateConference';
 import { JoinOptions, JoinUserInfo, UserType } from './types/JoinConference';
+import { ConferenceStatusUpdated, fromRawToConferenceStatus } from './types/ConferenceStatus';
 import { Configuration} from "./types";
 
 export { UserInfo } from "./UserInfo";
@@ -25,16 +26,6 @@ export interface RefreshCallback {
 
 export interface TokenRefreshCallback {
     (): Promise<string>
-}
-
-export interface ConferenceStatusUpdated {
-    state: string;
-    conferenceAlias: string;
-    conferenceId: string;
-}
-
-export interface ConferenceStatusUpdatedEventCallback {
-    (): Promise<ConferenceStatusUpdated>
 }
 
 class Voxeet {
@@ -314,11 +305,15 @@ class Voxeet {
     /**
      * Get notified when the conference status changes.
      * @param callback function to call when the conference status changes.
+     * @returns @deprecated to match previous implementations, resolve a promise ; will be return void in the future
      */
-    onConferenceStatusUpdatedEvent(callback: ConferenceStatusUpdatedEventCallback) {
-        return new Promise((resolve, reject) => {
-            exec(callback, (err: Error) => {}, SERVICE, 'onConferenceStatusUpdatedEvent', []);
-        });
+    onConferenceStatusUpdatedEvent(callback: (event: ConferenceStatusUpdated) => void) {
+        exec((object: any) => {
+            const event = fromRawToConferenceStatus(object);
+            if(null != event) callback(event);
+            else console.log("invalid event received or not cross platform", object);
+        }, (err: Error) => {}, SERVICE, 'onConferenceStatusUpdatedEvent', []);
+        return Promise.resolve(true);
     }
 
     /** @deprecated Use join() instead. */

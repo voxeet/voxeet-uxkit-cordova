@@ -594,7 +594,7 @@ public class VoxeetCordova extends CordovaPlugin {
         HANDLER.post(() -> {
             if (!VoxeetSDK.instance().isInitialized()) {
                 VoxeetSDK.initialize(accessToken,
-                        callback -> {
+                        (required, callback) -> {
                             lock(lockAwaitingToken);
                             if (!mAwaitingTokenCallback.contains(callback)) {
                                 mAwaitingTokenCallback.add(callback);
@@ -790,9 +790,9 @@ public class VoxeetCordova extends CordovaPlugin {
                 .then((result) -> {
                     JSONObject object = new JSONObject();
                     try {
-                        object.put("conferenceId", result.conferenceId);
-                        object.put("conferenceAlias", result.conferenceAlias);
-                        object.put("isNew", result.isNew);
+                        object.put("conferenceId", result.getId());
+                        object.put("conferenceAlias", result.getAlias());
+                        object.put("isNew", result.isNew());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

@@ -50,20 +50,14 @@ new XmlSlurper().parse(file('../app/src/main/res/xml/config.xml')).preference.ea
 dependencies {
     compile 'com.android.support:multidex:1.0.3'
 
-    compile ('com.voxeet.sdk:uxkit:3.0.4') {
+    compile ('com.voxeet.sdk:uxkit:3.1.0') {
         transitive = true
     }
 
     if (push) {
-        compile ('com.voxeet.sdk:uxkit-firebase:3.0.4')
+        compile ('com.voxeet.sdk:uxkit-firebase:3.1.0')
     }
 }
-
-//Voxeet does need the 28 version
-//in case of incompatibility, please open up an issue
-//or consider upgrading if possible
-ext.cdvCompileSdkVersion = 28
-ext.cdvBuildToolsVersion = "28.0.3"
 
 //use the push variable
 if (push) {

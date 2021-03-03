@@ -7,8 +7,9 @@
 
 @property (nonatomic, copy) NSString *consumerKey;
 @property (nonatomic, copy) NSString *consumerSecret;
-@property (nonatomic, copy) NSString *refreshAccessTokenID;
+@property (nonatomic, copy) CDVInvokedUrlCommand *refreshAccessTokenCommand;
 @property (nonatomic, copy) void (^refreshAccessTokenClosure)(NSString *);
+@property (nonatomic, copy) CDVInvokedUrlCommand *conferenceStatusUpdatedCommand;
 
 @end
 
@@ -36,7 +37,7 @@
     }
     
     // Observers.
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(conferenceStatusUpdated:) name:@"VTConferenceStatusUpdated" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(conferenceStatusUpdated:) name:@"VTConferenceStatusUpdated" object:nil];
 }
 
 - (void)initialize:(CDVInvokedUrlCommand *)command {
@@ -67,12 +68,14 @@
     NSString *accessToken = [command.arguments objectAtIndex:0];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [VoxeetSDK.shared initializeWithAccessToken:accessToken refreshTokenClosure:^(void (^closure)(NSString *)) {
+        [VoxeetSDK.shared initializeWithAccessToken:accessToken refreshTokenClosureWithParam:^(void (^closure)(NSString *), BOOL isExpired) {
             self.refreshAccessTokenClosure = closure;
             
-            CDVPluginResult *callBackRefresh = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-            [callBackRefresh setKeepCallbackAsBool:YES];
-            [self.commandDelegate sendPluginResult:callBackRefresh callbackId:self.refreshAccessTokenID];
+            if (self.refreshAccessTokenCommand != nil) {
+                CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+                [pluginResult setKeepCallbackAsBool:YES];
+                [self.commandDelegate sendPluginResult:pluginResult callbackId:self.refreshAccessTokenCommand.callbackId];
+            }
         }];
         [VoxeetUXKit.shared initialize];
         
@@ -174,7 +177,7 @@
                 }];
             } else {
                 VoxeetSDK.shared.conference.defaultVideo = NO;
-                [VoxeetSDK.shared.conference listenWithConference:conference success:^(VTConference *conference2) {
+                [VoxeetSDK.shared.conference listenWithConference:conference options:nil success:^(VTConference *conference2) {
                     VoxeetSDK.shared.conference.defaultVideo = defaultVideo;
                     NSDictionary *result = @{@"conferenceId": conference2.id, @"conferenceAlias": conference2.alias};
                     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result] callbackId:command.callbackId];
@@ -244,7 +247,10 @@
     BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        VoxeetUXKit.shared.appearMaximized = enabled;
+        VTUXConferenceController *conferenceController = VoxeetUXKit.shared.conferenceController;
+        if (conferenceController != nil) {
+            conferenceController.appearMaximized = enabled;
+        }
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
 }
@@ -289,20 +295,25 @@
     BOOL enabled = [[command.arguments objectAtIndex:0] boolValue];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        VoxeetUXKit.shared.telecom = enabled;
+        VTUXConferenceController *conferenceController = VoxeetUXKit.shared.conferenceController;
+        if (conferenceController != nil) {
+            conferenceController.telecom = enabled;
+        }
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
 }
 
 - (void)isAudio3DEnabled:(CDVInvokedUrlCommand *)command {
     BOOL isAudio3D = VoxeetSDK.shared.conference.audio3D;
-    
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isAudio3D] callbackId:command.callbackId];
 }
 
 - (void)isTelecomMode:(CDVInvokedUrlCommand *)command {
-    BOOL isTelecom = VoxeetUXKit.shared.telecom;
-    
+    BOOL isTelecom = NO;
+    VTUXConferenceController *conferenceController = VoxeetUXKit.shared.conferenceController;
+    if (conferenceController != nil) {
+        isTelecom = conferenceController.telecom;
+    }
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:isTelecom] callbackId:command.callbackId];
 }
 
@@ -354,6 +365,11 @@
     });
 }
 
+- (void)onConferenceStatusUpdatedEvent:(CDVInvokedUrlCommand *)command {
+    // No need to be resolved because it's gonna be resolved in `conferenceStatusUpdated`.
+    _conferenceStatusUpdatedCommand = command;
+}
+
 /*
  *  MARK: Recording
  */
@@ -387,18 +403,18 @@
  */
 
 - (void)refreshAccessTokenCallback:(CDVInvokedUrlCommand *)command {
-    self.refreshAccessTokenID = command.callbackId;
-    // No need to be resolved because it's gonna be resolved in `initializeToken`
+    // No need to be resolved because it's gonna be resolved in `initializeToken`.
+    _refreshAccessTokenCommand = command;
 }
 
 - (void)onAccessTokenOk:(CDVInvokedUrlCommand *)command {
     NSString *accessToken = [command.arguments objectAtIndex:0];
-    self.refreshAccessTokenClosure(accessToken);
+    _refreshAccessTokenClosure(accessToken);
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
 
 - (void)onAccessTokenKo:(CDVInvokedUrlCommand *)command {
-    self.refreshAccessTokenClosure(nil);
+    _refreshAccessTokenClosure(nil);
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
 }
 
@@ -428,7 +444,51 @@
  */
 
 - (void)conferenceStatusUpdated:(NSNotification *)notification {
-//    NSNumber *status = notification.userInfo[@"status"];
+    NSNumber *rawStatus = notification.userInfo[@"status"];
+    VTConferenceStatus status = (VTConferenceStatus)rawStatus.intValue;
+    NSString *statusStr = @"DEFAULT";
+    
+    switch (status) {
+        case VTConferenceStatusCreating:
+            statusStr = @"CREATING";
+            break;
+        case VTConferenceStatusCreated:
+            statusStr = @"CREATED";
+            break;
+        case VTConferenceStatusJoining:
+            statusStr = @"JOINING";
+            break;
+        case VTConferenceStatusJoined:
+            statusStr = @"JOINED";
+            break;
+        case VTConferenceStatusLeaving:
+            statusStr = @"LEAVING";
+            break;
+        case VTConferenceStatusLeft:
+            statusStr = @"LEFT";
+            break;
+        case VTConferenceStatusEnded:
+            statusStr = @"ENDED";
+            break;
+        case VTConferenceStatusDestroyed:
+            statusStr = @"DESTROYED";
+            break;
+        case VTConferenceStatusError:
+            statusStr = @"ERROR";
+            break;
+        default:
+            break;
+    }
+    
+    VTConference *conference = VoxeetSDK.shared.conference.current;
+    if (conference != nil && _conferenceStatusUpdatedCommand != nil) {
+        NSDictionary *statusDict = @{@"status": statusStr,
+                                     @"conferenceId": conference.id,
+                                     @"conferenceAlias": conference.alias};
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:statusDict];
+        [pluginResult setKeepCallbackAsBool:YES];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:_conferenceStatusUpdatedCommand.callbackId];
+    }
 }
 
 /*
