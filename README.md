@@ -264,6 +264,23 @@ To enable a video, use the defaultVideo (as in the example below). By default, t
 await VoxeetSDK.defaultVideo(true);
 ```
 
+### Events
+
+**ConferenceStatusUpdated**
+
+To receive events regarding the status of the local `Conference`. This method will be refactored in a future version to provide more events in a consistent and coherent way.
+
+```
+
+const callback = (event: ConferenceStatusUpdated) => {
+    const { conferenceId, conferenceAlias, status } = event;
+    console.warn(`${conferenceId}/${conferenceAlias} := ${status}`);
+};
+
+await VoxeetSDK.onConferenceStatusUpdatedEvent(callback);
+```
+
+
 ## Documentation
 
 A full documentation can be found here: https://dolby.io/developers/interactivity-apis/client-ux-kit/uxkit-voxeet-cordova.

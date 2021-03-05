@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.5.2 (Mar 5th, 2021)
+- Android, fix ConferenceStatusUpdated `status` name
+
 ### 1.5.1 (Mar 2nd, 2021)
 - bump iOS SDK to 3.1.0 and iOS UXKit to 1.4.2
 - add `onConferenceStatusUpdatedEvent` event
