@@ -76,7 +76,7 @@ class Voxeet {
         });
     }
     /**
-     * Joins the conference.
+     * Joins the conference and opens the conference overlay.
      * @param conferenceId Id of the conference to join
      * @param options Options to use to join the conference
      */
