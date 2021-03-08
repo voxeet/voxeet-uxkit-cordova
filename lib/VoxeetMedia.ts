@@ -2,7 +2,7 @@
 const exec:any = require('cordova/exec');
 const SERVICE_MEDIA:string = 'VoxeetMedia';
 
-export class VoxeetMedia {
+class VoxeetMedia {
 
     constructor() {
     }
@@ -48,3 +48,5 @@ export class VoxeetMedia {
         });
     }*/
 }
+
+export = VoxeetMedia;

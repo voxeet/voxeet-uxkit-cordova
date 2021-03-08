@@ -1,4 +1,4 @@
-export declare class VoxeetMedia {
+declare class VoxeetMedia {
     constructor();
     /**
      * Starts the video.
@@ -13,3 +13,4 @@ export declare class VoxeetMedia {
      */
     switchCamera(): Promise<boolean>;
 }
+export = VoxeetMedia;

@@ -1,23 +1,16 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.VoxeetSDK = exports.UserInfo = exports.UserType = exports.VoxeetMedia = void 0;
-var VoxeetMedia_1 = require("./VoxeetMedia");
-Object.defineProperty(exports, "VoxeetMedia", { enumerable: true, get: function () { return VoxeetMedia_1.VoxeetMedia; } });
-var JoinConference_1 = require("./types/JoinConference");
-Object.defineProperty(exports, "UserType", { enumerable: true, get: function () { return JoinConference_1.UserType; } });
-const VoxeetMedia_2 = require("./VoxeetMedia");
+const VoxeetMedia_1 = require("./VoxeetMedia");
 const ConferenceStatus_1 = require("./types/ConferenceStatus");
-var UserInfo_1 = require("./UserInfo");
-Object.defineProperty(exports, "UserInfo", { enumerable: true, get: function () { return UserInfo_1.UserInfo; } });
+const UserInfo_1 = require("./UserInfo");
 /**
  * This class enable interaction with VoxeetUXKit
  */
 const exec = require('cordova/exec');
 const SERVICE = 'Voxeet';
-class Voxeet {
+class VoxeetSDK {
     constructor() {
         this.refreshAccessTokenCallback = null;
-        this.VoxeetMedia = new VoxeetMedia_2.VoxeetMedia();
+        this.VoxeetMedia = new VoxeetMedia_1.default();
         this.refreshAccessTokenCallback = () => {
             this.refreshToken && this.refreshToken()
                 .then(accessToken => this.onAccessTokenOk(accessToken))
@@ -309,6 +302,10 @@ class Voxeet {
         });
     }
 }
-exports.VoxeetSDK = new Voxeet();
-exports.default = exports.VoxeetSDK;
+//restore deprecated { VoxeetSDK, UserInfo, VoxeetMedia } = VoxeetCordova;
+//TODO remove on 1.6
+VoxeetSDK.VoxeetMedia = VoxeetMedia_1.default;
+VoxeetSDK.UserInfo = UserInfo_1.default;
+VoxeetSDK.VoxeetSDK = new VoxeetSDK();
+module.exports = new VoxeetSDK();
 //# sourceMappingURL=VoxeetCordova.js.map

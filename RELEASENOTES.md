@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.5.3-BETA1 (Mar 8th, 2021)
+- Restore possibility to use `VoxeetSDK`, `UserInfo` and `VoxeetMedia` from global variable. Deprecated `1.5.0` subinjection (UserInfo.UserInfo and VoxeetMedia.VoxeetMedia to transpilation)
+
 ### 1.5.2 (Mar 5th, 2021)
 - Android, fix ConferenceStatusUpdated `status` name
 

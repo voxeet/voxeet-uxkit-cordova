@@ -1,4 +1,4 @@
-export class UserInfo {
+class UserInfo {
 
     public name: string;
     public externalId: string;
@@ -18,3 +18,5 @@ export class UserInfo {
         };
     }
 }
+
+export = UserInfo;

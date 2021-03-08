@@ -1,6 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserInfo = void 0;
 class UserInfo {
     constructor(externalId, name, avatarUrl) {
         this.name = name;
@@ -15,5 +13,5 @@ class UserInfo {
         };
     }
 }
-exports.UserInfo = UserInfo;
+module.exports = UserInfo;
 //# sourceMappingURL=UserInfo.js.map
