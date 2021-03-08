@@ -18,7 +18,7 @@
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
       id="cordova-plugin-voxeet"
-      version="1.5.2">
+      version="1.5.3-BETA3">
     <name>Voxeet</name>
     <description>Cordova Voxeet Plugin</description>
     <license>Apache 2.0 License</license>
@@ -29,7 +29,6 @@
 
     <js-module src="www/VoxeetSDK.js" name="VoxeetSDK">
         <clobbers target="VoxeetSDK" />
-        <clobbers target="VoxeetCordova" />
     </js-module>
 
     <js-module src="www/VoxeetMedia.js" name="VoxeetMedia">
