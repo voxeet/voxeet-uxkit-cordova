@@ -4,6 +4,10 @@
 
 Before using the UXKit for Cordova, please review and accept the [Dolby Software License Agreement](SDK_LICENSE.md).
 
+## Release Notes
+
+Read the [release notes](RELEASENOTES.md) for this project.
+
 ## Installation
 
 Before the installation, add the iOS and/or Android platforms to your Cordova application. Open a terminal in the `src-cordova` folder and run the following commands:
@@ -165,7 +169,7 @@ VoxeetSDK.disconnect()
     });
 ```
 
-**Create and join a conference**]
+**Create and join a conference**
 
 ```javascript
 // Create the conference 'conference_alias' with Dolby Voice on
@@ -279,10 +283,3 @@ const callback = (event: ConferenceStatusUpdated) => {
 
 await VoxeetSDK.onConferenceStatusUpdatedEvent(callback);
 ```
-
-
-## Documentation
-
-A full documentation can be found here: https://dolby.io/developers/interactivity-apis/client-ux-kit/uxkit-voxeet-cordova.
-
-© Voxeet, 2021
