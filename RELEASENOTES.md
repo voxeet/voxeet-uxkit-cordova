@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.5.3 (Mar 12nd, 2021)
+- bump iOS SDK to 3.1.1 and iOS UXKit to 1.4.3
+
 ### 1.5.3-BETA4 (Mar 12ndn 2021)
 - Update definition
 - Android change deprecated usage to expected join method
