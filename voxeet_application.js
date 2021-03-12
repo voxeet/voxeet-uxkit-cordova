@@ -9,7 +9,8 @@ module.exports = function(context) {
 
   var folders = [
     'platforms/android/app/src/main/',
-    'platforms/android/'
+    'platforms/android/',
+    'android/app/src/main/'
   ];
 
   folders

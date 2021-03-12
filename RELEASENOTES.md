@@ -1,5 +1,11 @@
 # Release Notes
 
+### 1.5.3-BETA4 (Mar 12ndn 2021)
+- Update definition
+- Android change deprecated usage to expected join method
+- Android bump to 3.1.1
+- voxeet_application.js compatibility with Capacitor apps
+
 ### 1.5.3-BETA1 (Mar 8th, 2021)
 - Restore possibility to use `VoxeetSDK`, `UserInfo` and `VoxeetMedia` from global variable. Deprecated `1.5.0` subinjection (UserInfo.UserInfo and VoxeetMedia.VoxeetMedia to transpilation)
 
