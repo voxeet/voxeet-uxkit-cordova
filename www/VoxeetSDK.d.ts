@@ -42,11 +42,11 @@ declare class VoxeetSDK {
      */
     create(options: CreateOptions): Promise<CreateResult>;
     /**
-     * Joins the conference.
+     * Joins the conference and opens the conference overlay.
      * @param conferenceId Id of the conference to join
      * @param options Options to use to join the conference
      */
-    join(conferenceId: string, options?: JoinOptions): Promise<string>;
+    join(conferenceId: string, options?: JoinOptions): Promise<void>;
     /**
      * Joins the conference in the broadcaster mode which allows transmitting audio and video.
      * @param conferenceId Id of the conference to join
