@@ -784,9 +784,15 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void create(String conferenceAlias,
-                        MetadataHolder holder,
-                        ParamsHolder pholder, final CallbackContext cb) {
-        VoxeetSDK.conference().create(conferenceAlias, holder, pholder)
+                        MetadataHolder metadataHolder,
+                        ParamsHolder paramsHolder, final CallbackContext cb) {
+        ConferenceCreateOptions conferenceCreateOptions = new ConferenceCreateOptions.Builder()
+                .setConferenceAlias(conferenceAlias)
+                .setMetadataHolder(metadataHolder)
+                .setParamsHolder(paramsHolder)
+                .build();
+        
+        VoxeetSDK.conference().create(conferenceCreateOptions)
                 .then((result) -> {
                     JSONObject object = new JSONObject();
                     try {
@@ -806,9 +812,9 @@ public class VoxeetCordova extends CordovaPlugin {
         Log.d(TAG, "broadcast: broadcasting conference");
 
         if (null != context && Validate.hasMicrophonePermissions(mWebView.getContext())) {
-            VoxeetSDK.conference().broadcast(conferenceId)
+            Conference conference = VoxeetSDK.conference().getConference(conferenceId);
+            VoxeetSDK.conference().broadcast(conference)
                     .then((result) -> {
-
                         cleanBundles();
 
                         if (startVideoOnJoin) {
@@ -829,9 +835,12 @@ public class VoxeetCordova extends CordovaPlugin {
         Log.d(TAG, "join: joining conference");
 
         if (null != context && Validate.hasMicrophonePermissions(mWebView.getContext())) {
-            VoxeetSDK.conference().join(conferenceId)
-                    .then((result) -> {
+            Conference conference = VoxeetSDK.conference().getConference(conferenceId);
+            ConferenceJoinOptions options = new ConferenceJoinOptions.Builder(conference)
+                    .build();
 
+            VoxeetSDK.conference().join(options)
+                    .then((result) -> {
                         cleanBundles();
 
                         if (startVideoOnJoin) {
@@ -848,7 +857,11 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void listen(@NonNull String conferenceId, @NonNull final CallbackContext cb) {
-        VoxeetSDK.conference().listen(conferenceId)
+        Conference conference = VoxeetSDK.conference().getConference(conferenceId);
+        ConferenceListenOptions options = new ConferenceListenOptions.Builder(conference)
+                .build();
+        
+        VoxeetSDK.conference().listen(options)
                 .then(result -> {
                     cleanBundles();
                     cb.success();
