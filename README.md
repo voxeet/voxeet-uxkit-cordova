@@ -72,12 +72,22 @@ If this is not set, a caught-exception will be set in the logs.
 
 ## Implementation
 
-After the installation, the project exports all the elements to integrate them into your application.
-
-Use the following code to have access the Voxeet singleton.
+After the installation, the project exports all the elements to integrate them into your application. They are directly injected inside the global variables of your project, it means that you can directly call the `VoxeetSDK` instance and the `UserInfo` constructor whenever needed.
 
 ```javascript
-const { VoxeetSDK, UserInfo } = VoxeetCordova;
+//somewhere in your code
+
+alert(`VoxeetSDK ? ${!!VoxeetSDK}`);
+alert(`UserInfo ? ${!!UserInfo}`);
+```
+
+If you want to use the window object, you can use the following code to have access the Voxeet singleton.
+
+```javascript
+const { VoxeetSDK, UserInfo } = window;
+
+alert(`VoxeetSDK ? ${!!VoxeetSDK}`);
+alert(`UserInfo ? ${!!UserInfo}`);
 ```
 
 The `VoxeetSDK` object is a singleton that enables interaction with the UXKit. The `UserInfo` class allows you to manipulate participants.
