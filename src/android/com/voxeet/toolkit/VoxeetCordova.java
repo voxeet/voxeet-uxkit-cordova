@@ -39,6 +39,7 @@ import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.services.SessionService;
 import com.voxeet.sdk.services.TelemetryService;
 import com.voxeet.sdk.services.builders.ConferenceCreateOptions;
+import com.voxeet.sdk.services.builders.ConferenceJoinOptions;
 import com.voxeet.sdk.services.builders.ConferenceListenOptions;
 import com.voxeet.sdk.services.telemetry.SdkEnvironment;
 import com.voxeet.sdk.utils.Validate;
