@@ -26,6 +26,7 @@ import com.voxeet.sdk.events.v2.ParticipantAddedEvent;
 import com.voxeet.sdk.json.ParticipantInfo;
 import com.voxeet.sdk.json.internal.MetadataHolder;
 import com.voxeet.sdk.json.internal.ParamsHolder;
+import com.voxeet.sdk.models.Conference;
 import com.voxeet.sdk.preferences.VoxeetPreferences;
 import com.voxeet.sdk.push.center.NotificationCenter;
 import com.voxeet.sdk.push.center.invitation.InvitationBundle;
@@ -37,6 +38,8 @@ import com.voxeet.sdk.services.AudioService;
 import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.services.SessionService;
 import com.voxeet.sdk.services.TelemetryService;
+import com.voxeet.sdk.services.builders.ConferenceCreateOptions;
+import com.voxeet.sdk.services.builders.ConferenceListenOptions;
 import com.voxeet.sdk.services.telemetry.SdkEnvironment;
 import com.voxeet.sdk.utils.Validate;
 import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
@@ -791,7 +794,7 @@ public class VoxeetCordova extends CordovaPlugin {
                 .setMetadataHolder(metadataHolder)
                 .setParamsHolder(paramsHolder)
                 .build();
-        
+
         VoxeetSDK.conference().create(conferenceCreateOptions)
                 .then((result) -> {
                     JSONObject object = new JSONObject();
@@ -860,7 +863,7 @@ public class VoxeetCordova extends CordovaPlugin {
         Conference conference = VoxeetSDK.conference().getConference(conferenceId);
         ConferenceListenOptions options = new ConferenceListenOptions.Builder(conference)
                 .build();
-        
+
         VoxeetSDK.conference().listen(options)
                 .then(result -> {
                     cleanBundles();
