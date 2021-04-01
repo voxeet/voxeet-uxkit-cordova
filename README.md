@@ -10,7 +10,7 @@ Read the [release notes](RELEASENOTES.md) for this project.
 
 ## Installation
 
-Before the installation, add the iOS and/or Android platforms to your Cordova application. Open a terminal in the `src-cordova` folder and run the following commands:
+Before installation, add the iOS and/or Android platforms to your Cordova application. Open a terminal in the `src-cordova` folder and run the following commands:
 
 ```bash
 cordova platform add ios
@@ -23,7 +23,7 @@ Install the UXKit for Cordova using the following command:
 cordova plugin add cordova-plugin-voxeet
 ```
 
-**Note:** in some cases, it is needed to initialize the SDK beforehand. Especially in cases when the plugin used by the application delays the `onDeviceReady` event. In this situation, install the UXKit for Cordova using this command:
+**Note:** In some cases, you must initialize the SDK beforehand. Especially in cases when the plugin used by the application delays the `onDeviceReady` event. In this situation, install the UXKit for Cordova using this command:
 
 ```bash
 cordova plugin add cordova-plugin-voxeet \
@@ -58,7 +58,7 @@ To enable the push notifications in your Android application, add the following 
 </widget>
 ```
 
-Previously given as an option, due to new mechanisms preventing standard behaviour, **Android Q** and later, needs the following modification done in the config.xml file. If this is not set, a caught-exception will be set in the logs.
+Due to new mechanisms preventing standard behaviour, **Android Q** and later, require the following modification done to the `config.xml` file. This was previously optional. However, if not set, a caught-exception will be set in the logs.
 
 ```xml
 <config-file parent="./application" target="AndroidManifest.xml">
@@ -72,7 +72,7 @@ If this is not set, a caught-exception will be set in the logs.
 
 ## Implementation
 
-After the installation, the project exports all the elements to integrate them into your application. They are directly injected inside the global variables of your project, it means that you can directly call the `VoxeetSDK` instance and the `UserInfo` constructor whenever needed.
+After installation, the project exports all the elements to integrate them into your application. They are directly injected inside the global variables of your project; you can directly call the `VoxeetSDK` instance and the `UserInfo` constructor whenever needed.
 
 ```javascript
 //somewhere in your code
@@ -81,7 +81,7 @@ alert(`VoxeetSDK ? ${!!VoxeetSDK}`);
 alert(`UserInfo ? ${!!UserInfo}`);
 ```
 
-If you want to use the window object, you can use the following code to have access the Voxeet singleton.
+If you want to use the window object, you can use the following code to access the Voxeet singleton:
 
 ```javascript
 const { VoxeetSDK, UserInfo } = window;
@@ -131,9 +131,8 @@ fetch(tokenUrl)
 
 **Initialize the Voxeet UXKit using the Consumer Key and Consumer Secret**
 
-> **WARNING:** It is best practice to use the `VoxeetSDK.initializeToken` function to initialize the SDK.  
-> Please read the documentation at:  
-> https://dolby.io/developers/interactivity-apis/client-sdk/initializing
+> **WARNING:** It is a best practice to use the `VoxeetSDK.initializeToken` function to initialize the SDK.  
+> Please see the [Initializing](https://dolby.io/developers/interactivity-apis/client-sdk/initializing) document.
 
 ```javascript
 const consumerKey = "CONSUMER_KEY";
@@ -260,19 +259,19 @@ VoxeetSDK.sendBroadcastMessage(message)
 
 **Useful methods**
 
-To maximize or minimize a conference, use the `appearMaximized`. By default, the conference appears maximized. Change the value to false if you wish to minimize it.
+To maximize or minimize a conference, use the `appearMaximized` method. By default, the conference appears maximized. Change the value to false if you wish to minimize it.
 
 ```javascript
 await VoxeetSDK.appearMaximized(false);
 ```
 
-To start a conference using a built-in receiver or a built-in receiver speaker, use the defaultBuiltInSpeaker (as in the example below). By default, the conference starts using a built-in receiver. Change the value to true if you wish to use built-in speaker.
+To start a conference using a built-in receiver or a built-in receiver speaker, use the `defaultBuiltInSpeaker` method (as in the example below). By default, the conference starts using a built-in receiver. Change the value to true if you wish to use a built-in speaker.
 
 ```javascript
 await VoxeetSDK.defaultBuiltInSpeaker(true);
 ```
 
-To enable a video, use the defaultVideo (as in the example below). By default, the conference starts without a video. Change the value to true if you wish to enable video conferencing.
+To enable a video, use the `defaultVideo` method (as in the example below). By default, the conference starts without a video. Change the value to true if you wish to enable video conferencing.
 
 ```javascript
 await VoxeetSDK.defaultVideo(true);
