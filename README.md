@@ -109,7 +109,8 @@ fetch(tokenUrl)
             json.access_token,
             // Callback to refresh the access token
             () => fetch(tokenUrl)
-                .then(data => data.json().access_token)
+                .then(data => data.json())
+                .then(json => json.access_token)
                 .catch(err => {
                     // There was an error
                     console.log(err);
