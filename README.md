@@ -284,8 +284,7 @@ await VoxeetSDK.defaultVideo(true);
 
 To receive events regarding the status of the local `Conference`. This method will be refactored in a future version to provide more events in a consistent and coherent way.
 
-```
-
+```javascript
 const callback = (event: ConferenceStatusUpdated) => {
     const { conferenceId, conferenceAlias, status } = event;
     console.warn(`${conferenceId}/${conferenceAlias} := ${status}`);
