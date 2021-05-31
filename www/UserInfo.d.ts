@@ -1,4 +1,4 @@
-export declare class UserInfo {
+declare class UserInfo {
     name: string;
     externalId: string;
     avatarUrl: string | undefined;
@@ -9,3 +9,4 @@ export declare class UserInfo {
         avatarUrl: string | undefined;
     };
 }
+export = UserInfo;

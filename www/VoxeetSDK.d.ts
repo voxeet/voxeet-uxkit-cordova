@@ -1,21 +1,16 @@
-export { VoxeetMedia } from "./VoxeetMedia";
-export { CreateOptions, CreateResult } from './types/CreateConference';
-export { JoinOptions, JoinUserInfo, UserType } from './types/JoinConference';
-export { Configuration } from "./types";
-import { VoxeetMedia } from "./VoxeetMedia";
+import VoxeetMedia from "./VoxeetMedia";
 import { CreateOptions, CreateResult } from './types/CreateConference';
 import { JoinOptions } from './types/JoinConference';
 import { ConferenceStatusUpdated } from './types/ConferenceStatus';
 import { Configuration } from "./types";
-export { UserInfo } from "./UserInfo";
-import { UserInfo } from "./UserInfo";
-export interface RefreshCallback {
+import UserInfo from "./UserInfo";
+interface RefreshCallback {
     (): void;
 }
-export interface TokenRefreshCallback {
+interface TokenRefreshCallback {
     (): Promise<string>;
 }
-declare class Voxeet {
+declare class VoxeetSDK {
     VoxeetMedia: VoxeetMedia;
     refreshAccessTokenCallback: RefreshCallback | null;
     refreshToken: TokenRefreshCallback | undefined;
@@ -158,5 +153,5 @@ declare class Voxeet {
     /** Internal method. */
     onAccessTokenKo(errorMessage: string): Promise<unknown>;
 }
-export declare const VoxeetSDK: Voxeet;
-export default VoxeetSDK;
+declare const _default: VoxeetSDK;
+export = _default;

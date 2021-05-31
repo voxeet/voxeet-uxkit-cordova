@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VoxeetMedia = void 0;
 /** This class enable interaction with VoxeetUXKit */
 const exec = require('cordova/exec');
 const SERVICE_MEDIA = 'VoxeetMedia';
@@ -32,5 +31,5 @@ class VoxeetMedia {
         });
     }
 }
-exports.VoxeetMedia = VoxeetMedia;
+exports.default = VoxeetMedia;
 //# sourceMappingURL=VoxeetMedia.js.map

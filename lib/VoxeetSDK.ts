@@ -1,18 +1,10 @@
-export { VoxeetMedia }  from "./VoxeetMedia";
-export { CreateOptions, CreateResult } from './types/CreateConference';
-export { JoinOptions, JoinUserInfo, UserType } from './types/JoinConference';
-export { Configuration} from "./types";
-
-
-
-import { VoxeetMedia } from "./VoxeetMedia";
+import VoxeetMedia from "./VoxeetMedia";
 import { CreateOptions, CreateResult } from './types/CreateConference';
 import { JoinOptions, JoinUserInfo, UserType } from './types/JoinConference';
 import { ConferenceStatusUpdated, fromRawToConferenceStatus } from './types/ConferenceStatus';
 import { Configuration} from "./types";
 
-export { UserInfo } from "./UserInfo";
-import { UserInfo } from "./UserInfo";
+import UserInfo from "./UserInfo";
 
 /**
  * This class enable interaction with VoxeetUXKit
@@ -20,15 +12,15 @@ import { UserInfo } from "./UserInfo";
 const exec: any = require('cordova/exec');
 const SERVICE: string = 'Voxeet';
 
-export interface RefreshCallback {
+interface RefreshCallback {
     (): void;
 }
 
-export interface TokenRefreshCallback {
+interface TokenRefreshCallback {
     (): Promise<string>
 }
 
-class Voxeet {
+class VoxeetSDK {
 
     public VoxeetMedia: VoxeetMedia;
 
@@ -360,5 +352,10 @@ class Voxeet {
     }
 }
 
-export const VoxeetSDK = new Voxeet();
-export default VoxeetSDK;
+//restore deprecated { VoxeetSDK, UserInfo, VoxeetMedia } = VoxeetCordova;
+//TODO remove on 1.6
+(VoxeetSDK as any).VoxeetMedia = VoxeetMedia;
+(VoxeetSDK as any).UserInfo = UserInfo;
+(VoxeetSDK as any).VoxeetSDK = new VoxeetSDK();
+
+export = new VoxeetSDK();

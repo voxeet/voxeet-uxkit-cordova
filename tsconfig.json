@@ -4,7 +4,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "target": "es6",
     "module": "commonjs",
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "outDir": "www",
     "sourceMap": true,
     "experimentalDecorators": true,
@@ -19,7 +19,9 @@
     "skipLibCheck": true
   },
   "files": [
-    "./lib/index.ts"
+    "./lib/UserInfo.ts",
+    "./lib/VoxeetMedia.ts",
+    "./lib/VoxeetSDK.ts"
   ],
   "exclude": [
     "build",
