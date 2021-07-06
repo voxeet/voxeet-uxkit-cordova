@@ -92,10 +92,14 @@
 
 - (void)connect:(CDVInvokedUrlCommand *)command {
     NSDictionary *participant = [command.arguments objectAtIndex:0];
+    NSString *externalID = [participant objectForKey:@"externalId"];
+    NSString *name = [participant objectForKey:@"name"];
+    NSString *avatarURL = [participant objectForKey:@"avatarUrl"];
+    
     VTParticipantInfo *participantInfo = [[VTParticipantInfo alloc]
-                                          initWithExternalID:[participant objectForKey:@"externalId"]
-                                          name:[participant objectForKey:@"name"]
-                                          avatarURL:[participant objectForKey:@"avatarUrl"]];
+                                          initWithExternalID:![externalID isEqual:[NSNull null]] ? externalID : nil
+                                          name:![name isEqual:[NSNull null]] ? name : nil
+                                          avatarURL: ![avatarURL isEqual:[NSNull null]] ? avatarURL : nil];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [VoxeetSDK.shared.session openWithInfo:participantInfo completion:^(NSError *error) {
@@ -212,7 +216,10 @@
         NSString *name = [participant objectForKey:@"name"];
         NSString *avatarURL = [participant objectForKey:@"avatarUrl"];
         
-        VTParticipantInfo *participantInfo = [[VTParticipantInfo alloc] initWithExternalID:externalID name:name avatarURL:avatarURL];
+        VTParticipantInfo *participantInfo = [[VTParticipantInfo alloc]
+                                              initWithExternalID:![externalID isEqual:[NSNull null]] ? externalID : nil
+                                              name:![name isEqual:[NSNull null]] ? name : nil
+                                              avatarURL: ![avatarURL isEqual:[NSNull null]] ? avatarURL : nil];
         [participantInfos addObject:participantInfo];
     }
     
@@ -505,7 +512,10 @@
         NSString *name = [participant objectForKey:@"name"];
         NSString *avatarURL = [participant objectForKey:@"avatarUrl"];
         
-        VTParticipantInfo *participantInfo = [[VTParticipantInfo alloc] initWithExternalID:externalID name:name avatarURL:avatarURL];
+        VTParticipantInfo *participantInfo = [[VTParticipantInfo alloc]
+                                              initWithExternalID:![externalID isEqual:[NSNull null]] ? externalID : nil
+                                              name:![name isEqual:[NSNull null]] ? name : nil
+                                              avatarURL: ![avatarURL isEqual:[NSNull null]] ? avatarURL : nil];
         [participantInfos addObject:participantInfo];
     }
     

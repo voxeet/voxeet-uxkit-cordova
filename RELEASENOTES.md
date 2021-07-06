@@ -1,5 +1,8 @@
 # Release Notes
 
+### 1.5.4 (Jul 6th, 2021)
+- bump iOS SDK to 3.1.7 and iOS UXKit to 1.4.9
+
 ### 1.5.3 (May 19th, 2021)
 - bump iOS SDK to 3.1.6 and iOS UXKit to 1.4.8
 
