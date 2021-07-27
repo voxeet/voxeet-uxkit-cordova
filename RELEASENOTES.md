@@ -1,7 +1,8 @@
 # Release Notes
 
-### 1.5.4 (Jul 8th, 2021)
+### 1.5.4 (Jul 8th, 2021 & Jul 27th, 2021)
 - bump iOS SDK to 3.2.0 and iOS UXKit to 1.5.0
+- bump Android SDK to 3.2.1 and Android UXKit to 3.2.1
 
 ### 1.5.3 (May 19th, 2021)
 - bump iOS SDK to 3.1.6 and iOS UXKit to 1.4.8
