@@ -1,7 +1,7 @@
 # Release Notes
 
-### 1.5.6 (Oct 25th, 2021)
-- bump iOS SDK to 3.2.3 and iOS UXKit to 1.5.3
+### 1.5.6 (Dec 21st, 2021)
+- bump iOS SDK to 3.3.1 and iOS UXKit to 1.6.1
 
 ### 1.5.5 (Oct 19th, 2021)
 - bump iOS SDK to 3.2.2 and iOS UXKit to 1.5.2
