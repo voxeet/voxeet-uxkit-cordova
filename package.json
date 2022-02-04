@@ -62,5 +62,7 @@
     "SAMPLE_ANDROID.md",
     "NOTICE"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "q": "^1.5.1"
+  }
 }

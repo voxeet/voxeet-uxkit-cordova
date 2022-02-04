@@ -20,7 +20,7 @@ module.exports = function(context) {
     // Temporary fix
     console.log("Installing Carthage dependencies... (this operation can take few minutes)");
     exec(`chmod +x ${dir}/carthage.sh`);
-    exec(`${dir}/carthage.sh update --platform ios --no-use-binaries --project-directory ${dir}/src/ios`, exec_callback);
+    exec(`${dir}/carthage.sh update --use-xcframeworks --platform ios --no-use-binaries --project-directory ${dir}/src/ios`, exec_callback);
   } else {
     console.log("skipping script installation...");
     deferral.resolve();

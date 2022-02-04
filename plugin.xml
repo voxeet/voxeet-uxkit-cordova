@@ -156,10 +156,10 @@
         <header-file src="src/ios/CDVVoxeet.h" />
         <source-file src="src/ios/CDVVoxeet.m" />
 
-        <framework src="src/ios/Carthage/Build/iOS/VoxeetUXKit.framework" custom="true" embed="true" />
-        <framework src="src/ios/Carthage/Build/iOS/VoxeetSDK.framework" custom="true" embed="true" />
-        <framework src="src/ios/Carthage/Build/iOS/WebRTC.framework" custom="true" embed="true" />
-        <framework src="src/ios/Carthage/Build/iOS/SDWebImage.framework" custom="true" embed="true" />
-        <framework src="src/ios/Carthage/Build/iOS/dvclient.framework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/VoxeetUXKit.xcframework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/VoxeetSDK.xcframework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/WebRTC.xcframework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/Kingfisher.xcframework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/dvclient.xcframework" custom="true" embed="true" />
     </platform>
 </plugin>
