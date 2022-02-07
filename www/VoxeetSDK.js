@@ -256,7 +256,7 @@ class VoxeetSDK {
      */
     onConferenceStatusUpdatedEvent(callback) {
         exec((object) => {
-            const event = ConferenceStatus_1.fromRawToConferenceStatus(object);
+            const event = (0, ConferenceStatus_1.fromRawToConferenceStatus)(object);
             if (null != event)
                 callback(event);
             else
