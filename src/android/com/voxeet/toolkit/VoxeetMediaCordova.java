@@ -76,36 +76,4 @@ public class VoxeetMediaCordova extends CordovaPlugin {
                 .then((ThenVoid<Boolean>) (result) -> cb.success())
                 .error(error -> cb.error("Error while switching camera")));
     }
-
-    /*
-    private void isDefaultFrontFacing(final CallbackContext cb) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                boolean enabled = false;
-                if (null != VoxeetSdk.instance()) {
-                    enabled = VoxeetSdk.instance().getMediaService().getCameraInformationProvider().isDefaultFrontFacing();
-                }
-
-                cb.sendPluginResult(new PluginResult(PluginResult.Status.OK, enabled));
-            }
-        });
-    }
-    */
-
-    /*
-    private void isFrontCamera(final CallbackContext cb) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                boolean enabled = false;
-                if (null != VoxeetSdk.instance()) {
-                    enabled = VoxeetSdk.instance().getMediaService().isFrontCamera();
-                }
-
-                cb.sendPluginResult(new PluginResult(PluginResult.Status.OK, enabled));
-            }
-        });
-    }
-    */
 }

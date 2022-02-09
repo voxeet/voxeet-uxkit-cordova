@@ -1,8 +1,7 @@
 package com.voxeet.toolkit.notification;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.voxeet.VoxeetSDK;
@@ -13,16 +12,13 @@ import com.voxeet.sdk.json.ParticipantInfo;
 import com.voxeet.sdk.preferences.VoxeetPreferences;
 import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.services.SessionService;
-import com.voxeet.uxkit.activities.notification.IncomingBundleChecker;
+import com.voxeet.uxkit.common.activity.bundle.DefaultIncomingBundleChecker;
 
-public class RNBundleChecker extends IncomingBundleChecker {
+public class RNBundleChecker extends DefaultIncomingBundleChecker {
     private static final String TAG = RNBundleChecker.class.getSimpleName();
 
-    //COPY FROM IncomingBundleChecker
-    private static final String BUNDLE_EXTRA_BUNDLE = "BUNDLE_EXTRA_BUNDLE";
-
-    public RNBundleChecker(@NonNull Intent intent, @Nullable IExtraBundleFillerListener filler_listener) {
-        super(intent, filler_listener);
+    public RNBundleChecker(@NonNull Intent intent) {
+        super(intent, null);
     }
 
     public void onDecline() {
@@ -59,17 +55,5 @@ public class RNBundleChecker extends IncomingBundleChecker {
                         .error(Throwable::printStackTrace);
             }
         }
-    }
-
-    @NonNull
-    public Intent createActivityDeclined(CordovaIncomingCallActivity caller) {
-        return CallUtils.createActivityCallAnswer(caller,
-                getConferenceId(),
-                getUserName(),
-                getUserId(),
-                getExternalUserId(),
-                getAvatarUrl(),
-                createExtraBundle(),
-                false);
     }
 }

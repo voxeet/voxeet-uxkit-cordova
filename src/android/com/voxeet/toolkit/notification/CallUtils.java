@@ -1,15 +1,21 @@
 package com.voxeet.toolkit.notification;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.voxeet.sdk.push.center.invitation.InvitationBundle;
 import com.voxeet.sdk.push.center.management.Constants;
 import com.voxeet.sdk.utils.AndroidManifest;
+import com.voxeet.uxkit.common.UXKitLogger;
+import com.voxeet.uxkit.common.activity.bundle.DefaultIncomingBundleChecker;
+import com.voxeet.uxkit.common.activity.bundle.IncomingBundleChecker;
 
 public class CallUtils {
     public final static String BUNDLE_EXTRA_BUNDLE = "BUNDLE_EXTRA_BUNDLE";
@@ -37,11 +43,28 @@ public class CallUtils {
         return klass;
     }
 
+    @SuppressLint("WrongConstant")
     public static void addFlags(Intent intent) {
         intent.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         );
+    }
+
+    @NonNull
+    public static InvitationBundle createInvitationBundle(@NonNull IncomingBundleChecker bundleChecker) {
+        return new InvitationBundle(createBundle(bundleChecker));
+    }
+
+    @NonNull
+    public static Bundle createBundle(@NonNull IncomingBundleChecker bundleChecker) {
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.CONF_ID, bundleChecker.getConferenceId());
+        bundle.putString(Constants.INVITER_NAME, bundleChecker.getUserName());
+        bundle.putString(Constants.INVITER_ID, bundleChecker.getUserId());
+        bundle.putString(Constants.INVITER_EXTERNAL_ID, bundleChecker.getExternalUserId());
+        bundle.putString(Constants.INVITER_URL, bundleChecker.getAvatarUrl());
+        return bundle;
     }
 
     @NonNull
@@ -80,5 +103,14 @@ public class CallUtils {
         CallUtils.addFlags(intent);
 
         return intent;
+    }
+
+    public static void dumpIntent(@NonNull DefaultIncomingBundleChecker bundle) {
+        UXKitLogger.d(bundle.getClass().getSimpleName(), "dumpIntent: "
+                + " userId:=" + bundle.getUserId()
+                + " externaluserId:=" + bundle.getExternalUserId()
+                + " conferenceId:=" + bundle.getConferenceId()
+                + " userName:=" + bundle.getUserName()
+                + " avatarUrl:=" + bundle.getAvatarUrl());
     }
 }

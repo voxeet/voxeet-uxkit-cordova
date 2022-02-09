@@ -12,11 +12,11 @@ buildscript {
 }
 
 repositories {
+    google()
+    mavenCentral()
+    mavenLocal()
     maven { url "https://android-sdk.voxeet.com/release" }
     maven { url "https://android-sdk.voxeet.com/beta" }
-    google()
-    jcenter()
-    mavenLocal()
 }
 
 android {
@@ -48,19 +48,23 @@ new XmlSlurper().parse(file('../app/src/main/res/xml/config.xml')).preference.ea
 }
 
 dependencies {
-    compile 'com.android.support:multidex:1.0.3'
+    implementation "androidx.appcompat:appcompat:1.1.0"
+    implementation "androidx.annotation:annotation:1.1.0"
 
-    compile ('com.voxeet.sdk:uxkit:3.2.1') {
-        transitive = true
+
+    //add by default the optional firebase dependency
+    api ("com.voxeet.sdk:uxkit-firebase:3.4.0-beta.1") {
+        exclude group: 'androidx.appcompat', module: 'appcompat'
     }
 
-    if (push) {
-        compile ('com.voxeet.sdk:uxkit-firebase:3.2.1')
+    //use the latest uxkit
+    api ('com.voxeet.sdk:uxkit:3.4.0-beta.1') {
+        exclude group: 'androidx.appcompat', module: 'appcompat'
     }
 }
 
 //use the push variable
-if (push) {
+if (push && false) {
   cdvPluginPostBuildExtras.add({
     apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
   })

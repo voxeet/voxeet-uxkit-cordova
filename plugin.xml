@@ -81,8 +81,11 @@
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <activity android:label="Incoming Call" android:name="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
-            <activity android:label="Incoming Call" android:name="com.voxeet.toolkit.notification.CordovaIncomingFromNotificationActivity" android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
-            
+
+            <service android:name="com.voxeet.toolkit.notification.DefaultIncomingNotificationService"
+                android:enabled="true"
+                android:exported="false" />
+
             <meta-data
                 android:name="voxeet_incoming_class"
                 android:value="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" />
@@ -104,18 +107,18 @@
             </feature>
         </config-file>
 
+        <source-file src="src/android/com/voxeet/toolkit/CordovaPermissionHelper.java" target-dir="src/com/voxeet/toolkit" />
+        <source-file src="src/android/com/voxeet/toolkit/CordovaRootViewProvider.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/VoxeetApplication.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/VoxeetCordova.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/VoxeetMediaCordova.java" target-dir="src/com/voxeet/toolkit" />
-        <source-file src="src/android/com/voxeet/toolkit/CordovaRootViewProvider.java" target-dir="src/com/voxeet/toolkit" />
 
-        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingFromNotificationActivity.java" target-dir="src/com/voxeet/toolkit/notification" />
-        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingNotification.java" target-dir="src/com/voxeet/toolkit/notification" />
-
-        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingBundleChecker.java" target-dir="src/com/voxeet/toolkit/notification" />
-        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingCallActivity.java" target-dir="src/com/voxeet/toolkit/notification" />
-        <source-file src="src/android/com/voxeet/toolkit/notification/RNBundleChecker.java" target-dir="src/com/voxeet/toolkit/notification" />
         <source-file src="src/android/com/voxeet/toolkit/notification/CallUtils.java" target-dir="src/com/voxeet/toolkit/notification" />
+        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingCallActivity.java" target-dir="src/com/voxeet/toolkit/notification" />
+        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingNotification.java" target-dir="src/com/voxeet/toolkit/notification" />
+        <source-file src="src/android/com/voxeet/toolkit/notification/CordovaIncomingNotificationIntentProvider.java" target-dir="src/com/voxeet/toolkit/notification" />
+        <source-file src="src/android/com/voxeet/toolkit/notification/DefaultIncomingNotificationService.java" target-dir="src/com/voxeet/toolkit/notification" />
+        <source-file src="src/android/com/voxeet/toolkit/notification/RNBundleChecker.java" target-dir="src/com/voxeet/toolkit/notification" />
 
         <hook type="after_prepare" src="voxeet_application.js" />
     </platform>

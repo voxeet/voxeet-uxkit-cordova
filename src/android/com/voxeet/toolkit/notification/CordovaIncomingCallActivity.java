@@ -1,17 +1,15 @@
 package com.voxeet.toolkit.notification;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.squareup.picasso.Picasso;
 import com.voxeet.VoxeetSDK;
@@ -24,8 +22,10 @@ import com.voxeet.sdk.services.AudioService;
 import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.utils.AndroidManifest;
 import com.voxeet.sdk.utils.AudioType;
+import com.voxeet.toolkit.CordovaPermissionHelper;
 import com.voxeet.toolkit.VoxeetCordova;
 import com.voxeet.uxkit.R;
+import com.voxeet.uxkit.common.activity.bundle.DefaultIncomingBundleChecker;
 import com.voxeet.uxkit.views.internal.rounded.RoundedImageView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -33,16 +33,15 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 
-public class CordovaIncomingCallActivity extends AppCompatActivity implements CordovaIncomingBundleChecker.IExtraBundleFillerListener {
+public class CordovaIncomingCallActivity extends AppCompatActivity {
 
     private final static String TAG = CordovaIncomingCallActivity.class.getSimpleName();
     private static final String DEFAULT_VOXEET_INCOMING_CALL_DURATION_KEY = "voxeet_incoming_call_duration";
     private static final int DEFAULT_VOXEET_INCOMING_CALL_DURATION_VALUE = 40 * 1000;
-    static final int RECORD_AUDIO_RESULT = 0x10;
-    public static CordovaIncomingBundleChecker CORDOVA_ROOT_BUNDLE = null;
-    public static RNBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT = null;
+    public static DefaultIncomingBundleChecker CORDOVA_ROOT_BUNDLE = null;
+    public static DefaultIncomingBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT = null;
     public static RNBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = null;
-    public static RNBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT = null;
+    public static DefaultIncomingBundleChecker CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT = null;
 
     protected TextView mUsername;
     protected TextView mStateTextView;
@@ -51,7 +50,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
     protected RoundedImageView mAvatar;
     protected EventBus mEventBus;
 
-    private CordovaIncomingBundleChecker mIncomingBundleChecker;
+    private DefaultIncomingBundleChecker mIncomingBundleChecker;
     private Handler mHandler;
     private boolean isResumed;
 
@@ -60,12 +59,10 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
         super.onCreate(savedInstanceState);
         isResumed = false;
 
-        VoxeetCordova.tryInitialize(this, this);
-
         //we preInit the AudioService,
         AudioService.preInitSounds(getApplicationContext());
 
-        mIncomingBundleChecker = new CordovaIncomingBundleChecker(this, getIntent(), this);
+        mIncomingBundleChecker = new DefaultIncomingBundleChecker(getIntent(), null);
 
         //add few Flags to start the activity before its setContentView
         //note that if your device is using a keyguard (code or password)
@@ -96,7 +93,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
                     finish();
                 }
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }, timeout);
     }
@@ -119,10 +116,10 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
         if (mIncomingBundleChecker.isBundleValid()) {
             mEventBus = VoxeetSDK.instance().getEventBus();
             try {
-                if (null != mEventBus && !mEventBus.isRegistered(this))
+                if (!mEventBus.isRegistered(this))
                     mEventBus.register(this);
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
 
             mUsername.setText(mIncomingBundleChecker.getUserName());
@@ -145,7 +142,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
             }
         } else {
             Log.d(TAG, "onResume: incoming call will quit, bundle invalid ...");
-            mIncomingBundleChecker.dumpIntent();
+            CallUtils.dumpIntent(mIncomingBundleChecker);
             finish();
         }
     }
@@ -157,7 +154,7 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
         try {
             EventBus.getDefault().unregister(this);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         SoundManager soundManager = AudioService.getSoundManager();
@@ -170,33 +167,10 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
                 mEventBus.unregister(this);
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         super.onPause();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-
-        switch (requestCode) {
-            case RECORD_AUDIO_RESULT: {
-                for (int i = 0; i < permissions.length; i++) {
-                    String permission = permissions[i];
-                    int grantResult = grantResults[i];
-
-                    if (Manifest.permission.RECORD_AUDIO.equals(permission) && grantResult == PackageManager.PERMISSION_GRANTED) {
-                        onAcceptWithPermission();
-                    } else {
-                        //possible message to show? display?
-                    }
-                }
-                return;
-            }
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -243,10 +217,10 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
                         finish();
                     });
         } else {
-            CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = new RNBundleChecker(getIntent(), null);
+            CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = new RNBundleChecker(getIntent());
 
             //finish();
-            Intent intent = CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE.createActivityDeclined(this);
+            Intent intent = CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE.createActivityAccepted(this);
             //start the accepted call activity
             startActivity(intent);
 
@@ -263,59 +237,31 @@ public class CordovaIncomingCallActivity extends AppCompatActivity implements Co
      * (the only flow to have mic permission with this activity in the accept call button)
      */
     protected void onAccept() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO_RESULT);
-        } else {
+        CordovaPermissionHelper.requestDefaultPermission().then(result -> {
             onAcceptWithPermission();
-        }
+        }).error(Throwable::printStackTrace);
     }
 
     protected void onAcceptWithPermission() {
-        if (mIncomingBundleChecker.isBundleValid()) {
-            if (canDirectlyUseJoin()) {
-                VoxeetCordova.checkForIncomingConference(mIncomingBundleChecker);
-            } else {
-                CORDOVA_ROOT_BUNDLE = mIncomingBundleChecker;
-            }
-
-            Intent intent = mIncomingBundleChecker.createActivityAccepted(this);
-            //start the accepted call activity
-            startActivity(intent);
-
-            //and finishing this one - before the prejoined event
-            Log.d(TAG, "onAcceptWithPermission: permission accepted, leaving screen and starting main");
-            finish();
-            overridePendingTransition(0, 0);
+        if (!mIncomingBundleChecker.isBundleValid()) return;
+        if (canDirectlyUseJoin()) {
+            VoxeetCordova.checkForIncomingConference(mIncomingBundleChecker);
+        } else {
+            CORDOVA_ROOT_BUNDLE = mIncomingBundleChecker;
         }
+
+        Intent intent = mIncomingBundleChecker.createActivityAccepted(this);
+        //start the accepted call activity
+        startActivity(intent);
+
+        //and finishing this one - before the prejoined event
+        Log.d(TAG, "onAcceptWithPermission: permission accepted, leaving screen and starting main");
+        finish();
+        overridePendingTransition(0, 0);
     }
 
     private boolean canDirectlyUseJoin() {
         return VoxeetSDK.instance().isInitialized() && null != VoxeetPreferences.getSavedUserInfo();
-    }
-
-    /**
-     * Give the possibility to add custom extra infos before starting a conference
-     *
-     * @return a nullable extra bundle (will not be the bundle sent but a value with a key)
-     */
-    @Nullable
-    @Override
-    public Bundle createExtraBundle() {
-        //override to return a custom intent to add in the possible notification
-        //note that everything which could have been backed up from the previous activity
-        //will be injected after the creation - usefull if the app is mainly based on
-        //passed intents
-        return null;
-    }
-
-    /**
-     * Get the instance of the bundle checker corresponding to this activity
-     *
-     * @return an instance or null corresponding to the current bundle checker
-     */
-    @Nullable
-    protected CordovaIncomingBundleChecker getBundleChecker() {
-        return mIncomingBundleChecker;
     }
 
     @Override
