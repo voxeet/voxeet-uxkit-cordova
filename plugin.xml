@@ -17,6 +17,7 @@
 -->
 
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+      xmlns:android="http://schemas.android.com/apk/res/android"
       id="cordova-plugin-voxeet"
       version="1.5.7">
     <name>Voxeet</name>
@@ -60,6 +61,13 @@
 
     <!-- android -->
     <platform name="android">
+        <edit-config
+            file="app/src/main/AndroidManifest.xml"
+            target="/manifest/application/activity[@android:name='MainActivity']"
+            mode="merge">
+            <activity android:exported="true" android:enabled="true"/>
+        </edit-config>
+
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.INTERNET" />
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
