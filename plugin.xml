@@ -80,7 +80,11 @@
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <activity android:label="Incoming Call" android:name="com.voxeet.toolkit.notification.CordovaIncomingCallActivity" android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            <activity android:label="Incoming Call"
+                android:name="com.voxeet.toolkit.notification.CordovaIncomingCallActivity"
+                android:theme="@style/Theme.AppCompat.NoActionBar"
+                android:enabled="true"
+                android:exported="true" />
 
             <service android:name="com.voxeet.toolkit.notification.DefaultIncomingNotificationService"
                 android:enabled="true"
