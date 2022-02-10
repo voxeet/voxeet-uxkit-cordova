@@ -61,12 +61,6 @@
 
     <!-- android -->
     <platform name="android">
-        <edit-config
-            file="app/src/main/AndroidManifest.xml"
-            target="/manifest/application/activity[@android:name='MainActivity']"
-            mode="merge">
-            <activity android:exported="true" android:enabled="true"/>
-        </edit-config>
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.INTERNET" />
