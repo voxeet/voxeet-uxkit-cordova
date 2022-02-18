@@ -113,6 +113,8 @@
             </feature>
         </config-file>
 
+        <source-file src="src/android/com/voxeet/toolkit/utils/SafeLock.java" target-dir="src/com/voxeet/toolkit/utils" />
+
         <source-file src="src/android/com/voxeet/toolkit/CordovaPermissionHelper.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/CordovaRootViewProvider.java" target-dir="src/com/voxeet/toolkit" />
         <source-file src="src/android/com/voxeet/toolkit/VoxeetApplication.java" target-dir="src/com/voxeet/toolkit" />

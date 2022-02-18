@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -15,16 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.voxeet.VoxeetSDK;
-import com.voxeet.promise.Promise;
-import com.voxeet.promise.solve.ErrorPromise;
 import com.voxeet.promise.solve.ThenPromise;
-import com.voxeet.promise.solve.ThenValue;
 import com.voxeet.promise.solve.ThenVoid;
 import com.voxeet.sdk.authent.token.TokenCallback;
-import com.voxeet.sdk.events.error.PermissionRefusedEvent;
 import com.voxeet.sdk.events.sdk.ConferenceStatusUpdatedEvent;
 import com.voxeet.sdk.events.sdk.SocketStateChangeEvent;
-import com.voxeet.sdk.events.v2.ParticipantAddedEvent;
 import com.voxeet.sdk.json.ParticipantInfo;
 import com.voxeet.sdk.json.internal.MetadataHolder;
 import com.voxeet.sdk.json.internal.ParamsHolder;
@@ -44,14 +37,11 @@ import com.voxeet.sdk.services.builders.ConferenceCreateOptions;
 import com.voxeet.sdk.services.builders.ConferenceJoinOptions;
 import com.voxeet.sdk.services.builders.ConferenceListenOptions;
 import com.voxeet.sdk.services.telemetry.SdkEnvironment;
-import com.voxeet.sdk.utils.Validate;
 import com.voxeet.toolkit.notification.CallUtils;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
 import com.voxeet.toolkit.notification.CordovaIncomingNotification;
-import com.voxeet.toolkit.notification.RNBundleChecker;
-import com.voxeet.uxkit.common.activity.PermissionContractHolder;
+import com.voxeet.toolkit.utils.SafeLock;
 import com.voxeet.uxkit.common.activity.bundle.DefaultIncomingBundleChecker;
-import com.voxeet.uxkit.common.permissions.PermissionController;
 import com.voxeet.uxkit.configuration.ActionBar;
 import com.voxeet.uxkit.configuration.Configuration;
 import com.voxeet.uxkit.configuration.Overlay;
@@ -64,7 +54,6 @@ import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.PermissionHelper;
 import org.apache.cordova.PluginResult;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -81,13 +70,11 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Voxeet implementation for Cordova
  */
-
 public class VoxeetCordova extends CordovaPlugin {
 
     private static final String VERSION = "1.5.3-BETA6";
     private static final String ERROR_SDK_NOT_INITIALIZED = "ERROR_SDK_NOT_INITIALIZED";
     private static final String ERROR_SDK_NOT_LOGGED_IN = "ERROR_SDK_NOT_LOGGED_IN";
-    private static final String SDK_ALREADY_CONFIGURED_ERROR = "The SDK is already configured";
     private static final String TAG = VoxeetCordova.class.getSimpleName();
 
     private static final Handler HANDLER = new Handler(Looper.getMainLooper());
@@ -99,19 +86,15 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private ParticipantInfo _current_user;
     private CallbackContext _log_in_callback;
-    private ReentrantLock lock = new ReentrantLock();
-    private ReentrantLock lockAwaitingToken = new ReentrantLock();
-    private List<TokenCallback> mAwaitingTokenCallback;
+    private final SafeLock lock = new SafeLock();
+    private final SafeLock lockAwaitingToken = new SafeLock();
+    private final List<TokenCallback> mAwaitingTokenCallback = new ArrayList<>();
     private CallbackContext refreshAccessTokenCallbackInstance;
     private CallbackContext onConferenceStatusUpdatedEventCallback;
-    private CordovaWebView mWebView;
-    private PermissionContractHolder permissionContractHolder;
+    private CordovaActivityWrapper wrapper;
 
     public VoxeetCordova() {
         super();
-        mAwaitingTokenCallback = new ArrayList<>();
-
-        Promise.setHandler(HANDLER);
     }
 
     public static void initNotificationCenter(@NonNull Context context) {
@@ -130,10 +113,9 @@ public class VoxeetCordova extends CordovaPlugin {
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
 
-        mWebView = webView;
+        wrapper = new CordovaActivityWrapper(cordova.getActivity());
 
         VoxeetSDK.instance().register(this);
-        permissionContractHolder = new PermissionContractHolder(cordova.getActivity());
     }
 
     @Override
@@ -142,16 +124,14 @@ public class VoxeetCordova extends CordovaPlugin {
 
         VoxeetSDK.instance().register(this);
 
-        PermissionController.register(permissionContractHolder.getRequestPermissions());
-
-        if (VoxeetSDK.conference().isLive()) {
-            setVolumeVoiceCall();
-        }
+        // those two will manage the bundle in various cases
+        wrapper.onResume();
         checkForAwaitingConference(null);
     }
 
     @Override
     public void onPause(boolean multitasking) {
+        wrapper.onPause();
         super.onPause(multitasking);
 
         ConferenceService service = VoxeetSDK.conference();
@@ -162,36 +142,8 @@ public class VoxeetCordova extends CordovaPlugin {
 
     @Override
     public void onNewIntent(Intent intent) {
+        wrapper.onNewIntent(intent);
         super.onNewIntent(intent);
-    }
-
-    @Override
-    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
-        super.onRequestPermissionResult(requestCode, permissions, grantResults);
-
-        switch (requestCode) {
-            case PermissionRefusedEvent.RESULT_CAMERA: {
-                ConferenceService service = VoxeetSDK.conference();
-                if (service.isLive()) {
-                    service.startVideo()
-                            .then((result, solver) -> {
-
-                            })
-                            .error(Throwable::printStackTrace);
-                }
-                return;
-            }
-            default:
-        }
-    }
-
-    private int index(@NonNull String[] permissions, @NonNull String permission) {
-        int i = 0;
-        for (String perm : permissions) {
-            if (permission.equalsIgnoreCase(perm)) return i;
-            i++;
-        }
-        return -1;
     }
 
     @Override
@@ -386,7 +338,7 @@ public class VoxeetCordova extends CordovaPlugin {
                     maximize(callbackContext);
                     break;
                 case "setAudio3DEnabled":
-                    setAudio3DEnabled(args.getBoolean(0));
+                    Log.d(TAG, "execute: setAduio3DEnabled is not available anymore");
                     callbackContext.success();
                     break;
                 case "setTelecomMode":
@@ -498,7 +450,6 @@ public class VoxeetCordova extends CordovaPlugin {
         }
     }
 
-    @Nullable
     private void defaultVideo(boolean startVideo) {
         startVideoOnJoin = startVideo;
         VoxeetPreferences.setDefaultVideoOn(startVideo);
@@ -511,11 +462,11 @@ public class VoxeetCordova extends CordovaPlugin {
             if (!VoxeetSDK.instance().isInitialized()) {
                 VoxeetSDK.initialize(accessToken,
                         (required, callback) -> {
-                            lock(lockAwaitingToken);
+                            lockAwaitingToken.lock();
                             if (!mAwaitingTokenCallback.contains(callback)) {
                                 mAwaitingTokenCallback.add(callback);
                             }
-                            unlock(lockAwaitingToken);
+                            lockAwaitingToken.unlock();
                             postRefreshAccessToken();
                         });
 
@@ -581,7 +532,7 @@ public class VoxeetCordova extends CordovaPlugin {
             }
 
             //if we are trying to connect the same user !
-            if (isConnected() && isSameUser(userInfo)) {
+            if (VoxeetSDK.session().isOpen() && isSameUser(userInfo)) {
                 cb.success();
                 return;
             }
@@ -607,12 +558,8 @@ public class VoxeetCordova extends CordovaPlugin {
         SessionService service = VoxeetSDK.session();
         if (VoxeetSDK.instance().isInitialized()) {
             service.open(_current_user)
-                    .then((result, solver) -> {
-                        //TODO possibility here to add management for user to be socket managed here
-                    })
-                    .error(error -> {
-                        //error
-                    });
+                    .then((result, solver) -> { })
+                    .error(error -> { });
         }
     }
 
@@ -657,7 +604,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void checkForAwaitingConference(@Nullable final CallbackContext cb) {
         HANDLER.post(() -> {
-            lock();
+            lock.lock();
             if (!VoxeetSDK.instance().isInitialized()) {
                 if (null != cb) cb.error(ERROR_SDK_NOT_INITIALIZED);
             } else {
@@ -687,7 +634,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
                 cleanBundles();
             }
-            unlock();
+            lock.unlock();
         });
     }
 
@@ -724,7 +671,6 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void broadcast(@NonNull String conferenceId, @NonNull final CallbackContext cb) {
-        Context context = mWebView.getContext();
         Log.d(TAG, "broadcast: broadcasting conference");
         Conference conference = VoxeetSDK.conference().getConference(conferenceId);
 
@@ -826,10 +772,6 @@ public class VoxeetCordova extends CordovaPlugin {
                 .error(throwable -> cb.error("Error while sending the message to the server: " + throwable.getMessage())));
     }
 
-    private void setAudio3DEnabled(boolean enabled) {
-        //TODO no-op
-    }
-
     private void setTelecomMode(boolean telecomMode) {
         VoxeetSDK.conference().ConferenceConfigurations.telecomMode = telecomMode;
     }
@@ -847,10 +789,6 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private static void defaultBuiltInSpeaker(final boolean enabled) {
         HANDLER.post(() -> {
-            //comment lines introducing a switch in the mode
-            //AudioRoute route = AudioRoute.ROUTE_PHONE;
-            //if (enabled) route = AudioRoute.ROUTE_SPEAKER;
-
             VoxeetPreferences.setDefaultBuiltInSpeakerOn(enabled);
 
             //set the contextual information which will be used by the UXKit when he join event will be fired
@@ -873,7 +811,7 @@ public class VoxeetCordova extends CordovaPlugin {
 
     private void onAccessTokenOk(final String accessToken,
                                  final CallbackContext callbackContext) {
-        lock(lockAwaitingToken);
+        lockAwaitingToken.lock();
         for (TokenCallback callback : mAwaitingTokenCallback) {
             try {
                 callback.ok(accessToken);
@@ -881,7 +819,7 @@ public class VoxeetCordova extends CordovaPlugin {
                 ee.printStackTrace();
             }
         }
-        unlock(lockAwaitingToken);
+        lockAwaitingToken.unlock();
         callbackContext.success();
     }
 
@@ -890,7 +828,7 @@ public class VoxeetCordova extends CordovaPlugin {
         try {
             throw new Exception("refreshToken failed with reason := " + reason);
         } catch (Exception e) {
-            lock(lockAwaitingToken);
+            lockAwaitingToken.lock();
             for (TokenCallback callback : mAwaitingTokenCallback) {
                 try {
                     callback.error(e);
@@ -898,7 +836,7 @@ public class VoxeetCordova extends CordovaPlugin {
                     ee.printStackTrace();
                 }
             }
-            unlock(lockAwaitingToken);
+            lockAwaitingToken.unlock();
         }
         callbackContext.success();
     }
@@ -927,11 +865,6 @@ public class VoxeetCordova extends CordovaPlugin {
                     cancelIncomingConference();
                 }
         }
-    }
-
-    private boolean isConnected() {
-        SessionService service = VoxeetSDK.session();
-        return service.isSocketOpen();
     }
 
     private boolean isSameUser(@NonNull ParticipantInfo userInfo) {
@@ -983,58 +916,20 @@ public class VoxeetCordova extends CordovaPlugin {
         CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
     }
 
-    private void lock(ReentrantLock lock) {
-        try {
-            lock.lock();
-        } catch (Exception e) {
-
-        }
-    }
-
-    private void unlock(ReentrantLock lock) {
-        try {
-            if (lock.isLocked())
-                lock.unlock();
-        } catch (Exception e) {
-
-        }
-    }
-
-    private void lock() {
-        lock(lock);
-    }
-
-    private void unlock() {
-        unlock(lock);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ParticipantAddedEvent event) {
-        setVolumeVoiceCall();
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(ConferenceStatusUpdatedEvent event) {
         switch (event.state) {
-            case CREATING:
-            case CREATED:
-            case JOINING:
-                setVolumeVoiceCall();
-                break;
             case JOINED:
                 Log.d(TAG, "onEvent: ConferenceJoinedSuccessEvent :: removing the various bundles");
-                setVolumeVoiceCall();
                 cleanBundles();
                 break;
             case ERROR:
-                setVolumeMusic();
                 cleanBundles();
                 break;
             case LEAVING:
             case LEFT:
             default:
         }
-        setVolumeMusic();
 
         if (onConferenceStatusUpdatedEventCallback != null) {
             try {
@@ -1054,32 +949,11 @@ public class VoxeetCordova extends CordovaPlugin {
         }
     }
 
-    private void setVolumeVoiceCall() {
-        if (Build.MANUFACTURER.equals("samsung")) {
-            Log.d(TAG, "setVolumeVoiceCall not to be used with samsung devices. Report issue if side effect");
-        }
-
-        cordova.getActivity().setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
-        if (null != AudioService.getSoundManager()) {
-            AudioService.getSoundManager().unsetMediaRoute().enable().requestAudioFocus();
-        }
-    }
-
-    private void setVolumeMusic() {
-        if (null != AudioService.getSoundManager()) {
-            AudioService.getSoundManager().abandonAudioFocusRequest();
-        }
-    }
-
     private void cleanBundles() {
         //and finally clear them
         CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
         CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT = null;
         CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE = null;
         CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_LAUNCH_ACCEPT = null;
-    }
-
-    private static boolean isEmpty(@Nullable String str) {
-        return null == str || TextUtils.isEmpty(str) || "null".equalsIgnoreCase(str);
     }
 }

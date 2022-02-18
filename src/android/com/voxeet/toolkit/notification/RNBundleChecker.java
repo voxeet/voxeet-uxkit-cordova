@@ -1,8 +1,9 @@
 package com.voxeet.toolkit.notification;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.voxeet.VoxeetSDK;
 import com.voxeet.promise.Promise;

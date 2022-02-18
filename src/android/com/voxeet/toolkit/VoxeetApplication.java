@@ -1,8 +1,9 @@
 package com.voxeet.toolkit;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.multidex.MultiDexApplication;
-import android.util.Log;
 
 import com.voxeet.sdk.preferences.VoxeetPreferences;
 import com.voxeet.sdk.utils.VoxeetEnvironmentHolder;
