@@ -1,5 +1,14 @@
 # Release Notes
 
+## 1.5.7 (Feb 24th, 2022)
+### Features
+
+The Cordova UXKit now uses the iOS Client SDK [3.3.3](https://github.com/voxeet/voxeet-sdk-ios/releases/tag/3.3.3) and iOS Client UXKit [1.6.5](https://github.com/voxeet/voxeet-uxkit-ios/releases/tag/1.6.5).
+
+### Bug Fixes
+
+Fixed an issue where submitting an application resulted in receiving errors informing about nested bundles.
+
 ## 1.5.6 (Feb 4th, 2022)
 ### Features
 
