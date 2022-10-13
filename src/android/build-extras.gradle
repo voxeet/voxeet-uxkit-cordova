@@ -15,8 +15,18 @@ repositories {
     google()
     mavenCentral()
     mavenLocal()
-    maven { url "https://android-sdk.voxeet.com/release" }
-    maven { url "https://android-sdk.voxeet.com/beta" }
+    maven {
+        url "https://android-sdk.voxeet.com/release"
+        content {
+            includeGroup "com.voxeet.sdk"
+        }
+    }
+    maven {
+        url "https://android-sdk.voxeet.com/beta"
+        content {
+            includeGroup "com.voxeet.sdk"
+        }
+    }
 }
 
 android {
