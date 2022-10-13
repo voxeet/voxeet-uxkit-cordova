@@ -59,9 +59,6 @@ public class CordovaIncomingCallActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         isResumed = false;
 
-        //we preInit the AudioService,
-        AudioService.preInitSounds(getApplicationContext());
-
         mIncomingBundleChecker = new DefaultIncomingBundleChecker(getIntent(), null);
 
         //add few Flags to start the activity before its setContentView

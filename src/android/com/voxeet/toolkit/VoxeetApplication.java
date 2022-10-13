@@ -29,10 +29,6 @@ public class VoxeetApplication extends MultiDexApplication {
 
         VoxeetToolkit.instance().enableOverlay(true);
 
-        // force a default voxeet preferences manager
-        // in sdk mode, no issues
-        VoxeetPreferences.init(this, new VoxeetEnvironmentHolder(this));
-
         VoxeetCordova.initNotificationCenter(this);
 
         // change the overlay used by default
