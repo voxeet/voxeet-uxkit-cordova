@@ -72,7 +72,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class VoxeetCordova extends CordovaPlugin {
 
-    private static final String VERSION = "1.5.3-BETA6";
+    private static final String VERSION = "___CORDOVA_VERSION___";
     private static final String ERROR_SDK_NOT_INITIALIZED = "ERROR_SDK_NOT_INITIALIZED";
     private static final String ERROR_SDK_NOT_LOGGED_IN = "ERROR_SDK_NOT_LOGGED_IN";
     private static final String TAG = VoxeetCordova.class.getSimpleName();
