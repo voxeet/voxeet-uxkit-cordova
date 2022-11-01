@@ -1,8 +1,9 @@
 package com.voxeet.toolkit;
 
-import android.support.annotation.Nullable;
-import android.support.multidex.MultiDexApplication;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.multidex.MultiDexApplication;
 
 import com.voxeet.sdk.preferences.VoxeetPreferences;
 import com.voxeet.sdk.utils.VoxeetEnvironmentHolder;
@@ -28,11 +29,7 @@ public class VoxeetApplication extends MultiDexApplication {
 
         VoxeetToolkit.instance().enableOverlay(true);
 
-        // force a default voxeet preferences manager
-        // in sdk mode, no issues
-        VoxeetPreferences.init(this, new VoxeetEnvironmentHolder(this));
-
-        VoxeetCordova.initNotificationCenter();
+        VoxeetCordova.initNotificationCenter(this);
 
         // change the overlay used by default
         VoxeetToolkit.instance().getConferenceToolkit().setDefaultOverlayState(OverlayState.EXPANDED);

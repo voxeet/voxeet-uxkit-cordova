@@ -3,13 +3,14 @@ package com.voxeet.toolkit;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.voxeet.VoxeetSDK;
 import com.voxeet.sdk.events.sdk.ConferenceStatusUpdatedEvent;
 import com.voxeet.sdk.json.ConferenceDestroyedPush;
-import com.voxeet.toolkit.notification.CordovaIncomingBundleChecker;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
+import com.voxeet.uxkit.common.activity.bundle.DefaultIncomingBundleChecker;
 import com.voxeet.uxkit.controllers.VoxeetToolkit;
 import com.voxeet.uxkit.providers.rootview.DefaultRootViewProvider;
 
@@ -17,9 +18,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+@Deprecated
 public class CordovaRootViewProvider extends DefaultRootViewProvider {
-    private final Application mApplication;
-    private CordovaIncomingBundleChecker mCordovaIncomingBundleChecker;
+    private DefaultIncomingBundleChecker mCordovaIncomingBundleChecker;
 
     /**
      * @param application a valid application which be called to obtain events
@@ -27,8 +28,6 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
      */
     public CordovaRootViewProvider(@NonNull Application application, @NonNull VoxeetToolkit toolkit) {
         super(application, toolkit);
-
-        mApplication = application;
     }
 
     @Override
@@ -36,7 +35,7 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
         super.onActivityCreated(activity, bundle);
 
         if (!CordovaIncomingCallActivity.class.equals(activity.getClass())) {
-            mCordovaIncomingBundleChecker = new CordovaIncomingBundleChecker(mApplication, activity.getIntent(), null);
+            mCordovaIncomingBundleChecker = new DefaultIncomingBundleChecker(activity.getIntent(), null);
             mCordovaIncomingBundleChecker.createActivityAccepted(activity);
         }
     }
@@ -60,19 +59,13 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
                 EventBus.getDefault().register(this); //registering this activity
             }
 
-            CordovaIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
+            DefaultIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
             if (null != checker && checker.isBundleValid()) {
-                if (VoxeetSDK.session().isSocketOpen()) {
+                if (VoxeetSDK.session().isOpen()) {
                     checker.onAccept();
                     CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                 }
             }
-            //TODO next steps, fix this call here
-            /*mCordovaIncomingBundleChecker = new CordovaIncomingBundleChecker(mApplication, activity.getIntent(), null);
-
-            if (mCordovaIncomingBundleChecker.isBundleValid()) {
-                mCordovaIncomingBundleChecker.onAccept();
-            }*/
         }
     }
 

@@ -41,12 +41,25 @@ cordova plugin add cordova-plugin-voxeet \
 
 ### Installation on Android
 
-Edit the `AndroidManifest.xml` file and put the following xml node in the :
+Edit your config.xml to add the following :
 
 ```xml
-<meta-data
-    android:name="voxeet_incoming_accepted_class"
-    android:value="fully.qualified.package.name.to.the.default.cordova.activity" />
+    <platform name="android">
+        ...
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <meta-data
+                android:name="voxeet_incoming_accepted_class"
+                android:value="fully.qualified.package.name.to.the.default.cordova.activity" />
+        </config-file>
+
+        <edit-config
+            file="app/src/main/AndroidManifest.xml"
+            target="/manifest/application/activity[@android:name='MainActivity']"
+            mode="merge">
+            <activity android:exported="true" android:enabled="true" />
+        </edit-config>
+    </platform>
 ```
 
 To enable the push notifications in your Android application, add the following preference at the end of the `config.xml` file:
@@ -57,18 +70,6 @@ To enable the push notifications in your Android application, add the following 
     <preference name="VOXEET_CORDOVA_USE_PUSH" value="true" />
 </widget>
 ```
-
-Due to new mechanisms preventing standard behaviour, **Android Q** and later, require the following modification done to the `config.xml` file. This was previously optional. However, if not set, a caught-exception will be set in the logs.
-
-```xml
-<config-file parent="./application" target="AndroidManifest.xml">
-    <meta-data
-        android:name="voxeet_incoming_accepted_class"
-        android:value="fully.qualified.package.name.to.the.default.cordova.activity" />
-</config-file>
-```
-
-If this is not set, a caught-exception will be set in the logs.
 
 ## Implementation
 
