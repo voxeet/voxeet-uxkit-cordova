@@ -60,6 +60,7 @@ public class CallUtils {
     public static Bundle createBundle(@NonNull IncomingBundleChecker bundleChecker) {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.CONF_ID, bundleChecker.getConferenceId());
+        bundle.putString(Constants.CONF_ALIAS, bundleChecker.getConferenceAlias());
         bundle.putString(Constants.INVITER_NAME, bundleChecker.getUserName());
         bundle.putString(Constants.INVITER_ID, bundleChecker.getUserId());
         bundle.putString(Constants.INVITER_EXTERNAL_ID, bundleChecker.getExternalUserId());
