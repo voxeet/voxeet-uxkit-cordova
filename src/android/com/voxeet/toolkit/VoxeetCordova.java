@@ -115,6 +115,8 @@ public class VoxeetCordova extends CordovaPlugin {
 
         wrapper = new CordovaActivityWrapper(cordova.getActivity());
 
+        wrapper.onCreate(null);
+
         VoxeetSDK.instance().register(this);
     }
 

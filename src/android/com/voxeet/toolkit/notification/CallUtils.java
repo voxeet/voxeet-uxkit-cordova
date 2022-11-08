@@ -15,7 +15,6 @@ import com.voxeet.sdk.push.center.management.Constants;
 import com.voxeet.sdk.utils.AndroidManifest;
 import com.voxeet.uxkit.common.UXKitLogger;
 import com.voxeet.uxkit.common.activity.bundle.DefaultIncomingBundleChecker;
-import com.voxeet.uxkit.common.activity.bundle.IncomingBundleChecker;
 
 public class CallUtils {
     public final static String BUNDLE_EXTRA_BUNDLE = "BUNDLE_EXTRA_BUNDLE";
@@ -52,12 +51,12 @@ public class CallUtils {
     }
 
     @NonNull
-    public static InvitationBundle createInvitationBundle(@NonNull IncomingBundleChecker bundleChecker) {
+    public static InvitationBundle createInvitationBundle(@NonNull DefaultIncomingBundleChecker bundleChecker) {
         return new InvitationBundle(createBundle(bundleChecker));
     }
 
     @NonNull
-    public static Bundle createBundle(@NonNull IncomingBundleChecker bundleChecker) {
+    public static Bundle createBundle(@NonNull DefaultIncomingBundleChecker bundleChecker) {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.CONF_ID, bundleChecker.getConferenceId());
         bundle.putString(Constants.CONF_ALIAS, bundleChecker.getConferenceAlias());
