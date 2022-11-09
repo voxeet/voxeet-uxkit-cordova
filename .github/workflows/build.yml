@@ -1,0 +1,27 @@
+name: Attempt to build cordova
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+      - name: prepare
+        run: |
+          npm install -g cordova
+          mkdir -p /tmp/plugin
+          cp -r * /tmp/plugin
+
+      - name: create a minimalist app
+        run: |
+          export JAVA_HOME="$JAVA_HOME_17_X64"
+          cd /tmp
+          cordova create hello com.example.hello HelloWorld
+          cd hello
+          cordova platform add android@latest
+          cordova plugin add "../plugin"
+      - name: build said minimalist app for android
+        run: |
+          export JAVA_HOME="$JAVA_HOME_17_X64"
+          cd /tmp/hello
+          cordova build android -- --gradleArg=-PcdvSdkVersion=33 --gradleArg=-PcdvCompileSdkVersion=33
