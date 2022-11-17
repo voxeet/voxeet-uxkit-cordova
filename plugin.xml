@@ -173,5 +173,6 @@
         <framework src="src/ios/Carthage/Build/WebRTC.xcframework" custom="true" embed="true" />
         <framework src="src/ios/Carthage/Build/Kingfisher.xcframework" custom="true" embed="true" />
         <framework src="src/ios/Carthage/Build/dvclient.xcframework" custom="true" embed="true" />
+        <framework src="src/ios/Carthage/Build/dvdnr.xcframework" custom="true" embed="true" />
     </platform>
 </plugin>
