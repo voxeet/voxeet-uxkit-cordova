@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.5.9
+### Features
+
+The Cordova UXKit now uses latest [iOS Client UXKit](https://github.com/voxeet/voxeet-uxkit-ios/releases).
+
 ## 1.5.7 (Feb 24th, 2022)
 ### Features
 
