@@ -19,6 +19,7 @@ jobs:
           cordova create hello com.example.hello HelloWorld
           cd hello
           cordova platform add android@latest
+          cordova platform add ios@latest
           cordova plugin add "../plugin"
       - name: build said minimalist app for android
         run: |
