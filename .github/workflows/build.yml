@@ -21,7 +21,13 @@ jobs:
           cordova platform add android@latest
           cordova platform add ios@latest
           cordova plugin add "../plugin"
-      - name: build said minimalist app for android
+
+      - name: build for iOS
+        run: |
+          cd /tmp/hello
+          cordova build ios
+
+      - name: build for android
         run: |
           export JAVA_HOME="$JAVA_HOME_17_X64"
           cd /tmp/hello
