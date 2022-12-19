@@ -93,6 +93,14 @@ alert(`UserInfo ? ${!!UserInfo}`);
 
 The `VoxeetSDK` object is a singleton that enables interaction with the UXKit. The `UserInfo` class allows you to manipulate participants.
 
+### Breaking changes !
+
+*Android*
+
+Starting from Android API 33, the applications need to ask the user for the POST_NOTIFICATIONS permission. This is mostly required for push notification & when joining a conference.
+
+As lots of libraries are not yet compatible, it may be possible to ask for it using it's fully qualified name *"android.permission.POST_NOTIFICATIONS"*
+
 ### Initialization
 
 **Initialize the Voxeet UXKit with an Access Token**
