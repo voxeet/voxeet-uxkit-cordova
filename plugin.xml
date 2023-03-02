@@ -19,7 +19,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
       xmlns:android="http://schemas.android.com/apk/res/android"
       id="cordova-plugin-voxeet"
-      version="1.5.9">
+      version="1.6.0">
     <name>Voxeet</name>
     <description>Cordova Voxeet Plugin</description>
     <license>Apache 2.0 License</license>
