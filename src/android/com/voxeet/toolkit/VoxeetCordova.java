@@ -508,7 +508,7 @@ public class VoxeetCordova extends CordovaPlugin {
             e.printStackTrace();
         }
 
-        TelemetryService.register(SdkEnvironment.CORDOVA, VERSION);
+        VoxeetSDK.registerComponentVersion("android-cordova", VERSION);
 
         Application application = (Application) activity.getApplicationContext();
 
