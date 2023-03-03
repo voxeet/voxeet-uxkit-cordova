@@ -3,6 +3,9 @@
 #import <VoxeetSDK/VoxeetSDK.h>
 #import <VoxeetUXKit/VoxeetUXKit.h>
 
+static NSString * const kCordovaPluginVersion = @"___CORDOVA_VERSION___";
+static NSString * const kCordovaComponentName = @"ios-cordova";
+
 @interface CDVVoxeet()
 
 @property (nonatomic, copy) NSString *consumerKey;
@@ -61,7 +64,7 @@
     [VoxeetUXKit.shared initialize];
     
     VoxeetSDK.shared.notification.push.type = VTNotificationPushTypeCallKit;
-    VoxeetSDK.shared.telemetry.platform = VTTelemetryPlatformCordova;
+    [VoxeetSDK.shared _registerComponentVersionWithName:kCordovaComponentName version:kCordovaPluginVersion];
 }
 
 - (void)initializeToken:(CDVInvokedUrlCommand *)command {
@@ -80,7 +83,7 @@
         [VoxeetUXKit.shared initialize];
         
         VoxeetSDK.shared.notification.push.type = VTNotificationPushTypeCallKit;
-        VoxeetSDK.shared.telemetry.platform = VTTelemetryPlatformCordova;
+        [VoxeetSDK.shared _registerComponentVersionWithName:kCordovaComponentName version:kCordovaPluginVersion];
         
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     });
