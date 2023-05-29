@@ -10,6 +10,7 @@ import com.voxeet.VoxeetSDK;
 import com.voxeet.sdk.events.sdk.ConferenceStatusUpdatedEvent;
 import com.voxeet.sdk.json.ConferenceDestroyedPush;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
+import com.voxeet.uxkit.common.DefaultConfiguration;
 import com.voxeet.uxkit.common.activity.bundle.DefaultIncomingBundleChecker;
 import com.voxeet.uxkit.controllers.VoxeetToolkit;
 import com.voxeet.uxkit.providers.rootview.DefaultRootViewProvider;
@@ -62,7 +63,7 @@ public class CordovaRootViewProvider extends DefaultRootViewProvider {
             DefaultIncomingBundleChecker checker = CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE;
             if (null != checker && checker.isBundleValid()) {
                 if (VoxeetSDK.session().isOpen()) {
-                    checker.onAccept();
+                    checker.onAccept(DefaultConfiguration.onAcceptCallback);
                     CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                 }
             }

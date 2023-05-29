@@ -32,15 +32,14 @@ import com.voxeet.sdk.push.center.subscription.register.SubscribeInvitation;
 import com.voxeet.sdk.services.AudioService;
 import com.voxeet.sdk.services.ConferenceService;
 import com.voxeet.sdk.services.SessionService;
-import com.voxeet.sdk.services.TelemetryService;
 import com.voxeet.sdk.services.builders.ConferenceCreateOptions;
 import com.voxeet.sdk.services.builders.ConferenceJoinOptions;
 import com.voxeet.sdk.services.builders.ConferenceListenOptions;
-import com.voxeet.sdk.services.telemetry.SdkEnvironment;
 import com.voxeet.toolkit.notification.CallUtils;
 import com.voxeet.toolkit.notification.CordovaIncomingCallActivity;
 import com.voxeet.toolkit.notification.CordovaIncomingNotification;
 import com.voxeet.toolkit.utils.SafeLock;
+import com.voxeet.uxkit.common.DefaultConfiguration;
 import com.voxeet.uxkit.common.activity.bundle.DefaultIncomingBundleChecker;
 import com.voxeet.uxkit.configuration.ActionBar;
 import com.voxeet.uxkit.configuration.Configuration;
@@ -65,7 +64,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Voxeet implementation for Cordova
@@ -78,11 +76,6 @@ public class VoxeetCordova extends CordovaPlugin {
     private static final String TAG = VoxeetCordova.class.getSimpleName();
 
     private static final Handler HANDLER = new Handler(Looper.getMainLooper());
-
-    //static to let CordovaIncomingBundleChecker to check the state of it
-    //it'll do the trick until the sdk is able to create and maintain a proper
-    //conference configuration holder (something expected second half 2019)
-    public static boolean startVideoOnJoin = false;
 
     private ParticipantInfo _current_user;
     private CallbackContext _log_in_callback;
@@ -453,7 +446,7 @@ public class VoxeetCordova extends CordovaPlugin {
     }
 
     private void defaultVideo(boolean startVideo) {
-        startVideoOnJoin = startVideo;
+        DefaultConfiguration.defaultVideo = startVideo;
         VoxeetPreferences.setDefaultVideoOn(startVideo);
     }
 
@@ -513,7 +506,7 @@ public class VoxeetCordova extends CordovaPlugin {
         Application application = (Application) activity.getApplicationContext();
 
         //set the 2 optional default configuration from previous saved state
-        VoxeetCordova.startVideoOnJoin = VoxeetPreferences.isDefaultVideoOn();
+        DefaultConfiguration.defaultVideo = VoxeetPreferences.isDefaultVideoOn();
         defaultBuiltInSpeaker(VoxeetPreferences.isDefaultBuiltinSpeakerOn());
 
         VoxeetToolkit
@@ -619,12 +612,12 @@ public class VoxeetCordova extends CordovaPlugin {
 
                     NotificationCenter.instance.onInvitationReceived(cordova.getActivity(), invitationBundle);
                 } else if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT) {
-                    CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT.onAccept();
+                    CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_ACCEPT.onAccept(DefaultConfiguration.onAcceptCallback);
                 } else if (null != CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE) {
                     CordovaIncomingCallActivity.CORDOVA_AWAITING_BUNDLE_TO_BE_MANAGE_FOR_DECLINE.onDecline();
                 } else if (null != checker && checker.isBundleValid()) {
-                    if (VoxeetSDK.session().isSocketOpen()) {
-                        checker.onAccept();
+                    if (VoxeetSDK.session().isOpen()) {
+                        checker.onAccept(DefaultConfiguration.onAcceptCallback);
                         CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                         if (null != cb) cb.success();
                     } else {
@@ -685,7 +678,7 @@ public class VoxeetCordova extends CordovaPlugin {
         }).then((result) -> {
             cleanBundles();
 
-            if (startVideoOnJoin) {
+            if (DefaultConfiguration.defaultVideo) {
                 startVideo(null);
             }
 
@@ -706,7 +699,7 @@ public class VoxeetCordova extends CordovaPlugin {
         }).then((result) -> {
             cleanBundles();
 
-            if (startVideoOnJoin) {
+            if (DefaultConfiguration.defaultVideo) {
                 startVideo(null);
             }
             cb.success();
@@ -890,14 +883,14 @@ public class VoxeetCordova extends CordovaPlugin {
             Log.d(TAG, "checkForIncomingConference: socket opened := " + service.isOpen());
             if (service.isOpen()) {
                 Log.d(TAG, "checkForIncomingConference: direct onAccept()");
-                checker.onAccept();
+                checker.onAccept(DefaultConfiguration.onAcceptCallback);
                 CordovaIncomingCallActivity.CORDOVA_ROOT_BUNDLE = null;
                 return true;
             } else if (null != userInfo) {
                 Log.d(TAG, "checkForIncomingConference: user infos saved := login");
                 service.open(userInfo).then((result) -> {
                     Log.d(TAG, "onCall: session opened");
-                    checker.onAccept();
+                    checker.onAccept(DefaultConfiguration.onAcceptCallback);
                 }).error(error -> {
                     Log.d(TAG, "onError: unable to join from bundle via push notification");
                     error.printStackTrace();
